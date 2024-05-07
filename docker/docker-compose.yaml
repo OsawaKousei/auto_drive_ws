@@ -21,6 +21,6 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - $HOME/.Xauthority/:/home/${USER_NAME}/.Xauthority:ro
-    hostname: ros2_gui
+    hostname: auto_drive
     tty: true
     user: "${UID}:${GID}"

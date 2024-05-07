@@ -6,8 +6,12 @@ sudo apt upgrade -y
 echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 
 # create workspace
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws/ && colcon build
+cd ~
+git https://github.com/OsawaKousei/auto_drive_ws.git
+cd auto_drive_ws/auto_drive
+colcon build
+echo "source ~/auto_drive/install/setup.bash" >> ~/.bashrc
+cd ~
 
 # refresh bashrc
 source ~/.bashrc
