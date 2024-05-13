@@ -24,4 +24,8 @@ if(BUILD_TESTING)
 endif()
 
 # ヘッダーのインストールや共有ライブラリのエクスポート等を自動で行ってくれる
-ament_auto_package()
+ament_auto_package(
+  INSTALL_TO_SHARE
+    launch
+    models
+)
