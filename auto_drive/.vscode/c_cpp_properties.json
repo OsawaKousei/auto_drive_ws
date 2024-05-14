@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/include/ignition/**",
-                "/usr/include/x86_64-linux-gnu/qt5/**"
+                "/usr/include/x86_64-linux-gnu/qt5/**",
+                "/opt/ros/humble/include/**",
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
