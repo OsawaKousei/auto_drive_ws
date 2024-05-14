@@ -1,5 +1,5 @@
 <sdf version='1.8'>
-  <model name="CasterRobo">
+  <model name="SingleSteerRobo">
   <pose>0 0 0 0 0 0</pose>
 
     <link name="base_footprint"/>
@@ -17,13 +17,6 @@
               <izz>0.476646</izz>
           </inertia>
       </inertial>
-      <collision name='collision'>
-        <geometry>
-            <box>
-                <size>1.0 1.0 0.5</size>
-            </box>
-        </geometry>
-      </collision>
       <visual name='visual'>
         <geometry>
             <box>
@@ -196,6 +189,84 @@
       <child>caster_front_right_link</child>
     </joint>
 
+    <link name="wheel_base_link">
+      <pose>0 0 0.4 0 0 0</pose>
+      <inertial>
+        <inertia>
+          <ixx>2.0</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.0</iyy>
+          <iyz>0</iyz>
+          <izz>4.0</izz>
+        </inertia>
+        <mass>1.0</mass>
+      </inertial>
+      <visual name="wheel_base_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.3</radius>
+            <length>0.1</length>
+          </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.0 0.0 1</ambient>
+            <diffuse>1.0 0.0 0.0 1</diffuse>
+            <specular>1.0 0.0 0.0 1</specular>
+          </material>
+      </visual>
+    </link>
+    <joint name="wheel_base_joint" type="revolute">
+      <parent>base_link</parent>
+      <child>wheel_base_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+      </axis>
+    </joint>
+
+    <link name="wheel_link">
+      <pose>0 0 0 -1.57 0 0</pose>
+      <inertial>
+        <inertia>
+          <ixx>1.0</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1.0</iyy>
+          <iyz>0</iyz>
+          <izz>2.0</izz>
+        </inertia>
+        <mass>1.0</mass>
+      </inertial>
+      <collision name="wheel_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.3</radius>
+            <length>0.1</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="wheel_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.3</radius>
+            <length>0.1</length>
+          </cylinder>
+          </geometry>
+          <material>
+            <ambient>1.0 0.0 0.0 1</ambient>
+            <diffuse>1.0 0.0 0.0 1</diffuse>
+            <specular>1.0 0.0 0.0 1</specular>
+          </material>
+      </visual>
+    </link>
+    <joint name="wheel_joint" type="revolute">
+      <parent>wheel_base_link</parent>
+      <child>wheel_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+      </axis>
+    </joint>
+
     <!-- Global odometer -->
     <plugin
       filename="ignition-gazebo-odometry-publisher-system"
@@ -212,5 +283,12 @@
       name="ignition::gazebo::systems::JointStatePublisher">
       <topic>joint_states</topic>
     </plugin>
+
+    <plugin filename="libRotateAxis.so" name="model_test::RotateAxis">
+      <wheel_joint>wheel_joint</wheel_joint>
+      <base_joint>wheel_base_joint</base_joint>
+    </plugin>
+
+
   </model>
 </sdf>

@@ -23,6 +23,15 @@
           <property key="resizable" type="bool">true</property>
         </ignition-gui>
       </plugin>
+
+      <plugin filename="Teleop" name="ignition::gui::plugins::Teleop">
+        <topic>/cmd_vel</topic>
+        <ignition-gui>
+          <property type="bool" key="showTitleBar">true</property>
+          <property type="string" key="state">docked</property>
+          <property key="resizable" type="bool">true</property>
+        </ignition-gui>
+      </plugin>
     </gui>
 
     <physics name="1ms" type="ignored">

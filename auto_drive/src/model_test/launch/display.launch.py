@@ -26,12 +26,12 @@ def generate_launch_description():
         package='ros_ign_gazebo',
         executable='create',
         output='screen',
-        arguments=['-entity', 'CasterRobo',
-                   '-name', 'CasterRobo',
+        arguments=['-entity', 'SingleSteerRobo',
+                   '-name', 'SingleSteerRobo',
                    #ロボットのsdfファイルを指定
                    '-file', PathJoinSubstitution([
                         pkg_share_dir,
-                        "models", "CasterRobo", "model.sdf"]),#LidarRobo4を使用すること！
+                        "models", "SingleSteerRobo", "model.sdf"]),#LidarRobo4を使用すること！
                     #ロボットの位置を指定
                    '-allow_renaming', 'true',
                    '-x', '0.0',
@@ -53,7 +53,7 @@ def generate_launch_description():
         )
     
     #ワールドのsdfファイルを設定(worldタグのあるsdfファイル)
-    world = os.path.join(pkg_share_dir, "models", "worlds", "basic_world.sdf")
+    world = os.path.join(pkg_share_dir,"worlds", "plugin_test.sdf")
 
     #ignition gazeboの起動設定
     ign_gz = IncludeLaunchDescription(

@@ -27,15 +27,25 @@ target_link_libraries(SwitchPanel
   ${IGNITION-GUI_LIBRARIES}
 )
 
+# system plugin
+add_library(RotateAxis SHARED
+  src/rotate_axis/rotate_axis.cpp
+)
+target_link_libraries(RotateAxis
+  ${IGNITION-PLUGIN_LIBRARIES}
+  ${IGNITION-GAZEBO_LIBRARIES}
+)
+
 install(
   DIRECTORY
     launch
     worlds
+    models
   DESTINATION share/${PROJECT_NAME}
 )
 
 install(
-  TARGETS SwitchPanel
+  TARGETS SwitchPanel RotateAxis
   LIBRARY DESTINATION lib
 )
 
