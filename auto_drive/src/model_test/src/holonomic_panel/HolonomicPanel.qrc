@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+  <qresource prefix="HolonomicPanel/">
+    <file>HolonomicPanel.qml</file>
+  </qresource>
+</RCC>

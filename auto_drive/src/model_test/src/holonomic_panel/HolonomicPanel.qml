@@ -15,33 +15,33 @@ Rectangle
     spacing: 5
     
     Button {
-      text: "Forward"
-      onPressed: { SwitchPanel.OnForwardButton(); }
+      text: "go"
+      onPressed: { HolonomicPanel.OnGoButton(); }
     }
 
     Button {
-      text: "WheelStop"
-      onPressed: { SwitchPanel.OnWheelStopButton(); }
+      text: "stop"
+      onPressed: { HolonomicPanel.OnStopButton(); }
+    }
+
+    Button {
+      text: "Forward"
+      onPressed: { HolonomicPanel.OnForwardButton(); }
     }
 
     Button {
       text: "backward"
-      onPressed: { SwitchPanel.OnBackwardButton(); }
+      onPressed: { HolonomicPanel.OnBackwardButton(); }
     }
 
     Button {
       text: "Right"
-      onPressed: { SwitchPanel.OnRightButton(); }
-    }
-
-    Button {
-      text: "BaseStop"
-      onPressed: { SwitchPanel.OnBaseStopButton(); }
+      onPressed: { HolonomicPanel.OnRightButton(); }
     }
 
     Button {
       text: "Left"
-      onPressed: { SwitchPanel.OnLeftButton(); }
+      onPressed: { HolonomicPanel.OnLeftButton(); }
     }
   }
 }

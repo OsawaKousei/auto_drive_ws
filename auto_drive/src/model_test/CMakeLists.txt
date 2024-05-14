@@ -27,6 +27,16 @@ target_link_libraries(SwitchPanel
   ${IGNITION-GUI_LIBRARIES}
 )
 
+qt5_add_resources(resources_rcc src/holonomic_panel/HolonomicPanel.qrc)
+add_library(HolonomicPanel SHARED
+  src/holonomic_panel/HolonomicPanel.cpp
+  ${resources_rcc}
+)
+target_link_libraries(HolonomicPanel
+  ${IGNITION-COMMON_LIBRARY_DIRS}
+  ${IGNITION-GUI_LIBRARIES}
+)
+
 
 # system plugin
 add_library(RotateAxis SHARED
@@ -37,8 +47,16 @@ target_link_libraries(RotateAxis
   ${IGNITION-GAZEBO_LIBRARIES}
 )
 
+add_library(HolonomicTest SHARED
+  src/holonomic_test/holonomic_test.cpp
+)
+target_link_libraries(HolonomicTest
+  ${IGNITION-PLUGIN_LIBRARIES}
+  ${IGNITION-GAZEBO_LIBRARIES}
+)
+
 install(
-  TARGETS SwitchPanel RotateAxis
+  TARGETS SwitchPanel RotateAxis HolonomicPanel HolonomicTest
   LIBRARY DESTINATION lib
 )
 

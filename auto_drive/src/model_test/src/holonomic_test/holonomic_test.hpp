@@ -27,11 +27,14 @@ namespace model_test
                 const ignition::gazebo::EntityComponentManager &_ecm) override;
     private:
       void CreateIgnitionIf(void);
-      void OnSpeedMessage(const ignition::msgs::Float & msg);
+      void OnWheelSpeedMessage(const ignition::msgs::Float & msg);
+      void OnBasePosMessage(const ignition::msgs::Float & msg);
 
       ignition::gazebo::Model model_;
       ignition::transport::Node node_;
-      std::string target_joint_name_{""};
-      float target_speed_{0.0f};
+      std::string wheel_joint_name_{""};
+      float wheel_speed_{0.0f};
+      std::string base_joint_name_{""};
+      float base_pos_{0.0f};
   };
 }

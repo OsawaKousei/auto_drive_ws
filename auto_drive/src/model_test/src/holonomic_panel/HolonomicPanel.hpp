@@ -5,21 +5,21 @@
 namespace model_test
 {
 
-class SwitchPanel : public ignition::gui::Plugin
+class HolonomicPanel : public ignition::gui::Plugin
 {
   Q_OBJECT
 
 public:
-  SwitchPanel();
-  virtual ~SwitchPanel();
+  HolonomicPanel();
+  virtual ~HolonomicPanel();
   void LoadConfig(const tinyxml2::XMLElement * _pluginElem) override;
 
 protected slots:
+  void OnGoButton(void);
+  void OnStopButton(void);
   void OnForwardButton(void);
-  void OnWheelStopButton(void);
   void OnBackwardButton(void);
   void OnRightButton(void);
-  void OnBaseStopButton(void);
   void OnLeftButton(void);
 
 private:
@@ -28,9 +28,8 @@ private:
 private:
   ignition::transport::Node node_;
   ignition::transport::Node::Publisher wheel_speed_pub_;
-  ignition::transport::Node::Publisher base_speed_pub_;
-  float forward_speed_{1.0f};
-  float reverse_speed_{-1.0f};
+  ignition::transport::Node::Publisher base_pos_pub_;
+  float wheel_speed_{1.0f};
 };
 
 }  // namespace iginition_plugin_lecture

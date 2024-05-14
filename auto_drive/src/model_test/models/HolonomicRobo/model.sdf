@@ -1,5 +1,5 @@
 <sdf version='1.8'>
-  <model name="SingleSteerRobo">
+  <model name="HolonomicRobo">
   <pose>0 0 0 0 0 0</pose>
 
     <link name="base_footprint"/>
@@ -284,7 +284,7 @@
       <topic>joint_states</topic>
     </plugin>
 
-    <plugin filename="libRotateAxis.so" name="model_test::RotateAxis">
+    <plugin filename="libHolonomicTest.so" name="model_test::HolonomicTest">
       <wheel_joint>wheel_joint</wheel_joint>
       <base_joint>wheel_base_joint</base_joint>
     </plugin>

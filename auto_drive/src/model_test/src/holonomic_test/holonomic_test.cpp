@@ -25,12 +25,20 @@ void HolonomicTest::Configure(const ignition::gazebo::Entity &_entity,
   (void)_eventMgr;
   model_ = ignition::gazebo::Model(_entity);
 
-  auto ptr = const_cast<sdf::Element *>(_sdf.get());
-  sdf::ElementPtr target_joint_elem = ptr->GetElement("target_joint");
-  if (target_joint_elem) {
-    target_joint_name_ = target_joint_elem->Get<std::string>();
+  auto wheel_ptr = const_cast<sdf::Element *>(_sdf.get());
+  sdf::ElementPtr wheel_joint_elem = wheel_ptr->GetElement("wheel_joint");
+  if (wheel_joint_elem) {
+    wheel_joint_name_ = wheel_joint_elem->Get<std::string>();
   } else {
-    ignerr << "sdf target_joint not found" << std::endl;
+    ignerr << "sdf wheel_joint not found" << std::endl;
+  }
+
+  auto base_ptr = const_cast<sdf::Element *>(_sdf.get());
+  sdf::ElementPtr base_joint_elem = base_ptr->GetElement("base_joint");
+  if (base_joint_elem) {
+    base_joint_name_ = base_joint_elem->Get<std::string>();
+  } else {
+    ignerr << "sdf base_joint not found" << std::endl;
   }
 }
 
@@ -39,19 +47,34 @@ void HolonomicTest::PreUpdate(const ignition::gazebo::UpdateInfo &_info,
 {
     (void)_info;
     (void)_ecm;
-    ignition::gazebo::Entity joint = model_.JointByName(_ecm, target_joint_name_);
-    if (joint == ignition::gazebo::kNullEntity){
-      ignerr << target_joint_name_ <<" not found" << std::endl;
+    ignition::gazebo::Entity wheel_joint = model_.JointByName(_ecm, wheel_joint_name_);
+    if (wheel_joint == ignition::gazebo::kNullEntity){
+      ignerr << wheel_joint_name_ <<" not found" << std::endl;
       return;
     }
 
-    auto vel = _ecm.Component<ignition::gazebo::components::JointVelocityCmd>(joint);
-    if (vel != nullptr)
+    ignition::gazebo::Entity base_joint = model_.JointByName(_ecm, base_joint_name_);
+    if (base_joint == ignition::gazebo::kNullEntity){
+      ignerr << base_joint_name_ <<" not found" << std::endl;
+      return;
+    }
+
+    auto wheel_vel = _ecm.Component<ignition::gazebo::components::JointVelocityCmd>(wheel_joint);
+    if (wheel_vel != nullptr)
     {
-    //   *vel = ignition::gazebo::components::JointVelocityCmd({target_speed_});
+      *wheel_vel = ignition::gazebo::components::JointVelocityCmd({wheel_speed_});
     }
     else {
-      _ecm.CreateComponent(joint, ignition::gazebo::components::JointVelocityCmd({target_speed_}));
+      _ecm.CreateComponent(wheel_joint, ignition::gazebo::components::JointVelocityCmd({wheel_speed_}));
+    }
+
+    auto base_pos = _ecm.Component<ignition::gazebo::components::JointPositionReset>(base_joint);
+    if (base_pos != nullptr)
+    {
+      *base_pos = ignition::gazebo::components::JointPositionReset({base_pos_});
+    }
+    else {
+      _ecm.CreateComponent(base_joint, ignition::gazebo::components::JointPositionReset({base_pos_}));
     }
  }
 
@@ -70,12 +93,18 @@ void HolonomicTest::PostUpdate(const ignition::gazebo::UpdateInfo &_info,
 }
 
 void HolonomicTest::CreateIgnitionIf(void){
-  this->node_.Subscribe("target_speed", &HolonomicTest::OnSpeedMessage, this);
+  this->node_.Subscribe("wheel_speed", &HolonomicTest::OnWheelSpeedMessage, this);
+  this->node_.Subscribe("base_pos", &HolonomicTest::OnBasePosMessage, this);
 }
 
-void HolonomicTest::OnSpeedMessage(const ignition::msgs::Float & msg)
+void HolonomicTest::OnWheelSpeedMessage(const ignition::msgs::Float & msg)
 {
-  target_speed_ = msg.data();
+  wheel_speed_ = msg.data();
+}
+
+void HolonomicTest::OnBasePosMessage(const ignition::msgs::Float & msg)
+{
+  base_pos_ = msg.data();
 }
 
 }

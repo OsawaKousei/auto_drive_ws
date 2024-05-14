@@ -41,7 +41,7 @@ void SwitchPanel::OnForwardButton(void) {
   wheel_speed_pub_.Publish(float_msg);
 }
 
-void SwitchPanel::OnStopButton(void) {
+void SwitchPanel::OnWheelStopButton(void) {
   ignition::msgs::Float float_msg;
   float_msg.set_data(0.0f);
   wheel_speed_pub_.Publish(float_msg);
@@ -51,6 +51,12 @@ void SwitchPanel::OnBackwardButton(void) {
   ignition::msgs::Float float_msg;
   float_msg.set_data(reverse_speed_);
   wheel_speed_pub_.Publish(float_msg);
+}
+
+void SwitchPanel::OnBaseStopButton(void) {
+  ignition::msgs::Float float_msg;
+  float_msg.set_data(0.0f);
+  base_speed_pub_.Publish(float_msg);
 }
 
 void SwitchPanel::OnRightButton(void) {
