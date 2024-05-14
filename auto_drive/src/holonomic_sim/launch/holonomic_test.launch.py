@@ -99,7 +99,12 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen')
     
-   
+    #rqt
+    rqt = Node(
+            package='rqt_publisher',
+            executable='rqt_publisher',
+            name='rqt_publisher',
+            output='screen')
     
     return LaunchDescription([
         ign_resource_path,
@@ -118,6 +123,8 @@ def generate_launch_description():
             default_value=world_name,
             description='World name'),
 
-        robot_state_publisher,
-        rviz2,
+        rqt,
+
+        # robot_state_publisher,
+        # rviz2,
     ])
