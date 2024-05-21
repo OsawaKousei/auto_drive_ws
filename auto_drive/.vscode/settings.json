@@ -4,6 +4,7 @@
         "\"*.sdf\"": "\"xml\"",
         "\"*.urdf\"": "\"xml\"",
         "*.sdf": "xml",
+        "*.urdf": "xml",
         "cctype": "cpp",
         "clocale": "cpp",
         "cmath": "cpp",
