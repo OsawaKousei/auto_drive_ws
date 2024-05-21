@@ -1,5 +1,5 @@
 
-<robot name="HolonomicUrdf">
+<robot name="HolonomicUrdf" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <link name="base_footprint"/>
 
@@ -81,125 +81,38 @@
         <axis xyz="0 0 1"/>
     </joint>
 
-    <link name="caster_FR">
-        <inertial>
-            <mass value="0.3"/>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="3600000" ixy="0.0" ixz="0.0" iyy="3600000" iyz="0.0" izz="3600000"/>
-        </inertial>
-        <visual>
-            <geometry>
-                <sphere radius="0.05"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <material name="green">
-            <color rgba="0.0 1.0 0.0 1.0"/>
-            </material>
-        </visual>
-        <collision>
-            <geometry>
-                <sphere radius="0.05"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-        </collision>
-    </link>
+    <xacro:macro name="caster_macro" params="suffix parent radius x y z">
+        <link name="${suffix}_link">
+            <inertial>
+                <mass value="0.3"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <inertia ixx="3600000" ixy="0.0" ixz="0.0" iyy="3600000" iyz="0.0" izz="3600000"/>
+            </inertial>
+            <visual>
+                <geometry>
+                    <sphere radius="${radius}"/>
+                </geometry>
+                <material name="red"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <sphere radius="${radius}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+            </collision>
+        </link>
 
-    <joint name="caster_FR_joint" type="fixed">
-        <parent link="base_link"/>
-        <child  link="caster_FR"/>
+        <joint name="${suffix}_joint" type="fixed">
+            <origin rpy="0 0 0" xyz="${x} ${y} ${z}"/>
+            <parent link="${parent}"/>
+            <child  link="${suffix}_link"/>
+        </joint>
+    </xacro:macro>  
 
-        <origin xyz="0.5 0.5 -0.25" rpy="0 0 0"/>
-    </joint>
-
-    <link name="caster_FL">
-        <inertial>
-            <mass value="0.3"/>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="3600000" ixy="0.0" ixz="0.0" iyy="3600000" iyz="0.0" izz="3600000"/>
-        </inertial>
-        <visual>
-            <geometry>
-                <sphere radius="0.05"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <material name="green">
-            <color rgba="0.0 1.0 0.0 1.0"/>
-            </material>
-        </visual>
-        <collision>
-            <geometry>
-                <sphere radius="0.05"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-        </collision>
-    </link>
-
-    <joint name="caster_FL_joint" type="fixed">
-        <parent link="base_link"/>
-        <child  link="caster_FL"/>
-
-        <origin xyz="0.5 -0.5 -0.25" rpy="0 0 0"/>
-    </joint>
-
-    <link name="caster_BR">
-        <inertial>
-            <mass value="0.3"/>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="3600000" ixy="0.0" ixz="0.0" iyy="3600000" iyz="0.0" izz="3600000"/>
-        </inertial>
-        <visual>
-            <geometry>
-                <sphere radius="0.05"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <material name="green">
-            <color rgba="0.0 1.0 0.0 1.0"/>
-            </material>
-        </visual>
-        <collision>
-            <geometry>
-                <sphere radius="0.05"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-        </collision>
-    </link>
-
-    <joint name="caster_BR_joint" type="fixed">
-        <parent link="base_link"/>
-        <child  link="caster_BR"/>
-
-        <origin xyz="-0.5 0.5 -0.25" rpy="0 0 0"/>
-    </joint>
-
-    <link name="caster_BL">
-        <inertial>
-            <mass value="0.3"/>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="3600000" ixy="0.0" ixz="0.0" iyy="3600000" iyz="0.0" izz="3600000"/>
-        </inertial>
-        <visual>
-            <geometry>
-                <sphere radius="0.05"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <material name="green">
-            <color rgba="0.0 1.0 0.0 1.0"/>
-            </material>
-        </visual>
-        <collision>
-            <geometry>
-                <sphere radius="0.05"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-        </collision>
-    </link>
-
-    <joint name="caster_BL_joint" type="fixed">
-        <parent link="base_link"/>
-        <child  link="caster_BL"/>
-
-        <origin xyz="-0.5 -0.5 -0.25" rpy="0 0 0"/>
-    </joint>
+    <xacro:caster_macro suffix="caster1" parent="base_link" radius="0.05" x="0.5" y="0.5" z="-0.25"/>
+    <xacro:caster_macro suffix="caster2" parent="base_link" radius="0.05" x="0.5" y="-0.5" z="-0.25"/>
+    <xacro:caster_macro suffix="caster3" parent="base_link" radius="0.05" x="-0.5" y="0.5" z="-0.25"/>
+    <xacro:caster_macro suffix="caster4" parent="base_link" radius="0.05" x="-0.5" y="-0.5" z="-0.25"/>
     
     <gazebo>
         <!-- Global odometer -->

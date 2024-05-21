@@ -20,7 +20,7 @@ def generate_launch_description():
         os.path.join("/opt/ros/humble", "share"),
         ":" +
         model_path])
-
+    
     #ロボットをスポーンさせる設定
     ignition_spawn_entity = Node(
         package='ros_ign_gazebo',
@@ -29,8 +29,7 @@ def generate_launch_description():
         arguments=['-entity', 'HolonomicRobo',
                    '-name', 'HolonomicRobo',
                    #ロボットのsdfファイルを指定
-                   '-file', PathJoinSubstitution([
-                        model_path, "HolonomicUrdf", "model.urdf"]),
+                   '-topic', 'robot_description',
                     #ロボットの位置を指定
                    '-allow_renaming', 'true',
                    '-x', '0.0',
@@ -68,9 +67,9 @@ def generate_launch_description():
     )
     
      #ロボットのurdfファイルのパスを取得 
-    urdf = os.path.join( 
-        model_path, 
-        'HolonomicUrdf','model.urdf') 
+    urdf = os.path.join( model_path, 'HolonomicUrdf','model.urdf') 
+    #xacroを展開
+    robot_desc = xacro.process_file(urdf).toxml()
 
     #robot_state_publsherの起動設定 
     robot_state_publisher = Node( 
@@ -78,8 +77,9 @@ def generate_launch_description():
             executable='robot_state_publisher', 
             name='robot_state_publisher', 
             output='both', 
-            arguments=[urdf], 
-            parameters=[{'use_sim_time': use_sim_time,}]) # type: ignore 
+            arguments=[robot_desc], 
+            parameters=[{'robot_description': robot_desc,
+                         'use_sim_time': use_sim_time,}]) # type: ignore 
     
     #rviz2の設定フィルのパスを取得
     rviz_config_dir = os.path.join(
