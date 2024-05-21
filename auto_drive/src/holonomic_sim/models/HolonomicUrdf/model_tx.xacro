@@ -7,7 +7,7 @@
   <link name="base_footprint"/>
   <link name="base_link">
     <inertial>
-      <mass value="100.0"/>
+      <mass value="100"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <inertia ixx="10.416666666666668" ixy="0.0" ixz="0.0" iyy="10.416666666666668" iyz="0.0" izz="16.666666666666668"/>
     </inertial>
@@ -26,9 +26,9 @@
   </joint>
   <link name="wheel_base_link">
     <inertial>
-      <mass value="10.0"/>
+      <mass value="0.01"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="0.23333333333333334" ixy="0.0" ixz="0.0" iyy="0.23333333333333334" iyz="0.0" izz="0.44999999999999996"/>
+      <inertia ixx="233333.33333333334" ixy="0.0" ixz="0.0" iyy="233333.33333333334" iyz="0.0" izz="450000.0"/>
     </inertial>
     <visual>
       <geometry>
@@ -47,9 +47,9 @@
   </joint>
   <link name="wheel_link">
     <inertial>
-      <mass value="0.0001"/>
+      <mass value="1e-07"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="1.0000083333333337e-06" ixy="0.0" ixz="0.0" iyy="1.0000083333333337e-06" iyz="0.0" izz="2.0000000000000003e-06"/>
+      <inertia ixx="1.0000083333333336" ixy="0.0" ixz="0.0" iyy="1.0000083333333336" iyz="0.0" izz="2.0000000000000004"/>
     </inertial>
     <visual>
       <geometry>
@@ -74,9 +74,9 @@
   </joint>
   <link name="caster1_link">
     <inertial>
-      <mass value="0.0001"/>
+      <mass value="0.3"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="1.0000000000000002e-07" ixy="0.0" ixz="0.0" iyy="1.0000000000000002e-07" iyz="0.0" izz="1.0000000000000002e-07"/>
+      <inertia ixx="3000000.0" ixy="0.0" ixz="0.0" iyy="3000000.0" iyz="0.0" izz="3000000.0"/>
     </inertial>
     <visual>
       <geometry>
@@ -100,9 +100,9 @@
   </joint>
   <link name="caster2_link">
     <inertial>
-      <mass value="0.0001"/>
+      <mass value="0.3"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="1.0000000000000002e-07" ixy="0.0" ixz="0.0" iyy="1.0000000000000002e-07" iyz="0.0" izz="1.0000000000000002e-07"/>
+      <inertia ixx="3000000.0" ixy="0.0" ixz="0.0" iyy="3000000.0" iyz="0.0" izz="3000000.0"/>
     </inertial>
     <visual>
       <geometry>
@@ -126,9 +126,9 @@
   </joint>
   <link name="caster3_link">
     <inertial>
-      <mass value="0.0001"/>
+      <mass value="0.3"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="1.0000000000000002e-07" ixy="0.0" ixz="0.0" iyy="1.0000000000000002e-07" iyz="0.0" izz="1.0000000000000002e-07"/>
+      <inertia ixx="3000000.0" ixy="0.0" ixz="0.0" iyy="3000000.0" iyz="0.0" izz="3000000.0"/>
     </inertial>
     <visual>
       <geometry>
@@ -152,9 +152,9 @@
   </joint>
   <link name="caster4_link">
     <inertial>
-      <mass value="0.0001"/>
+      <mass value="0.3"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="1.0000000000000002e-07" ixy="0.0" ixz="0.0" iyy="1.0000000000000002e-07" iyz="0.0" izz="1.0000000000000002e-07"/>
+      <inertia ixx="3000000.0" ixy="0.0" ixz="0.0" iyy="3000000.0" iyz="0.0" izz="3000000.0"/>
     </inertial>
     <visual>
       <geometry>

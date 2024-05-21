@@ -5,9 +5,9 @@
 
     <link name="base_link">
         <inertial>
-            <mass value="114.395"/>
+            <mass value="100.0"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="9.5329" ixy="0.0" ixz="0.0" iyy="38.1317" iyz="0.0" izz="47.6646"/>
+            <inertia ixx="10.416666666666668" ixy="0.0" ixz="0.0" iyy="10.416666666666668" iyz="0.0" izz="16.666666666666668"/>
         </inertial>
         <visual>
             <geometry>

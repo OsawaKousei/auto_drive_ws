@@ -1,6 +1,6 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-    <xacro:macro name="sphere_macro" params="suffix parent mass radius x y z">
-        <xacro:property name="inertia" value="${2/5*mass*radius*radius}"/>
+    <xacro:macro name="sphere_macro" params="suffix parent mass arg radius x y z">
+        <xacro:property name="inertia" value="${2/5*arg*radius*radius}"/>
         <link name="${suffix}_link">
             <inertial>
                 <mass value="${mass}"/>
@@ -30,15 +30,15 @@
         </joint>
     </xacro:macro>
 
-    <xacro:macro name="wheel_link_macro" params="suffix mass radius length if_collision">
+    <xacro:macro name="wheel_link_macro" params="suffix mass arg radius length if_collision">
         <xacro:property name="sq_r" value="${radius*radius}"/>
         <xacro:property name="sq_l" value="${length*length}"/>
         <link name="${suffix}_link">
             <inertial>
                 <mass value="${mass}"/>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
-                <inertia ixx="${3*sq_r*mass/12+sq_l*mass/12}" ixy="0.0" ixz="0.0" iyy="${3*sq_r*mass/12+sq_l*mass/12}" 
-                iyz="0.0" izz="${mass*sq_r/2}"/>
+                <inertia ixx="${3*sq_r*arg/12+sq_l*arg/12}" ixy="0.0" ixz="0.0" iyy="${3*sq_r*arg/12+sq_l*arg/12}" 
+                iyz="0.0" izz="${arg*sq_r/2}"/>
             </inertial>
             <visual>
                 <geometry>
@@ -59,7 +59,7 @@
         </link>
     </xacro:macro>
 
-    <xacro:macro name="rectangular_link_macro" params="suffix mass width depth height if_collision">
+    <xacro:macro name="rectangular_link_macro" params="suffix mass arg width depth height if_collision">
         <xacro:property name="sq_w" value="${width*width}"/>
         <xacro:property name="sq_d" value="${depth*depth}"/>
         <xacro:property name="sq_h" value="${height*height}"/>
@@ -67,8 +67,8 @@
             <inertial>
                 <mass value="${mass}"/>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
-                <inertia ixx="${mass*sq_d/12+mass*sq_h/12}" ixy="0.0" ixz="0.0" 
-                iyy="${mass*sq_w/12+mass*sq_h/12}" iyz="0.0" izz="${mass*sq_w/12+mass*sq_d/12}"/>
+                <inertia ixx="${arg*sq_d/12+arg*sq_h/12}" ixy="0.0" ixz="0.0" 
+                iyy="${arg*sq_w/12+arg*sq_h/12}" iyz="0.0" izz="${arg*sq_w/12+arg*sq_d/12}"/>
             </inertial>
             <visual>
                 <geometry>
@@ -91,14 +91,14 @@
 
     <xacro:macro name="four_wheel_caster_macro" params="parent base_radius caster_radius z_offset">
         <xacro:property name="x" value="${base_radius*cos(pi/4)}" />
-        <xacro:sphere_macro suffix="caster1" parent="${parent}" mass="0.0001" radius="${caster_radius}" x="${x}" y="${x}" z="${z_offset}"/>
-        <xacro:sphere_macro suffix="caster2" parent="${parent}" mass="0.0001" radius="${caster_radius}" x="${-x}" y="${x}" z="${z_offset}"/>
-        <xacro:sphere_macro suffix="caster3" parent="${parent}" mass="0.0001" radius="${caster_radius}" x="${-x}" y="${-x}" z="${z_offset}"/>
-        <xacro:sphere_macro suffix="caster4" parent="${parent}" mass="0.0001" radius="${caster_radius}" x="${x}" y="${-x}" z="${z_offset}"/>
+        <xacro:sphere_macro suffix="caster1" parent="${parent}" mass="0.3" arg="3000000000.0" radius="${caster_radius}" x="${x}" y="${x}" z="${z_offset}"/>
+        <xacro:sphere_macro suffix="caster2" parent="${parent}" mass="0.3" arg="3000000000.0" radius="${caster_radius}" x="${-x}" y="${x}" z="${z_offset}"/>
+        <xacro:sphere_macro suffix="caster3" parent="${parent}" mass="0.3" arg="3000000000.0" radius="${caster_radius}" x="${-x}" y="${-x}" z="${z_offset}"/>
+        <xacro:sphere_macro suffix="caster4" parent="${parent}" mass="0.3" arg="3000000000.0" radius="${caster_radius}" x="${x}" y="${-x}" z="${z_offset}"/>
     </xacro:macro>
 
     <xacro:macro name="steer_macro" params="suffix parent base_radius wheel_radius wheel_offset x y z">
-        <xacro:wheel_link_macro suffix="${suffix}_base" mass="10.0" radius="${base_radius}" length="0.1" if_collision="false"/>
+        <xacro:wheel_link_macro suffix="${suffix}_base" mass="0.01" arg="10000000.0" radius="${base_radius}" length="0.1" if_collision="false"/>
         <joint name="${suffix}_base_joint" type="continuous">
             <parent link="${parent}"/>
             <child  link="${suffix}_base_link"/>
@@ -106,7 +106,7 @@
             <axis xyz="0 0 1"/>
         </joint>
 
-        <xacro:wheel_link_macro suffix="${suffix}" mass="0.0001" radius="${wheel_radius}" length="0.001" if_collision="true"/>
+        <xacro:wheel_link_macro suffix="${suffix}" mass="0.0000001" arg="100.0" radius="${wheel_radius}" length="0.001" if_collision="true"/>
         <joint name="${suffix}_joint" type="continuous">
             <parent link="${suffix}_base_link"/>
             <child  link="${suffix}_link"/>
