@@ -1,0 +1,117 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:macro name="sphere_macro" params="suffix parent mass radius x y z">
+        <xacro:property name="inertia" value="${2/5*mass*radius*radius}"/>
+        <link name="${suffix}_link">
+            <inertial>
+                <mass value="${mass}"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <inertia ixx="${inertia}" ixy="0.0" ixz="0.0" iyy="${inertia}" iyz="0.0" izz="${inertia}"/>
+            </inertial>
+            <visual>
+                <geometry>
+                    <sphere radius="${radius}"/>
+                </geometry>
+                <material name="green">
+                    <color rgba="0.0 1.0 0.0 1.0"/>
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <sphere radius="${radius}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+            </collision>
+        </link>
+
+        <joint name="${suffix}_joint" type="fixed">
+            <origin rpy="0 0 0" xyz="${x} ${y} ${z}"/>
+            <parent link="${parent}"/>
+            <child  link="${suffix}_link"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="wheel_link_macro" params="suffix mass radius length if_collision">
+        <xacro:property name="sq_r" value="${radius*radius}"/>
+        <xacro:property name="sq_l" value="${length*length}"/>
+        <link name="${suffix}_link">
+            <inertial>
+                <mass value="${mass}"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <inertia ixx="${3*sq_r*mass/12+sq_l*mass/12}" ixy="0.0" ixz="0.0" iyy="${3*sq_r*mass/12+sq_l*mass/12}" 
+                iyz="0.0" izz="${mass*sq_r/2}"/>
+            </inertial>
+            <visual>
+                <geometry>
+                    <cylinder length="${length}" radius="${radius}"/>
+                </geometry>
+                <material name="red">
+                    <color rgba="1.0 0.0 0.0 1.0"/>
+                </material>
+            </visual>
+            <xacro:if value="${if_collision}">
+                <collision>
+                    <geometry>
+                        <cylinder length="${length}" radius="${radius}"/>
+                    </geometry>
+                    <origin xyz="0 0 0" rpy="0 0 0"/>
+                </collision>
+            </xacro:if>
+        </link>
+    </xacro:macro>
+
+    <xacro:macro name="rectangular_link_macro" params="suffix mass width depth height if_collision">
+        <xacro:property name="sq_w" value="${width*width}"/>
+        <xacro:property name="sq_d" value="${depth*depth}"/>
+        <xacro:property name="sq_h" value="${height*height}"/>
+        <link name="${suffix}_link">
+            <inertial>
+                <mass value="${mass}"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <inertia ixx="${mass*sq_d/12+mass*sq_h/12}" ixy="0.0" ixz="0.0" 
+                iyy="${mass*sq_w/12+mass*sq_h/12}" iyz="0.0" izz="${mass*sq_w/12+mass*sq_d/12}"/>
+            </inertial>
+            <visual>
+                <geometry>
+                    <box size="${width} ${depth} ${height}"/>
+                </geometry>
+                <material name="blue">
+                    <color rgba="0.0 0.0 1.0 1.0"/>
+                </material>
+            </visual>
+            <xacro:if value="${if_collision}">
+                <collision>
+                    <geometry>
+                        <box size="${width} ${depth} ${height}"/>
+                    </geometry>
+                    <origin xyz="0 0 0" rpy="0 0 0"/>
+                </collision>
+            </xacro:if>
+        </link>
+    </xacro:macro>
+
+    <xacro:macro name="four_wheel_caster_macro" params="parent base_radius caster_radius z_offset">
+        <xacro:property name="x" value="${base_radius*cos(pi/4)}" />
+        <xacro:sphere_macro suffix="caster1" parent="${parent}" mass="0.0001" radius="${caster_radius}" x="${x}" y="${x}" z="${z_offset}"/>
+        <xacro:sphere_macro suffix="caster2" parent="${parent}" mass="0.0001" radius="${caster_radius}" x="${-x}" y="${x}" z="${z_offset}"/>
+        <xacro:sphere_macro suffix="caster3" parent="${parent}" mass="0.0001" radius="${caster_radius}" x="${-x}" y="${-x}" z="${z_offset}"/>
+        <xacro:sphere_macro suffix="caster4" parent="${parent}" mass="0.0001" radius="${caster_radius}" x="${x}" y="${-x}" z="${z_offset}"/>
+    </xacro:macro>
+
+    <xacro:macro name="steer_macro" params="suffix parent base_radius wheel_radius wheel_offset x y z">
+        <xacro:wheel_link_macro suffix="${suffix}_base" mass="10.0" radius="${base_radius}" length="0.1" if_collision="false"/>
+        <joint name="${suffix}_base_joint" type="continuous">
+            <parent link="${parent}"/>
+            <child  link="${suffix}_base_link"/>
+            <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+
+        <xacro:wheel_link_macro suffix="${suffix}" mass="0.0001" radius="${wheel_radius}" length="0.001" if_collision="true"/>
+        <joint name="${suffix}_joint" type="continuous">
+            <parent link="${suffix}_base_link"/>
+            <child  link="${suffix}_link"/>
+            <origin xyz="0 0 ${wheel_offset}" rpy="-1.57 0 0"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+    </xacro:macro>
+</robot>
