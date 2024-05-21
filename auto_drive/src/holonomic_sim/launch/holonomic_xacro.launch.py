@@ -56,7 +56,7 @@ def generate_launch_description():
         executable='parameter_bridge',
         parameters=[{
             #brigdeの設定ファイルを指定
-            'config_file': os.path.join(pkg_share_dir, 'config', 'teleop.yaml'),
+            'config_file': os.path.join(pkg_share_dir, 'config', 'holonomic_test.yaml'),
             'qos_overrides./tf_static.publisher.durability': 'transient_local',
             'qos_overrides./odom.publisher.durability': 'transient_local',
         },{'use_sim_time': use_sim_time}],
@@ -123,5 +123,5 @@ def generate_launch_description():
         rqt,
 
         robot_state_publisher,
-        # rviz2,
+        rviz2,
     ])
