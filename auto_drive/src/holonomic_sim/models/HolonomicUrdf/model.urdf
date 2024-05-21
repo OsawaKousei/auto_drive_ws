@@ -5,9 +5,9 @@
 
     <link name="base_link">
         <inertial>
-            <mass value="1.0"/>
+            <mass value="114.395"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+            <inertia ixx="9.5329" ixy="0.0" ixz="0.0" iyy="38.1317" iyz="0.0" izz="47.6646"/>
         </inertial>
         <visual>
             <geometry>
@@ -18,12 +18,6 @@
             <color rgba="0.0 0.0 1.0 1.0"/>
             </material>
         </visual>
-        <collision>
-            <geometry>
-                <box size="1 1 0.5"/>
-            </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-        </collision>
     </link>
 
     <joint name="base_joint" type="fixed">
@@ -33,9 +27,9 @@
 
     <link name="wheel_base">
         <inertial>
-            <mass value="1.0"/>
+            <mass value="0.01"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+            <inertia ixx="233333.333333" ixy="0.0" ixz="0.0" iyy="233333.333333" iyz="0.0" izz="450000"/>
         </inertial>
         <visual>
             <geometry>
@@ -52,129 +46,182 @@
         <parent link="base_link"/>
         <child  link="wheel_base"/>
 
-        <origin xyz="0 0 0.3" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
     <link name="wheel">
         <inertial>
-            <mass value="1.0"/>
-            <origin xyz="0 0 0" rpy="-1.57 0 0"/>
-            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+            <mass value="0.0000001"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <inertia ixx="2.333333" ixy="0.0" ixz="0.0" iyy="2.333333" iyz="0.0" izz="4.5"/>
         </inertial>
         <visual>
             <geometry>
-                <cylinder length="0.1" radius="0.3"/>
+                <cylinder length="0.001" radius="0.2"/>
             </geometry>
-            <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="red">
             <color rgba="1.0 0.0 0.0 1.0"/>
             </material>
         </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.001" radius="0.2"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </collision>
     </link>
 
     <joint name="wheel_joint" type="continuous">
         <parent link="wheel_base"/>
         <child  link="wheel"/>
 
-        <origin xyz="0 0 -0.3" rpy="0 0 0"/>
+        <origin xyz="0 0 -0.1" rpy="-1.57 0 0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
     <link name="caster_FR">
         <inertial>
-            <mass value="1.0"/>
+            <mass value="0.3"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+            <inertia ixx="3600000" ixy="0.0" ixz="0.0" iyy="3600000" iyz="0.0" izz="3600000"/>
         </inertial>
         <visual>
             <geometry>
-                <sphere radius="0.3"/>
+                <sphere radius="0.05"/>
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="green">
             <color rgba="0.0 1.0 0.0 1.0"/>
             </material>
         </visual>
+        <collision>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </collision>
     </link>
 
     <joint name="caster_FR_joint" type="fixed">
         <parent link="base_link"/>
         <child  link="caster_FR"/>
 
-        <origin xyz="0.5 0.5 0" rpy="0 0 0"/>
+        <origin xyz="0.5 0.5 -0.25" rpy="0 0 0"/>
     </joint>
 
     <link name="caster_FL">
         <inertial>
-            <mass value="1.0"/>
+            <mass value="0.3"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+            <inertia ixx="3600000" ixy="0.0" ixz="0.0" iyy="3600000" iyz="0.0" izz="3600000"/>
         </inertial>
         <visual>
             <geometry>
-                <sphere radius="0.3"/>
+                <sphere radius="0.05"/>
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="green">
             <color rgba="0.0 1.0 0.0 1.0"/>
             </material>
         </visual>
+        <collision>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </collision>
     </link>
 
     <joint name="caster_FL_joint" type="fixed">
         <parent link="base_link"/>
         <child  link="caster_FL"/>
 
-        <origin xyz="0.5 -0.5 0" rpy="0 0 0"/>
+        <origin xyz="0.5 -0.5 -0.25" rpy="0 0 0"/>
     </joint>
 
     <link name="caster_BR">
         <inertial>
-            <mass value="1.0"/>
+            <mass value="0.3"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+            <inertia ixx="3600000" ixy="0.0" ixz="0.0" iyy="3600000" iyz="0.0" izz="3600000"/>
         </inertial>
         <visual>
             <geometry>
-                <sphere radius="0.3"/>
+                <sphere radius="0.05"/>
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="green">
             <color rgba="0.0 1.0 0.0 1.0"/>
             </material>
         </visual>
+        <collision>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </collision>
     </link>
 
     <joint name="caster_BR_joint" type="fixed">
         <parent link="base_link"/>
         <child  link="caster_BR"/>
 
-        <origin xyz="-0.5 0.5 0" rpy="0 0 0"/>
+        <origin xyz="-0.5 0.5 -0.25" rpy="0 0 0"/>
     </joint>
 
     <link name="caster_BL">
         <inertial>
-            <mass value="1.0"/>
+            <mass value="0.3"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+            <inertia ixx="3600000" ixy="0.0" ixz="0.0" iyy="3600000" iyz="0.0" izz="3600000"/>
         </inertial>
         <visual>
             <geometry>
-                <sphere radius="0.3"/>
+                <sphere radius="0.05"/>
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="green">
             <color rgba="0.0 1.0 0.0 1.0"/>
             </material>
         </visual>
+        <collision>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </collision>
     </link>
 
     <joint name="caster_BL_joint" type="fixed">
         <parent link="base_link"/>
         <child  link="caster_BL"/>
 
-        <origin xyz="-0.5 -0.5 0" rpy="0 0 0"/>
+        <origin xyz="-0.5 -0.5 -0.25" rpy="0 0 0"/>
     </joint>
     
+    <gazebo>
+        <!-- Global odometer -->
+        <plugin
+            filename="ignition-gazebo-odometry-publisher-system"
+            name="ignition::gazebo::systems::OdometryPublisher">
+            <odom_publish_frequency>50</odom_publish_frequency>
+            <odom_topic>/odom</odom_topic>
+            <odom_frame>odom</odom_frame>
+            <robot_base_frame>base_footprint</robot_base_frame>
+            <tf_topic>/odom/tf</tf_topic>
+        </plugin>
+
+        <!-- Joint state publisher -->
+        <plugin filename="libignition-gazebo-joint-state-publisher-system.so" 
+            name="ignition::gazebo::systems::JointStatePublisher">
+            <topic>joint_states</topic>
+        </plugin>
+
+        <plugin filename="libHolonomicPlugin.so" name="holonomic_sim::HolonomicPlugin">
+            <wheel_joint>wheel_joint</wheel_joint>
+            <base_joint>wheel_base_joint</base_joint>
+        </plugin>
+    </gazebo>
 </robot>

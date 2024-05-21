@@ -54,6 +54,27 @@
             </ignition-gui>
           </plugin>
 
+          <!-- Entity tree -->
+          <plugin filename="EntityTree" name="Entity tree">
+            <gz-gui>
+              <property type="string" key="state">docked_collapsed</property>
+            </gz-gui>
+            </plugin>
+  
+            <!-- View angle -->
+            <plugin filename="ViewAngle" name="View angle">
+            <gz-gui>
+              <property type="string" key="state">docked_collapsed</property>
+            </gz-gui>
+            </plugin>
+  
+              <!-- KeyPublisher plugin-->
+            <plugin filename="KeyPublisher" name="Key Publisher"/>
+  
+            <!--lidarの光線を可視化するプラグイン-->
+            <plugin filename="VisualizeLidar" name="Visualize Lidar">
+            </plugin>
+
           <!-- Plugins that add functionality to the scene -->
           <plugin filename="EntityContextMenuPlugin" name="Entity context menu">
           <gz-gui>
@@ -264,27 +285,6 @@
           <gz-gui>
             <property type="string" key="state">docked_collapsed</property>
           </gz-gui>
-          </plugin>
-
-          <!-- Entity tree -->
-          <plugin filename="EntityTree" name="Entity tree">
-          <gz-gui>
-            <property type="string" key="state">docked_collapsed</property>
-          </gz-gui>
-          </plugin>
-
-          <!-- View angle -->
-          <plugin filename="ViewAngle" name="View angle">
-          <gz-gui>
-            <property type="string" key="state">docked_collapsed</property>
-          </gz-gui>
-          </plugin>
-
-            <!-- KeyPublisher plugin-->
-          <plugin filename="KeyPublisher" name="Key Publisher"/>
-
-          <!--lidarの光線を可視化するプラグイン-->
-          <plugin filename="VisualizeLidar" name="Visualize Lidar">
           </plugin>
     </gui>
 

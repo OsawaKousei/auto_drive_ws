@@ -30,8 +30,7 @@ def generate_launch_description():
                    '-name', 'HolonomicRobo',
                    #ロボットのsdfファイルを指定
                    '-file', PathJoinSubstitution([
-                        pkg_share_dir,
-                        "models", "HolonomicUrdf", "model.urdf"]),
+                        model_path, "HolonomicUrdf", "model.urdf"]),
                     #ロボットの位置を指定
                    '-allow_renaming', 'true',
                    '-x', '0.0',
@@ -114,15 +113,15 @@ def generate_launch_description():
             default_value=use_sim_time,
             description='If true, use simulated clock'),
 
-        # bridge,
+        bridge,
 
         DeclareLaunchArgument(
             'world_name',
             default_value=world_name,
             description='World name'),
 
-        # rqt,
+        rqt,
 
-        # robot_state_publisher,
+        robot_state_publisher,
         # rviz2,
     ])
