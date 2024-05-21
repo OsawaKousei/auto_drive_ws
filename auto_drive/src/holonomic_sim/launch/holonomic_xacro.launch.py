@@ -28,7 +28,6 @@ def generate_launch_description():
         output='screen',
         arguments=['-entity', 'HolonomicRobo',
                    '-name', 'HolonomicRobo',
-                   #ロボットのsdfファイルを指定
                    '-topic', 'robot_description',
                     #ロボットの位置を指定
                    '-allow_renaming', 'true',

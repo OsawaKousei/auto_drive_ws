@@ -31,25 +31,13 @@ def generate_launch_description():
                    #ロボットのsdfファイルを指定
                    '-file', PathJoinSubstitution([
                         pkg_share_dir,
-                        "models", "SingleSteerRobo", "model.sdf"]),#LidarRobo4を使用すること！
+                        "models", "SingleSteerRobo", "model.sdf"]),
                     #ロボットの位置を指定
                    '-allow_renaming', 'true',
                    '-x', '0.0',
                    '-y', '0.0',
                    '-z', '1.0',
                    ],
-        )
-    
-    #フィールドをスポーンさせる設定
-    ignition_spawn_world = Node(
-        package='ros_ign_gazebo',
-        executable='create',
-        output='screen',
-            #フィールドのsdfファイルを指定
-        arguments=['-file', PathJoinSubstitution([
-                        pkg_share_dir,
-                        "models", "field", "model.sdf"]),
-                   '-allow_renaming', 'false'],
         )
     
     #ワールドのsdfファイルを設定(worldタグのあるsdfファイル)
@@ -64,57 +52,6 @@ def generate_launch_description():
                               world
                              ])])
     
-    #ros_ign_bridgeの起動設定
-    bridge = Node(
-        package='ros_ign_bridge',
-        executable='parameter_bridge',
-        parameters=[{
-            #brigdeの設定ファイルを指定
-            'config_file': os.path.join(pkg_share_dir, 'config', 'nav_slam.yaml'),
-            'qos_overrides./tf_static.publisher.durability': 'transient_local',
-            'qos_overrides./odom.publisher.durability': 'transient_local',
-        },{'use_sim_time': use_sim_time}],
-        remappings=[
-            ("/odom/tf", "tf"),
-        ],
-        output='screen'
-    )
-    
-    #ロボットのsdfファイルのパスを取得
-    sdf = os.path.join(
-        get_package_share_directory('model_test'),
-        'models', 'CasterRobo', 'model.sdf')
-
-    #xacroでsdfファイルをurdfに変換
-    doc = xacro.parse(open(sdf))
-    xacro.process_doc(doc)
-
-    #robot_state_publsherの起動設定
-    robot_state_publisher = Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='both',
-            parameters=[{'use_sim_time': use_sim_time,
-                         'robot_description': doc.toxml()}]) # type: ignore
-
-    #rviz2の設定フィルのパスを取得
-    rviz_config_dir = os.path.join(
-        pkg_share_dir,
-        'config',
-        'nav_nav2.rviz')
-    
-    #rviz2の起動設定
-    rviz2 = Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d', rviz_config_dir],
-            parameters=[{'use_sim_time': use_sim_time}],
-            output='screen')
-    
-   
-    
     return LaunchDescription([
         ign_resource_path,
         ignition_spawn_entity,
@@ -125,13 +62,8 @@ def generate_launch_description():
             default_value=use_sim_time,
             description='If true, use simulated clock'),
 
-        # bridge,
-
         DeclareLaunchArgument(
             'world_name',
             default_value=world_name,
             description='World name'),
-
-        # robot_state_publisher,
-        # rviz2,
     ])
