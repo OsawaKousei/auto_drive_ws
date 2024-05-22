@@ -28,7 +28,6 @@ def generate_launch_description():
         output='screen',
         arguments=['-entity', 'HolonomicRobo',
                    '-name', 'HolonomicRobo',
-                   #ロボットのsdfファイルを指定
                    '-topic', 'robot_description',
                     #ロボットの位置を指定
                    '-allow_renaming', 'true',
@@ -66,7 +65,7 @@ def generate_launch_description():
         output='screen'
     )
     
-     #ロボットのurdfファイルのパスを取得 
+    #ロボットのurdfファイルのパスを取得 
     urdf = os.path.join( model_path, 'HolonomicUrdf','model.urdf') 
     #xacroを展開
     robot_desc = xacro.process_file(urdf).toxml()
