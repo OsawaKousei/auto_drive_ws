@@ -111,14 +111,8 @@ void HolonomicPlugin::OnCmdVelMessage(const ignition::msgs::Twist & msg)
   float y = msg.linear().y();
   wheel_vel_ = sqrt(x*x + y*y);
   wheel_rot_vel_ = wheel_vel_/wheel_radius_;
-  //wheel_velを出力
-  std::cout << "wheel_vel: " << wheel_vel_ << std::endl;
   base_pos_ = atan2(y, x);
-  //base_posを出力
-  std::cout << "base_pos: " << base_pos_ << std::endl;
-  base_vel_ = -1.0f*msg.angular().z();
-  //base_velを出力
-  std::cout << "base_vel: " << base_vel_ << std::endl;
+  base_vel_ = base_rot_param_*msg.angular().z();
 }
 
 }

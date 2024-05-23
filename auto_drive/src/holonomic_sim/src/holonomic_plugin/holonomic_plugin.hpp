@@ -38,5 +38,6 @@ namespace holonomic_sim
       float base_vel_{0.0f};
       const float wheel_radius_{0.2f};//m
       float wheel_rot_vel_{0.0f};
+      float base_rot_param_{14.0669f};//cmd_angular_zを直接wheel_baseの角速度に入れると挙動がおかしくなるので、補正するためのパラメータ
   };
 }
