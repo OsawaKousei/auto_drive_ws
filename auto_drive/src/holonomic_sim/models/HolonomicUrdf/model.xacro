@@ -5,16 +5,16 @@
     <link name="base_footprint"/>
 
     <xacro:property name="base_size" value="0.5"/>
-    <xacro:rectangular_link_macro suffix="base" mass="100" arg="100.0" width="${base_size}" height="${base_size/2}" depth="${base_size}" if_collision="false"/>
+    <xacro:rectangular_link_macro suffix="base" mass="100" arg="100.0" width="${base_size}" height="${base_size/5}" depth="${base_size}" if_collision="false"/>
     <joint name="base_joint" type="fixed">
         <parent link="base_footprint"/>
         <child  link="base_link"/>
     </joint>
 
-    <xacro:steer_macro suffix="wheel" parent="base_link" base_radius="0.3" wheel_radius="0.2" x="0" y="0" z="0" wheel_offset="-0.1"/>
-    <xacro:four_wheel_caster_macro parent="base_link" base_radius="${sqrt(base_size/2*base_size/2*2)}" caster_radius="0.05" z_offset="-0.25"/>
+    <xacro:steer_macro suffix="wheel" parent="base_link" base_radius="0.3" wheel_radius="0.2" x="0" y="0" z="0" wheel_offset="0.15"/>
+    <xacro:four_wheel_caster_macro parent="base_link" base_radius="${sqrt(base_size/2*base_size/2*2)}" caster_radius="0.035" z_offset="-0.015"/>
 
-    <xacro:lidar_macro suffix="base" parent="base_link" x="0" y="0" z="0.5" rate="10" max_range="20" samples="270" angle="135"/>
+    <xacro:lidar_macro suffix="base" parent="base_link" x="0.25" y="0" z="0.031" rate="10" max_range="20" samples="270" angle="135"/>
     
     <gazebo>
         <!-- Global odometer -->

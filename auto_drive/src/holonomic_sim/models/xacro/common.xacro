@@ -30,7 +30,7 @@
         </joint>
     </xacro:macro>
 
-    <xacro:macro name="cylinder_link_macro" params="suffix mass arg radius length if_collision">
+    <xacro:macro name="cylinder_link_macro" params="suffix mass arg radius length if_collision if_visual">
         <xacro:property name="sq_r" value="${radius*radius}"/>
         <xacro:property name="sq_l" value="${length*length}"/>
         <link name="${suffix}_link">
@@ -40,14 +40,16 @@
                 <inertia ixx="${3*sq_r*arg/12+sq_l*arg/12}" ixy="0.0" ixz="0.0" iyy="${3*sq_r*arg/12+sq_l*arg/12}" 
                 iyz="0.0" izz="${arg*sq_r/2}"/>
             </inertial>
-            <visual>
-                <geometry>
-                    <cylinder length="${length}" radius="${radius}"/>
-                </geometry>
-                <material name="red">
-                    <color rgba="1.0 0.0 0.0 1.0"/>
-                </material>
-            </visual>
+            <xacro:if value="${if_visual}">
+                <visual>
+                    <geometry>
+                        <cylinder length="${length}" radius="${radius}"/>
+                    </geometry>
+                    <material name="red">
+                        <color rgba="1.0 0.0 0.0 1.0"/>
+                    </material>
+                </visual>
+            </xacro:if>
             <xacro:if value="${if_collision}">
                 <collision>
                     <geometry>
@@ -90,7 +92,7 @@
     </xacro:macro>
 
     <xacro:macro name="lidar_macro" params="suffix parent x y z rate max_range samples angle">
-        <xacro:cylinder_link_macro suffix="${suffix}_lidar" mass="0.01" arg="0.01" radius="0.05" length="0.1" if_collision="false"/>
+        <xacro:cylinder_link_macro suffix="${suffix}_lidar" mass="0.01" arg="0.01" radius="0.05" length="0.05" if_collision="false"  if_visual="true"/>
         <joint name="${suffix}_lidar_joint" type="fixed">
             <parent link="${parent}"/>
             <child  link="${suffix}_lidar_link"/>
@@ -98,20 +100,20 @@
         </joint>
         <gazebo reference="${suffix}_lidar_link">
             <sensor name="gpu_lidar" type="gpu_lidar">
-                <topic>scan</topic>
-                <ignition_frame_id>base_footprint</ignition_frame_id>
+                <topic>/scan</topic>
+                <ignition_frame_id>${suffix}_lidar_link</ignition_frame_id>
                 <update_rate>${rate}</update_rate>
                 <ray>
                   <scan>
                     <horizontal>
                       <samples>${samples}</samples>
                       <resolution>1</resolution>
-                      <min_angle>${radians(angle)}</min_angle>
-                      <max_angle>${radians(-angle)}</max_angle>
+                      <min_angle>${-radians(angle)}</min_angle>
+                      <max_angle>${radians(angle)}</max_angle>
                     </horizontal>
                   </scan>
                   <range>
-                    <min>0.1</min>
+                    <min>0.01</min>
                     <max>${max_range}</max>
                   </range>
                 </ray>
@@ -130,7 +132,7 @@
     </xacro:macro>
 
     <xacro:macro name="steer_macro" params="suffix parent base_radius wheel_radius wheel_offset x y z">
-        <xacro:cylinder_link_macro suffix="${suffix}_base" mass="0.01" arg="10000000.0" radius="${base_radius}" length="0.1" if_collision="false"/>
+        <xacro:cylinder_link_macro suffix="${suffix}_base" mass="0.01" arg="10000000.0" radius="${base_radius}" length="0.1" if_collision="false" if_visual="false"/>
         <joint name="${suffix}_base_joint" type="continuous">
             <parent link="${parent}"/>
             <child  link="${suffix}_base_link"/>
@@ -138,7 +140,7 @@
             <axis xyz="0 0 1"/>
         </joint>
 
-        <xacro:cylinder_link_macro suffix="${suffix}" mass="0.0000001" arg="100.0" radius="${wheel_radius}" length="0.001" if_collision="true"/>
+        <xacro:cylinder_link_macro suffix="${suffix}" mass="0.0000001" arg="100.0" radius="${wheel_radius}" length="0.001" if_collision="true" if_visual="false"/>
         <joint name="${suffix}_joint" type="continuous">
             <parent link="${suffix}_base_link"/>
             <child  link="${suffix}_link"/>
