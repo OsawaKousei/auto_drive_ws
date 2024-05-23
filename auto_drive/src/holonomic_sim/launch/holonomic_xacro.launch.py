@@ -31,8 +31,8 @@ def generate_launch_description():
                    '-topic', 'robot_description',
                     #ロボットの位置を指定
                    '-allow_renaming', 'true',
-                   '-x', '0.0',
-                   '-y', '0.0',
+                   '-x', '0.5',
+                   '-y', '0.5',
                    '-z', '1.0',
                    ],
         )
@@ -46,7 +46,10 @@ def generate_launch_description():
         arguments=['-file', PathJoinSubstitution([
                         pkg_share_dir,
                         "models", "field", "model.sdf"]),
-                   '-allow_renaming', 'false'],
+                   '-allow_renaming', 'false',
+                   '-x', '0.0',
+                   '-y', '0.0',
+                   '-z', '0.0',],
         )
     
     #ワールドのsdfファイルを設定(worldタグのあるsdfファイル)
@@ -117,7 +120,7 @@ def generate_launch_description():
     return LaunchDescription([
         ign_resource_path,
         ignition_spawn_entity,
-        ignition_spawn_world,
+        # ignition_spawn_world,
         ign_gz,
                              
         DeclareLaunchArgument(
