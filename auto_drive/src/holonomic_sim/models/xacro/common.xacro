@@ -89,7 +89,7 @@
         </link>
     </xacro:macro>
 
-    <xacro:macro name="lidar_macro" params="suffix parent x y z rate range samples angle">
+    <xacro:macro name="lidar_macro" params="suffix parent x y z rate max_range samples angle">
         <xacro:cylinder_link_macro suffix="${suffix}_lidar" mass="0.01" arg="0.01" radius="0.05" length="0.1" if_collision="false"/>
         <joint name="${suffix}_lidar_joint" type="fixed">
             <parent link="${parent}"/>
@@ -112,7 +112,7 @@
                   </scan>
                   <range>
                     <min>0.1</min>
-                    <max>${range}</max>
+                    <max>${max_range}</max>
                   </range>
                 </ray>
                 <always_on>true</always_on>
