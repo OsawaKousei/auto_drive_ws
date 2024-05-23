@@ -191,42 +191,34 @@
       </material>
     </visual>
   </link>
-  <gazebo reference="base_lidar">
-    <sensor name="base" type="ray">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>true</visualize>
+  <joint name="base_lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_lidar_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.5"/>
+  </joint>
+  <gazebo reference="base_lidar_link">
+    <sensor name="gpu_lidar" type="gpu_lidar">
+      <topic>scan</topic>
+      <ignition_frame_id>base_footprint</ignition_frame_id>
       <update_rate>10</update_rate>
       <ray>
         <scan>
           <horizontal>
-            <samples>400</samples>
+            <samples>270</samples>
             <resolution>1</resolution>
-            <min_angle>-1.5707963267948966</min_angle>
-            <max_angle>1.5707963267948966</max_angle>
+            <min_angle>2.356194490192345</min_angle>
+            <max_angle>-2.356194490192345</max_angle>
           </horizontal>
         </scan>
         <range>
-          <min>0.10</min>
-          <max>20.0</max>
-          <resolution>0.01</resolution>
+          <min>0.1</min>
+          <max>20</max>
         </range>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.01</stddev>
-        </noise>
       </ray>
-      <plugin filename="libgazebo_ros_laser.so" name="gazebo_ros_lidar_controller">
-        <topicName>/base_link/scan</topicName>
-        <frameName>base_link</frameName>
-      </plugin>
+      <always_on>true</always_on>
+      <visualize>true</visualize>
     </sensor>
   </gazebo>
-  <joint name="base_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="base_lidar"/>
-    <origin rpy="0 0 0" xyz="0 0 0.5"/>
-  </joint>
   <gazebo>
     <!-- Global odometer -->
     <plugin filename="ignition-gazebo-odometry-publisher-system" name="ignition::gazebo::systems::OdometryPublisher">
