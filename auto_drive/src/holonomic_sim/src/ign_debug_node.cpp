@@ -6,7 +6,7 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2/LinearMath/Matrix3x3.h"
-
+#include <tf2/utils.h>
 
 using namespace std::chrono_literals;
 
@@ -42,16 +42,25 @@ public:
                 msg.pose.pose.orientation.y,
                 msg.pose.pose.orientation.z,
                 msg.pose.pose.orientation.w);
-            tf2::Matrix3x3 m(q);
-            m.getRPY(roll, pitch, yaw);
+            tf2::getEulerYPR(q, yaw, pitch, roll);
             th_ = yaw;
             time_ = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9;
 
-            //calculate velocity
+            //calculate the difference in position, orientation and time
             float dt = time_ - prev_time_;
             float dx = x_ - prev_x_;
             float dy = y_ - prev_y_;
             float dth = th_ - prev_th_;
+
+            //rotate the difference in position by the orientation of the robot
+            tf2::Matrix3x3 rotation_matrix;
+            rotation_matrix.setRPY(0.0, 0.0, th_);
+            tf2::Vector3 v(dx, dy, 0.0);
+            v = rotation_matrix * v;
+            dx = v.getX();
+            dy = v.getY();
+
+            //calculate the velocity
             vx_ = dx / dt;
             vy_ = dy / dt;
             vth_ = dth / dt;
