@@ -37,6 +37,18 @@ def generate_launch_description():
                    ],
         )
     
+    #フィールドをスポーンさせる設定
+    ignition_spawn_world = Node(
+        package='ros_ign_gazebo',
+        executable='create',
+        output='screen',
+            #フィールドのsdfファイルを指定
+        arguments=['-file', PathJoinSubstitution([
+                        pkg_share_dir,
+                        "models", "field", "model.sdf"]),
+                   '-allow_renaming', 'false'],
+        )
+    
     #ワールドのsdfファイルを設定(worldタグのあるsdfファイル)
     world = os.path.join(pkg_share_dir,"models","worlds", "holonomic_test.sdf")
 
@@ -105,6 +117,7 @@ def generate_launch_description():
     return LaunchDescription([
         ign_resource_path,
         ignition_spawn_entity,
+        ignition_spawn_world,
         ign_gz,
                              
         DeclareLaunchArgument(
