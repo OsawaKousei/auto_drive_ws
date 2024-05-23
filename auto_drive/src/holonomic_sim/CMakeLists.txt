@@ -50,4 +50,8 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+ament_auto_add_executable(
+ign_debug_node src/ign_debug_node.cpp
+)
+
 ament_auto_package()

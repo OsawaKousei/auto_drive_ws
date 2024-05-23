@@ -1,11 +1,10 @@
 {
     "cmake.configureOnOpen": false,
     "files.associations": {
-        "\"*.sdf\"": "\"xml\"",
-        "\"*.urdf\"": "\"xml\"",
         "*.sdf": "xml",
         "*.urdf": "xml",
         "*.xacro": "xml",
+        "*.rviz": "yaml",
         "cctype": "cpp",
         "clocale": "cpp",
         "cmath": "cpp",
