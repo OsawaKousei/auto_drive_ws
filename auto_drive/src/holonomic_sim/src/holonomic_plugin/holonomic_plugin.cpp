@@ -59,13 +59,13 @@ void HolonomicPlugin::PreUpdate(const ignition::gazebo::UpdateInfo &_info,
       return;
     }
 
-    auto wheel_vel = _ecm.Component<ignition::gazebo::components::JointVelocityCmd>(wheel_joint);
-    if (wheel_vel != nullptr)
+    auto wheel_rot_vel = _ecm.Component<ignition::gazebo::components::JointVelocityCmd>(wheel_joint);
+    if (wheel_rot_vel != nullptr)
     {
-      *wheel_vel = ignition::gazebo::components::JointVelocityCmd({wheel_vel_});
+      *wheel_rot_vel = ignition::gazebo::components::JointVelocityCmd({wheel_rot_vel_});
     }
     else {
-      _ecm.CreateComponent(wheel_joint, ignition::gazebo::components::JointVelocityCmd({wheel_vel_}));
+      _ecm.CreateComponent(wheel_joint, ignition::gazebo::components::JointVelocityCmd({wheel_rot_vel_}));
     }
 
     auto base_pos = _ecm.Component<ignition::gazebo::components::JointPositionReset>(base_joint);
@@ -110,6 +110,7 @@ void HolonomicPlugin::OnCmdVelMessage(const ignition::msgs::Twist & msg)
   float x = msg.linear().x();
   float y = msg.linear().y();
   wheel_vel_ = sqrt(x*x + y*y);
+  wheel_rot_vel_ = wheel_vel_/wheel_radius_;
   //wheel_velを出力
   std::cout << "wheel_vel: " << wheel_vel_ << std::endl;
   base_pos_ = atan2(y, x);

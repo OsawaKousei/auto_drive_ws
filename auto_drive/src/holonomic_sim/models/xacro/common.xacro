@@ -116,6 +116,11 @@
                     <min>0.01</min>
                     <max>${max_range}</max>
                   </range>
+                  <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.005</stddev>
+                  </noise>
                 </ray>
                 <always_on>true</always_on>
                 <visualize>true</visualize>

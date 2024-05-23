@@ -36,5 +36,7 @@ namespace holonomic_sim
       std::string base_joint_name_{""};
       float base_pos_{0.0f};
       float base_vel_{0.0f};
+      const float wheel_radius_{0.2f};//m
+      float wheel_rot_vel_{0.0f};
   };
 }
