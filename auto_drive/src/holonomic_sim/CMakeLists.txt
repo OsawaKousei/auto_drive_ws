@@ -42,6 +42,13 @@ install(
 
 ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/hooks/${PROJECT_NAME}.dsv.in")
 
+ament_auto_add_library(robot_vel src/robot_vel.cpp)
+rclcpp_components_register_nodes(robot_vel "holonomic_sim::robotVel")
+ament_auto_add_executable(
+ign_ros_node src/ign_ros_node.cpp
+  src/robot_vel.cpp
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE)
@@ -49,9 +56,5 @@ if(BUILD_TESTING)
 
   ament_lint_auto_find_test_dependencies()
 endif()
-
-ament_auto_add_executable(
-ign_debug_node src/ign_debug_node.cpp
-)
 
 ament_auto_package()
