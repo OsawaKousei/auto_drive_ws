@@ -4,8 +4,8 @@
 
     <link name="base_footprint"/>
 
-    <xacro:property name="base_size" value="0.5"/>
-    <xacro:rectangular_link_macro suffix="base" mass="100" arg="100.0" width="${base_size}" height="${base_size/5}" depth="${base_size}" if_collision="false"/>
+    <xacro:property name="base_size" value="0.3"/>
+    <xacro:rectangular_link_macro suffix="base" mass="100" arg="10.0" width="${base_size}" height="${base_size/2}" depth="${base_size}" if_collision="false"/>
     <joint name="base_joint" type="fixed">
         <parent link="base_footprint"/>
         <child  link="base_link"/>
@@ -14,14 +14,14 @@
     <xacro:steer_macro suffix="wheel" parent="base_link" base_radius="0.3" wheel_radius="0.2" x="0" y="0" z="0" wheel_offset="0.15"/>
     <xacro:four_wheel_caster_macro parent="base_link" base_radius="${sqrt(base_size/2*base_size/2*2)}" caster_radius="0.035" z_offset="-0.015"/>
 
-    <xacro:lidar_macro suffix="base" parent="base_link" x="0.25" y="0" z="0.031" rate="10" max_range="20" samples="270" angle="135"/>
+    <xacro:lidar_macro suffix="base" parent="base_link" x="0.15" y="0" z="0.011" rate="10" max_range="20" samples="270" angle="135"/>
     
     <gazebo>
         <!-- Global odometer -->
         <plugin
             filename="ignition-gazebo-odometry-publisher-system"
             name="ignition::gazebo::systems::OdometryPublisher">
-            <odom_publish_frequency>50</odom_publish_frequency>
+            <odom_publish_frequency>100</odom_publish_frequency>
             <odom_topic>/odom</odom_topic>
             <odom_frame>odom</odom_frame>
             <robot_base_frame>base_footprint</robot_base_frame>
