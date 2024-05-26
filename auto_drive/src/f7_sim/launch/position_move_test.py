@@ -140,5 +140,11 @@ def generate_launch_description():
         robot_state_publisher,
         rviz2,
 
-        
+        Node( # f7_sim_node
+            package='f7_sim',
+            executable='f7_sim_node',
+            name='f7_sim_node',
+            output='screen',
+        )
+        #TODO: componentにする
     ])

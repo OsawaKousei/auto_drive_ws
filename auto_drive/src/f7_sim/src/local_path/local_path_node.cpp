@@ -8,17 +8,17 @@
 #include "std_msgs/msg/Bool.hpp"
 #include "geometry_msgs/msg/Twist.hpp"
 #include "geometry_msgs/msg/point.hpp"
-#include "tf2_msgs/msg/TFMessage.hpp"
 
 using namespace std::chrono_literals;
 using Bool = std_msgs::msg::Bool;
 using Point = geometry_msgs::msg::Point;
 using Twist = geometry_msgs::msg::Twist;
-using TFMessage = tf2_msgs::msg::TFMessage;
 
 // ********************************************************************************************************************
 // 定数の定義
 // ********************************************************************************************************************
+Point point_init;point_init.x = 0.0;point_init.y = 0.0;point_init.z = 0.0;
+
 const float EPSILON_RAD = M_PI/180.0; // 許容誤差[rad]
 // ********************************************************************************************************************
 // クラスの定義 
@@ -30,7 +30,7 @@ class PurePNode : public rclcpp::Node{
     rclcpp::Subscription<TFMessage>::SharedPtr odom_sub;
     rclcpp::Subscription<Point>::SharedPtr cmd_pos_sub;
     Point cmd_pos_msg;
-    Point pos_data = {0.0, 0.0, 0.0}; 
+    Point pos_data = point_init; 
 
     public:
     PurePNode() : Node("pure_p_node"){
