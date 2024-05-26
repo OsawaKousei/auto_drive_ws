@@ -130,6 +130,8 @@ def generate_launch_description():
         executable='ign_ros_node',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}],
+        #別ターミナルで起動する設定
+        prefix="xterm -e"
     )
     
     return LaunchDescription([

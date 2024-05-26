@@ -11,8 +11,10 @@ import xacro
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     world_name = LaunchConfiguration('world_name', default='test_world')
-    pkg_share_dir = get_package_share_directory('holonomic_sim')
-    model_path = os.path.join(pkg_share_dir, "models")
+    #sim_pkg_dirにパッケージのパスを取得
+    sim_pkg_dir = get_package_share_directory('holonomic_sim')
+    #モデルの格納されているパスを設定
+    model_path = os.path.join(sim_pkg_dir, "models")
 
     #ignition gazeboがモデルにアクセスできるように設定
     ign_resource_path = SetEnvironmentVariable(
@@ -28,23 +30,39 @@ def generate_launch_description():
         output='screen',
         arguments=['-entity', 'HolonomicRobo',
                    '-name', 'HolonomicRobo',
+                   #ロボットモデルを配信するトピックを指定
                    '-topic', 'robot_description',
                     #ロボットの位置を指定
                    '-allow_renaming', 'true',
-                   '-x', '0.0',
-                   '-y', '0.0',
+                   '-x', '0.5',
+                   '-y', '0.5',
                    '-z', '1.0',
                    ],
         )
     
+    #フィールドをスポーンさせる設定
+    ignition_spawn_field = Node(
+        package='ros_ign_gazebo',
+        executable='create',
+        output='screen',
+        #フィールドのsdfファイルを指定
+        arguments=['-file', PathJoinSubstitution([
+                        model_path, "field", "model.sdf"]),
+                   '-allow_renaming', 'false',
+                   '-x', '0.0',
+                   '-y', '0.0',
+                   '-z', '0.0',],
+        )
+    
     #ワールドのsdfファイルを設定(worldタグのあるsdfファイル)
-    world = os.path.join(pkg_share_dir,"models","worlds", "holonomic_test.sdf")
+    world = os.path.join(model_path,"worlds", "localization_test.sdf")
 
     #ignition gazeboの起動設定
     ign_gz = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 [os.path.join(get_package_share_directory('ros_ign_gazebo'),
                               'launch', 'ign_gazebo.launch.py')]),
+            #worldファイルを指定
             launch_arguments=[('ign_args', [' -r -v 3 ' +
                               world
                              ])])
@@ -55,18 +73,16 @@ def generate_launch_description():
         executable='parameter_bridge',
         parameters=[{
             #brigdeの設定ファイルを指定
-            'config_file': os.path.join(pkg_share_dir, 'config', 'teleop.yaml'),
+            'config_file': os.path.join(sim_pkg_dir, 'config', 'localization_test.yaml'),
+            #QoSの設定
             'qos_overrides./tf_static.publisher.durability': 'transient_local',
             'qos_overrides./odom.publisher.durability': 'transient_local',
         },{'use_sim_time': use_sim_time}],
-        remappings=[
-            ("/odom/tf", "tf"),
-        ],
         output='screen'
     )
     
     #ロボットのurdfファイルのパスを取得 
-    urdf = os.path.join( model_path, 'HolonomicUrdf','model.urdf') 
+    urdf = os.path.join(model_path, 'HolonomicUrdf','model.xacro') 
     #xacroを展開
     robot_desc = xacro.process_file(urdf).toxml()
 
@@ -77,12 +93,13 @@ def generate_launch_description():
             name='robot_state_publisher', 
             output='both', 
             arguments=[robot_desc], 
+            #robot_descriptionのパラメータにロボットのurdfを設定
             parameters=[{'robot_description': robot_desc,
-                         'use_sim_time': use_sim_time,}]) # type: ignore 
+                         'use_sim_time': use_sim_time,}])
     
     #rviz2の設定フィルのパスを取得
     rviz_config_dir = os.path.join(
-        pkg_share_dir,
+        sim_pkg_dir,
         'config',
         'holonomic_test.rviz')
     
@@ -91,20 +108,32 @@ def generate_launch_description():
             package='rviz2',
             executable='rviz2',
             name='rviz2',
+            #rvizの設定ファイルを指定
             arguments=['-d', rviz_config_dir],
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen')
     
-    #rqt
+    #rqt_publisherの起動設定
     rqt = Node(
             package='rqt_publisher',
             executable='rqt_publisher',
             name='rqt_publisher',
             output='screen')
     
+    #ign_ros_nodeの起動設定
+    ign_debug = Node(
+        package='holonomic_sim',
+        executable='ign_ros_node',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+        #別ターミナルで起動する設定
+        prefix="xterm -e"
+    )
+    
     return LaunchDescription([
         ign_resource_path,
         ignition_spawn_entity,
+        ignition_spawn_field,
         ign_gz,
                              
         DeclareLaunchArgument(
@@ -122,5 +151,7 @@ def generate_launch_description():
         rqt,
 
         robot_state_publisher,
-        # rviz2,
+        rviz2,
+
+        ign_debug
     ])

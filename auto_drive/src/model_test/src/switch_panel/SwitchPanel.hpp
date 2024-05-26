@@ -33,4 +33,4 @@ private:
   float reverse_speed_{-1.0f};
 };
 
-}  // namespace iginition_plugin_lecture
+}

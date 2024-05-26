@@ -35,3 +35,9 @@
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "ignition.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
+ #user message
+- ros_topic_name: "if_localize"
+  gz_topic_name: "if_localize"
+  ros_type_name: "std_msgs/msg/String"
+  gz_type_name: "ignition.msgs.StringMsg"
+  direction: GZ_TO_ROS
