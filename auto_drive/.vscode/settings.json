@@ -1,6 +1,8 @@
 {
     "cmake.configureOnOpen": false,
     "files.associations": {
+        "\"*.sdf\"": "\"xml\"",
+        "\"*.urdf\"": "\"xml\"",
         "*.sdf": "xml",
         "*.urdf": "xml",
         "*.xacro": "xml",
@@ -74,6 +76,11 @@
         "cinttypes": "cpp",
         "typeindex": "cpp",
         "typeinfo": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "csignal": "cpp",
+        "strstream": "cpp",
+        "codecvt": "cpp",
+        "shared_mutex": "cpp",
+        "cfenv": "cpp"
     },
 }

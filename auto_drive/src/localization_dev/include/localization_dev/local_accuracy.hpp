@@ -20,11 +20,13 @@ public:
   virtual ~LocalAccuracy();
 
 private:
-    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr estimated_odom_sub;
+    rclcpp::Subscription<geometry_msgs::msg::Pose>::SharedPtr estimated_odom_sub;
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr real_odom_sub;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr accuracy_pub;
 
     float accuracy;
+    geometry_msgs::msg::Pose estimated_odom;
+    nav_msgs::msg::Odometry real_odom;
 
 };
 

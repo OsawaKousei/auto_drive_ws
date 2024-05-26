@@ -24,6 +24,7 @@ localization_test_node src/localization_test_node.cpp
 install(
   DIRECTORY
     launch
+    config
   DESTINATION share/${PROJECT_NAME}
 )
 

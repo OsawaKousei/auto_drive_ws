@@ -142,7 +142,7 @@ def generate_launch_description():
     return LaunchDescription([
         ign_resource_path,
         ignition_spawn_entity,
-        ignition_spawn_field,
+        # ignition_spawn_field,
         ign_gz,
                              
         DeclareLaunchArgument(
@@ -157,11 +157,11 @@ def generate_launch_description():
             default_value=world_name,
             description='World name'),
 
-        rqt,
+        # rqt,
 
         robot_state_publisher,
-        rviz2,
+        # rviz2,
 
-        ign_debug,
+        # ign_debug,
         localization_test
     ])

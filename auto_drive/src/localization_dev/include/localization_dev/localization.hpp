@@ -24,7 +24,15 @@ private:
     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr localization_switch_sub;
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr noisy_odom_sub;
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub;
-    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr estimated_odom_pub;
+    rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr estimated_odom_pub;
+
+    geometry_msgs::msg::Pose estimated_pose;
+    sensor_msgs::msg::LaserScan scan;
+    nav_msgs::msg::Odometry noisy_odom;
+
+    sensor_msgs::msg::LaserScan::SharedPtr get_scan();
+    nav_msgs::msg::Odometry::SharedPtr get_noisy_odom();
+    geometry_msgs::msg::Pose estimate_pose();
 };
 
 }  // namespace localization_dev
