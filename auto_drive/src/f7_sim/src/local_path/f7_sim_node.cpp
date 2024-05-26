@@ -41,13 +41,13 @@ struct Point2D{
 // ********************************************************************************************************************
 const struct Point2D point_init = {0.0,0.0,0.0};
 
-const struct PID_PARAM pos_linear_pid={0.1,0.01,0.001};
-const struct PID_PARAM pos_angular_pid={0.1,0.01,0.001};
+const struct PID_PARAM pos_linear_pid={1.0,0.00,0.01};
+const struct PID_PARAM pos_angular_pid={2.0,0.00,0.01};
 
 const double MAX_VEL_M = 0.5; // 最大速度[m/s]
 const double MAX_VEL_RAD = 0.5; // 最大角速度[rad/s]
-const float EPSILON_M = 0.03; // 許容誤差[m]
-const float EPSILON_RAD = M_PI/180.0; // 許容誤差[rad]
+const float EPSILON_M = 0.08; // 許容誤差[m]
+const float EPSILON_RAD = M_PI/120.0; // 許容誤差[rad]
 // ********************************************************************************************************************
 // クラスの定義 
 // ********************************************************************************************************************
@@ -79,16 +79,28 @@ class F7_SIMNode : public rclcpp::Node{
             if((sqrt(pos_error.x*pos_error.x + pos_error.y*pos_error.y) > EPSILON_M or pos_error.z > EPSILON_RAD)
                 and !flag_f){
 
+                //TODO: PIDの終了を距離誤差と角誤差で分離する
+
                 //差分を積分
                 pos_error_I.x += (prior_pos_error.x + pos_error.x)/2.0;
                 pos_error_I.y += (prior_pos_error.y + pos_error.y)/2.0;
                 pos_error_I.z += (prior_pos_error.z + pos_error.z)/2.0;
 
                 //PID制御
-                cmd_vel_msg.linear.x = std::max(-MAX_VEL_M,std::min((double)(pos_error.x*pos_linear_pid.P + pos_error_I.x*pos_linear_pid.I + (prior_pos_error.x - pos_error.x)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
-                cmd_vel_msg.linear.y = std::max(-MAX_VEL_M,std::min((double)(pos_error.y*pos_linear_pid.P + pos_error_I.y*pos_linear_pid.I + (prior_pos_error.y - pos_error.y)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
-                cmd_vel_msg.angular.z = std::max(-MAX_VEL_RAD,std::min((double)(pos_error.z*pos_angular_pid.P + pos_error_I.z*pos_angular_pid.I + (prior_pos_error.z - pos_error.z)*pos_angular_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_RAD[rad/s]
+                // cmd_vel_msg.linear.x = std::max(-MAX_VEL_M,std::min((double)(pos_error.x*pos_linear_pid.P + pos_error_I.x*pos_linear_pid.I + (prior_pos_error.x - pos_error.x)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
+                // cmd_vel_msg.linear.y = std::max(-MAX_VEL_M,std::min((double)(pos_error.y*pos_linear_pid.P + pos_error_I.y*pos_linear_pid.I + (prior_pos_error.y - pos_error.y)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
+                // cmd_vel_msg.angular.z = std::max(-MAX_VEL_RAD,std::min((double)(pos_error.z*pos_angular_pid.P + pos_error_I.z*pos_angular_pid.I + (prior_pos_error.z - pos_error.z)*pos_angular_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_RAD[rad/s]
                 //TODO:不完全微分の導入
+                //TODO:アンチワインドアップの導入（I項がまともに使えない）
+
+                double global_x = std::max(-MAX_VEL_M,std::min((double)(pos_error.x*pos_linear_pid.P + pos_error_I.x*pos_linear_pid.I + (prior_pos_error.x - pos_error.x)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
+                double global_y = std::max(-MAX_VEL_M,std::min((double)(pos_error.y*pos_linear_pid.P + pos_error_I.y*pos_linear_pid.I + (prior_pos_error.y - pos_error.y)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
+                double global_z = std::max(-MAX_VEL_RAD,std::min((double)(pos_error.z*pos_angular_pid.P + pos_error_I.z*pos_angular_pid.I + (prior_pos_error.z - pos_error.z)*pos_angular_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_RAD[rad/s]
+                
+                //TODO:計算間違ってる（後日修正）
+                cmd_vel_msg.linear.x = global_x*cos(pos_cmd_data.z) - global_y*sin(pos_cmd_data.z);
+                cmd_vel_msg.linear.y = global_x*sin(pos_cmd_data.z) + global_y*cos(pos_cmd_data.z);
+                cmd_vel_msg.angular.z = global_z;
 
                 //差分を保存
                 prior_pos_error = pos_error;
@@ -97,8 +109,6 @@ class F7_SIMNode : public rclcpp::Node{
                 cmd_vel_msg.linear.y = 0.0;
                 cmd_vel_msg.angular.z = 0.0;
                 
-                pos_data = point_init; 
-                pos_cmd_data = point_init;
                 pos_error_I = point_init;
                 prior_pos_error = point_init;
             }
@@ -121,10 +131,13 @@ class F7_SIMNode : public rclcpp::Node{
             quat.setY(msg.pose.pose.orientation.y);
             quat.setZ(msg.pose.pose.orientation.z);
 
+           
             pos_data.x = msg.pose.pose.position.x;
             pos_data.y = msg.pose.pose.position.y;
             pos_data.z = atan2(2.0 * (quat.x() * quat.y() + quat.z() * quat.w()),
                         1.0 - 2.0 * (quat.y() * quat.y() + quat.z() * quat.z()));
+
+            std::cout << pos_data.z << std::endl;
         };
 
         auto flag_finish_callback = [this](const Bool& msg) -> void{
