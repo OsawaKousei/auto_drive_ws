@@ -26,9 +26,9 @@ LocalAccuracy::LocalAccuracy(const rclcpp::NodeOptions & options)
         tf2::getEulerYPR(this->real_odom.pose.pose.orientation, yaw, pitch, roll);
 
          // Calculate the accuracy.
-        this->accuracy = cbrt(pow(this->estimated_odom.position.x - this->real_odom.pose.pose.position.x, 2) +
+        this->accuracy = 1 / (1 + cbrt(pow(this->estimated_odom.position.x - this->real_odom.pose.pose.position.x, 2) +
                                 pow(this->estimated_odom.position.y - this->real_odom.pose.pose.position.y, 2) +
-                                pow(this->estimated_odom.position.z - yaw, 2));
+                                pow(this->estimated_odom.position.z - yaw, 2)));
     
         // Publish the accuracy.
         auto accuracy_msg = std_msgs::msg::Float64();

@@ -20,7 +20,7 @@ Localization::Localization(const rclcpp::NodeOptions & options)
     auto localization_switch_callback =
         [this](const std_msgs::msg::String &msg) -> void
         {
-        // Store the localization switch message.
+            // Store the localization switch message.
             if(msg.data == "localize")
             {   
                 std::cout << "localize function called" << std::endl;
@@ -81,7 +81,7 @@ nav_msgs::msg::Odometry::SharedPtr Localization::get_noisy_odom()
 geometry_msgs::msg::Pose Localization::estimate_pose()
 {
     double yaw, pitch, roll;
-    tf2::getEulerYPR(this->noisy_odom.pose.pose.orientation, yaw, pitch, roll);
+    tf2::getEulerYPR(this->noisy_odom.pose.pose.orientation, yaw, pitch, roll); // quaternion to euler
     estimated_pose.position.x = this->noisy_odom.pose.pose.position.x;
     estimated_pose.position.y = this->noisy_odom.pose.pose.position.y;
     estimated_pose.position.z = yaw;
