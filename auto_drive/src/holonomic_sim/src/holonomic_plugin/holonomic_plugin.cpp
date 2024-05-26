@@ -88,7 +88,7 @@ void HolonomicPlugin::PreUpdate(const ignition::gazebo::UpdateInfo &_info,
       *base_pos = ignition::gazebo::components::JointPositionReset({base_pos_});
     }
     else {
-      _ecm.CreateComponent(top_base_joint, ignition::gazebo::components::JointPositionReset({base_pos_}));
+      _ecm.CreateComponent(bottom_base_joint, ignition::gazebo::components::JointPositionReset({base_pos_}));
     }
     _ecm.CreateComponent(top_base_joint, ignition::gazebo::components::JointVelocityCmd({0.0f}));
 
