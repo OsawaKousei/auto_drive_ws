@@ -33,10 +33,18 @@ void HolonomicPlugin::Configure(const ignition::gazebo::Entity &_entity,
     ignerr << "sdf wheel_joint not found" << std::endl;
   }
 
-  auto base_ptr = const_cast<sdf::Element *>(_sdf.get());
-  sdf::ElementPtr base_joint_elem = base_ptr->GetElement("base_joint");
-  if (base_joint_elem) {
-    base_joint_name_ = base_joint_elem->Get<std::string>();
+  auto top_base_ptr = const_cast<sdf::Element *>(_sdf.get());
+  sdf::ElementPtr top_base_joint_elem = top_base_ptr->GetElement("top_base_joint");
+  if (top_base_joint_elem) {
+    top_base_joint_name_ = top_base_joint_elem->Get<std::string>();
+  } else {
+    ignerr << "sdf base_joint not found" << std::endl;
+  }
+
+  auto bottom_base_ptr = const_cast<sdf::Element *>(_sdf.get());
+  sdf::ElementPtr bottom_base_joint_elem = bottom_base_ptr->GetElement("bottom_base_joint");
+  if (bottom_base_joint_elem) {
+    bottom_base_joint_name_ = bottom_base_joint_elem->Get<std::string>();
   } else {
     ignerr << "sdf base_joint not found" << std::endl;
   }
@@ -53,9 +61,15 @@ void HolonomicPlugin::PreUpdate(const ignition::gazebo::UpdateInfo &_info,
       return;
     }
 
-    ignition::gazebo::Entity base_joint = model_.JointByName(_ecm, base_joint_name_);
-    if (base_joint == ignition::gazebo::kNullEntity){
-      ignerr << base_joint_name_ <<" not found" << std::endl;
+    ignition::gazebo::Entity top_base_joint = model_.JointByName(_ecm, top_base_joint_name_);
+    if (top_base_joint == ignition::gazebo::kNullEntity){
+      ignerr << top_base_joint_name_ <<" not found" << std::endl;
+      return;
+    }
+
+    ignition::gazebo::Entity bottom_base_joint = model_.JointByName(_ecm, bottom_base_joint_name_);
+    if (bottom_base_joint == ignition::gazebo::kNullEntity){
+      ignerr << bottom_base_joint <<" not found" << std::endl;
       return;
     }
 
@@ -68,22 +82,23 @@ void HolonomicPlugin::PreUpdate(const ignition::gazebo::UpdateInfo &_info,
       _ecm.CreateComponent(wheel_joint, ignition::gazebo::components::JointVelocityCmd({wheel_rot_vel_}));
     }
 
-    auto base_pos = _ecm.Component<ignition::gazebo::components::JointPositionReset>(base_joint);
+    auto base_pos = _ecm.Component<ignition::gazebo::components::JointPositionReset>(top_base_joint);
     if (base_pos != nullptr)
     {
       *base_pos = ignition::gazebo::components::JointPositionReset({base_pos_});
     }
     else {
-      _ecm.CreateComponent(base_joint, ignition::gazebo::components::JointPositionReset({base_pos_}));
+      _ecm.CreateComponent(bottom_base_joint, ignition::gazebo::components::JointPositionReset({base_pos_}));
     }
+    _ecm.CreateComponent(top_base_joint, ignition::gazebo::components::JointVelocityCmd({0.0f}));
 
-    auto base_vel = _ecm.Component<ignition::gazebo::components::JointVelocityCmd>(base_joint);
+    auto base_vel = _ecm.Component<ignition::gazebo::components::JointVelocityCmd>(bottom_base_joint);
     if (base_vel != nullptr)
     {
       *base_vel = ignition::gazebo::components::JointVelocityCmd({base_vel_});
     }
     else {
-      _ecm.CreateComponent(base_joint, ignition::gazebo::components::JointVelocityCmd({base_vel_}));
+      _ecm.CreateComponent(bottom_base_joint, ignition::gazebo::components::JointVelocityCmd({base_vel_}));
     }
  }
 

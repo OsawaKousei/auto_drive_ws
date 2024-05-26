@@ -9,11 +9,11 @@
     <inertial>
       <mass value="100"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="10.416666666666668" ixy="0.0" ixz="0.0" iyy="10.416666666666668" iyz="0.0" izz="16.666666666666668"/>
+      <inertia ixx="28.166666666666664" ixy="0.0" ixz="0.0" iyy="28.166666666666664" iyz="0.0" izz="54.166666666666664"/>
     </inertial>
     <visual>
       <geometry>
-        <box size="1.0 1.0 0.5"/>
+        <box size="0.5 0.5 0.1"/>
       </geometry>
       <material name="blue">
         <color rgba="0.0 0.0 1.0 1.0"/>
@@ -30,14 +30,6 @@
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <inertia ixx="233333.33333333334" ixy="0.0" ixz="0.0" iyy="233333.33333333334" iyz="0.0" izz="450000.0"/>
     </inertial>
-    <visual>
-      <geometry>
-        <cylinder length="0.1" radius="0.3"/>
-      </geometry>
-      <material name="red">
-        <color rgba="1.0 0.0 0.0 1.0"/>
-      </material>
-    </visual>
   </link>
   <joint name="wheel_base_joint" type="continuous">
     <parent link="base_link"/>
@@ -51,14 +43,6 @@
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <inertia ixx="1.0000083333333336" ixy="0.0" ixz="0.0" iyy="1.0000083333333336" iyz="0.0" izz="2.0000000000000004"/>
     </inertial>
-    <visual>
-      <geometry>
-        <cylinder length="0.001" radius="0.2"/>
-      </geometry>
-      <material name="red">
-        <color rgba="1.0 0.0 0.0 1.0"/>
-      </material>
-    </visual>
     <collision>
       <geometry>
         <cylinder length="0.001" radius="0.2"/>
@@ -69,18 +53,18 @@
   <joint name="wheel_joint" type="continuous">
     <parent link="wheel_base_link"/>
     <child link="wheel_link"/>
-    <origin rpy="-1.57 0 0" xyz="0 0 -0.1"/>
+    <origin rpy="-1.57 0 0" xyz="0 0 0.15"/>
     <axis xyz="0 0 1"/>
   </joint>
   <link name="caster1_link">
     <inertial>
       <mass value="0.3"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="3000000.0" ixy="0.0" ixz="0.0" iyy="3000000.0" iyz="0.0" izz="3000000.0"/>
+      <inertia ixx="1470000.0000000005" ixy="0.0" ixz="0.0" iyy="1470000.0000000005" iyz="0.0" izz="1470000.0000000005"/>
     </inertial>
     <visual>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.035"/>
       </geometry>
       <material name="green">
         <color rgba="0.0 1.0 0.0 1.0"/>
@@ -88,13 +72,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.035"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
   <joint name="caster1_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.5000000000000001 0.5000000000000001 -0.25"/>
+    <origin rpy="0 0 0" xyz="0.25000000000000006 0.25000000000000006 -0.015"/>
     <parent link="base_link"/>
     <child link="caster1_link"/>
   </joint>
@@ -102,11 +86,11 @@
     <inertial>
       <mass value="0.3"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="3000000.0" ixy="0.0" ixz="0.0" iyy="3000000.0" iyz="0.0" izz="3000000.0"/>
+      <inertia ixx="1470000.0000000005" ixy="0.0" ixz="0.0" iyy="1470000.0000000005" iyz="0.0" izz="1470000.0000000005"/>
     </inertial>
     <visual>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.035"/>
       </geometry>
       <material name="green">
         <color rgba="0.0 1.0 0.0 1.0"/>
@@ -114,13 +98,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.035"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
   <joint name="caster2_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="-0.5000000000000001 0.5000000000000001 -0.25"/>
+    <origin rpy="0 0 0" xyz="-0.25000000000000006 0.25000000000000006 -0.015"/>
     <parent link="base_link"/>
     <child link="caster2_link"/>
   </joint>
@@ -128,11 +112,11 @@
     <inertial>
       <mass value="0.3"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="3000000.0" ixy="0.0" ixz="0.0" iyy="3000000.0" iyz="0.0" izz="3000000.0"/>
+      <inertia ixx="1470000.0000000005" ixy="0.0" ixz="0.0" iyy="1470000.0000000005" iyz="0.0" izz="1470000.0000000005"/>
     </inertial>
     <visual>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.035"/>
       </geometry>
       <material name="green">
         <color rgba="0.0 1.0 0.0 1.0"/>
@@ -140,13 +124,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.035"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
   <joint name="caster3_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="-0.5000000000000001 -0.5000000000000001 -0.25"/>
+    <origin rpy="0 0 0" xyz="-0.25000000000000006 -0.25000000000000006 -0.015"/>
     <parent link="base_link"/>
     <child link="caster3_link"/>
   </joint>
@@ -154,11 +138,11 @@
     <inertial>
       <mass value="0.3"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="3000000.0" ixy="0.0" ixz="0.0" iyy="3000000.0" iyz="0.0" izz="3000000.0"/>
+      <inertia ixx="1470000.0000000005" ixy="0.0" ixz="0.0" iyy="1470000.0000000005" iyz="0.0" izz="1470000.0000000005"/>
     </inertial>
     <visual>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.035"/>
       </geometry>
       <material name="green">
         <color rgba="0.0 1.0 0.0 1.0"/>
@@ -166,13 +150,13 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius="0.035"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
   <joint name="caster4_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.5000000000000001 -0.5000000000000001 -0.25"/>
+    <origin rpy="0 0 0" xyz="0.25000000000000006 -0.25000000000000006 -0.015"/>
     <parent link="base_link"/>
     <child link="caster4_link"/>
   </joint>
@@ -180,11 +164,11 @@
     <inertial>
       <mass value="0.01"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="1.4583333333333337e-05" ixy="0.0" ixz="0.0" iyy="1.4583333333333337e-05" iyz="0.0" izz="1.2500000000000002e-05"/>
+      <inertia ixx="8.333333333333335e-06" ixy="0.0" ixz="0.0" iyy="8.333333333333335e-06" iyz="0.0" izz="1.2500000000000002e-05"/>
     </inertial>
     <visual>
       <geometry>
-        <cylinder length="0.1" radius="0.05"/>
+        <cylinder length="0.05" radius="0.05"/>
       </geometry>
       <material name="red">
         <color rgba="1.0 0.0 0.0 1.0"/>
@@ -194,26 +178,31 @@
   <joint name="base_lidar_joint" type="fixed">
     <parent link="base_link"/>
     <child link="base_lidar_link"/>
-    <origin rpy="0 0 0" xyz="0 0 0.5"/>
+    <origin rpy="0 0 0" xyz="0.15 0 0.011"/>
   </joint>
   <gazebo reference="base_lidar_link">
     <sensor name="gpu_lidar" type="gpu_lidar">
-      <topic>scan</topic>
-      <ignition_frame_id>base_footprint</ignition_frame_id>
+      <topic>/scan</topic>
+      <ignition_frame_id>base_lidar_link</ignition_frame_id>
       <update_rate>10</update_rate>
       <ray>
         <scan>
           <horizontal>
             <samples>270</samples>
             <resolution>1</resolution>
-            <min_angle>2.356194490192345</min_angle>
-            <max_angle>-2.356194490192345</max_angle>
+            <min_angle>-2.356194490192345</min_angle>
+            <max_angle>2.356194490192345</max_angle>
           </horizontal>
         </scan>
         <range>
-          <min>0.1</min>
+          <min>0.01</min>
           <max>20</max>
         </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.005</stddev>
+        </noise>
       </ray>
       <always_on>true</always_on>
       <visualize>true</visualize>
@@ -232,6 +221,7 @@
     <plugin filename="libignition-gazebo-joint-state-publisher-system.so" name="ignition::gazebo::systems::JointStatePublisher">
       <topic>joint_states</topic>
     </plugin>
+    <!-- Holonomic plugin -->
     <plugin filename="libHolonomicPlugin.so" name="holonomic_sim::HolonomicPlugin">
       <wheel_joint>wheel_joint</wheel_joint>
       <base_joint>wheel_base_joint</base_joint>
