@@ -139,7 +139,7 @@
     </xacro:macro>
 
     <xacro:macro name="steer_macro" params="suffix parent base_radius wheel_radius wheel_offset x y z">
-        <xacro:cylinder_link_macro suffix="top_${suffix}_base" mass="1.0" arg="1.0" radius="${base_radius}" length="0.001" if_collision="false" if_visual="true"/>
+        <xacro:cylinder_link_macro suffix="top_${suffix}_base" mass="1.0" arg="1.0" radius="${base_radius}" length="0.001" if_collision="false" if_visual="false"/>
         <joint name="top_${suffix}_base_joint" type="continuous">
             <parent link="${parent}"/>
             <child  link="top_${suffix}_base_link"/>
@@ -147,7 +147,7 @@
             <axis xyz="0 0 1"/>
         </joint>
 
-        <xacro:cylinder_link_macro suffix="bottom_${suffix}_base" mass="1.0" arg="100000.0" radius="${base_radius}" length="0.001" if_collision="false" if_visual="true"/>
+        <xacro:cylinder_link_macro suffix="bottom_${suffix}_base" mass="1.0" arg="100000.0" radius="${base_radius}" length="0.001" if_collision="false" if_visual="false"/>
         <joint name="bottom_${suffix}_base_joint" type="continuous">
             <parent link="top_${suffix}_base_link"/>
             <child  link="bottom_${suffix}_base_link"/>
@@ -155,7 +155,7 @@
             <axis xyz="0 0 1"/>
         </joint>
 
-        <xacro:cylinder_link_macro suffix="${suffix}" mass="0.0001" arg="0.0001" radius="${wheel_radius}" length="0.001" if_collision="true" if_visual="true"/>
+        <xacro:cylinder_link_macro suffix="${suffix}" mass="0.0001" arg="0.0001" radius="${wheel_radius}" length="0.001" if_collision="true" if_visual="false"/>
         <joint name="${suffix}_joint" type="continuous">
             <parent link="bottom_${suffix}_base_link"/>
             <child  link="${suffix}_link"/>
