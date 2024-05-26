@@ -85,9 +85,9 @@ class F7_SIMNode : public rclcpp::Node{
                 pos_error_I.z += (prior_pos_error.z + pos_error.z)/2.0;
 
                 //PID制御
-                cmd_vel_msg.linear.x = std::min((double)(pos_error.x*pos_linear_pid.P + pos_error_I.x*pos_linear_pid.I + (prior_pos_error.x - pos_error.x)*pos_linear_pid.D), MAX_VEL_M); // 最大でMAX_VEL_M[m/s]
-                cmd_vel_msg.linear.y = std::min((double)(pos_error.y*pos_linear_pid.P + pos_error_I.y*pos_linear_pid.I + (prior_pos_error.y - pos_error.y)*pos_linear_pid.D), MAX_VEL_M); // 最大でMAX_VEL_M[m/s]
-                cmd_vel_msg.angular.z = std::min((double)(pos_error.z*pos_angular_pid.P + pos_error_I.z*pos_angular_pid.I + (prior_pos_error.z - pos_error.z)*pos_angular_pid.D), MAX_VEL_M); // 最大でMAX_VEL_RAD[rad/s]
+                cmd_vel_msg.linear.x = std::max(-MAX_VEL_M,std::min((double)(pos_error.x*pos_linear_pid.P + pos_error_I.x*pos_linear_pid.I + (prior_pos_error.x - pos_error.x)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
+                cmd_vel_msg.linear.y = std::max(-MAX_VEL_M,std::min((double)(pos_error.y*pos_linear_pid.P + pos_error_I.y*pos_linear_pid.I + (prior_pos_error.y - pos_error.y)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
+                cmd_vel_msg.angular.z = std::max(-MAX_VEL_RAD,std::min((double)(pos_error.z*pos_angular_pid.P + pos_error_I.z*pos_angular_pid.I + (prior_pos_error.z - pos_error.z)*pos_angular_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_RAD[rad/s]
                 //TODO:不完全微分の導入
 
                 //差分を保存
