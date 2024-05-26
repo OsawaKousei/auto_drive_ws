@@ -3,6 +3,7 @@
 
 #include "localization_dev/visibility_control.h"
 #include <rclcpp/rclcpp.hpp>
+#include <nav_msgs/msg/odometry.hpp>
 
 
 namespace localization_dev
@@ -17,7 +18,8 @@ public:
   virtual ~NoisyOdom();
 
 private:
-
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr real_odom_sub;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr noisy_odom_pub;
 };
 
 }  // namespace localization_dev
