@@ -5,7 +5,7 @@
     <link name="base_footprint"/>
 
     <xacro:property name="base_size" value="0.3"/>
-    <xacro:rectangular_link_macro suffix="base" mass="100" arg="10.0" width="${base_size}" height="${base_size/2}" depth="${base_size}" if_collision="false"/>
+    <xacro:rectangular_link_macro suffix="base" mass="0.0001" arg="0.0001" width="${base_size}" height="${base_size/2}" depth="${base_size}" if_collision="false" if_visual="false"/>
     <joint name="base_joint" type="fixed">
         <parent link="base_footprint"/>
         <child  link="base_link"/>
@@ -36,7 +36,8 @@
 
         <plugin filename="libHolonomicPlugin.so" name="holonomic_sim::HolonomicPlugin">
             <wheel_joint>wheel_joint</wheel_joint>
-            <base_joint>wheel_base_joint</base_joint>
+            <top_base_joint>bottom_wheel_base_joint</top_base_joint>
+            <bottom_base_joint>top_wheel_base_joint</bottom_base_joint>
         </plugin>
     </gazebo>
 </robot>

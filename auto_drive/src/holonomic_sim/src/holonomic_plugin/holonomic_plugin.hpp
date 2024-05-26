@@ -33,11 +33,12 @@ namespace holonomic_sim
       ignition::transport::Node node_;
       std::string wheel_joint_name_{""};
       float wheel_vel_{0.0f};
-      std::string base_joint_name_{""};
+      std::string top_base_joint_name_{""};
+      std::string bottom_base_joint_name_{""};
       float base_pos_{0.0f};
       float base_vel_{0.0f};
       const float wheel_radius_{0.2f};//m
       float wheel_rot_vel_{0.0f};
-      float base_rot_param_{1.1199f};//cmd_angular_zを直接wheel_baseの角速度に入れると挙動がおかしくなるので、補正するためのパラメータ
+      float base_rot_param_{1.0f};//cmd_angular_zを直接wheel_baseの角速度に入れると挙動がおかしくなるので、補正するためのパラメータ
   };
 }
