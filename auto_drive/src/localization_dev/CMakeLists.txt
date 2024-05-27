@@ -1,25 +1,53 @@
 cmake_minimum_required(VERSION 3.8)
 project(localization_dev)
 
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake_auto REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(PCL REQUIRED COMPONENTS common io)
+
+find_package(PCL 1.1 REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 ament_auto_find_build_dependencies()
 
-ament_auto_add_library(local_accuracy src/local_accuracy.cpp)
-ament_auto_add_library(localization src/localization.cpp)
-ament_auto_add_library(noisy_odom src/noisy_odom.cpp)
+ament_auto_add_library(local_accuracy src/localization_test/local_accuracy.cpp)
+ament_auto_add_library(localization src/localization_test/localization.cpp)
+ament_auto_add_library(noisy_odom src/localization_test/noisy_odom.cpp)
 rclcpp_components_register_nodes(local_accuracy "holonomic_sim::LocalAccuracy")
 rclcpp_components_register_nodes(localization "holonomic_sim::Localization")
 rclcpp_components_register_nodes(noisy_odom "holonomic_sim::NoisyOdom")
 ament_auto_add_executable(
-localization_test_node src/localization_test_node.cpp
-  src/local_accuracy.cpp
-  src/localization.cpp
-  src/noisy_odom.cpp
+localization_test_node src/localization_test/localization_test_node.cpp
+  src/localization_test/local_accuracy.cpp
+  src/localization_test/localization.cpp
+  src/localization_test/noisy_odom.cpp
 )
+
+ament_auto_add_executable(pc_test_node src/pc_mapping/pc_test_node.cpp)
+ament_auto_add_executable(dammy_scan_node src/pc_mapping/dammy_scan_node.cpp)
+ament_auto_add_executable(pcl_test_node src/pc_mapping/pcl_test_node.cpp)
+
+ament_target_dependencies(pcl_test_node
+ rclcpp 
+ sensor_msgs
+ pcl_conversions
+)
+
 
 install(
   DIRECTORY
