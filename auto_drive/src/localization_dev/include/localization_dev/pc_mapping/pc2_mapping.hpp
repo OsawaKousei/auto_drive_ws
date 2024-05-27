@@ -19,7 +19,12 @@ public:
 
 private:
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr current_pc2_sub;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr combined_pc2_pub;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr filtered_pc2_sub;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr mapped_pc2_pub;
+
+    sensor_msgs::msg::PointCloud2 combined_pc2;
+    sensor_msgs::msg::PointCloud2 mapped_pc2;
 };
 
 }  // namespace localization_dev
