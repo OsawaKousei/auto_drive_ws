@@ -4,6 +4,7 @@
 #include "localization_dev/visibility_control.h"
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
+#include <tf2_ros/transform_listener.h>
 #include <mutex>
 
 
@@ -23,12 +24,14 @@ private:
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr combined_pc2_pub;
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr filtered_pc2_sub;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr mapped_pc2_pub;
+    rclcpp::Subscription<tf2_ros::TransformListener> tf_sub;
 
     sensor_msgs::msg::PointCloud2 combined_pc2;
     sensor_msgs::msg::PointCloud2 mapped_pc2;
 
     void current_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
     void filtered_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+    void tf_callback(const tf2_ros::TransformListener msg);
 
     std::mutex mutex_;
 };
