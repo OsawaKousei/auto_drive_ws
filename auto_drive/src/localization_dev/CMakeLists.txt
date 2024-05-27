@@ -61,6 +61,13 @@ ament_target_dependencies(pc2_filter
  pcl_conversions
 )
 
+target_link_libraries(pc2_mapping ${PCL_LIBRARIES})
+ament_target_dependencies(pc2_mapping
+ rclcpp 
+ sensor_msgs
+ pcl_conversions
+)
+
 # test node in pc_mapping
 ament_auto_add_executable(pc_test_node src/pc_mapping/pc_test_node.cpp)
 ament_auto_add_executable(dammy_scan_node src/pc_mapping/dammy_scan_node.cpp)

@@ -6,6 +6,21 @@
 
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/common/common.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl_conversions/pcl_conversions.h>
+
+#include <pcl/filters/passthrough.h>
+#include <pcl/filters/approximate_voxel_grid.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/radius_outlier_removal.h>
+#include <pcl/filters/conditional_removal.h>
+#include <pcl/filters/extract_indices.h>
+#include <pcl/segmentation/sac_segmentation.h>
+
 using namespace std::chrono_literals;
 
 
@@ -15,29 +30,13 @@ namespace localization_dev
 Pc2Mapping::Pc2Mapping(const rclcpp::NodeOptions & options)
 : rclcpp::Node("pc2_mapping", options)
 {
-    auto current_pc2_callback = [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) -> void {
-        // combine point cloud
-        if(mapped_pc2.data.size() == 0){
-            mapped_pc2 = *msg;
-        }else{
-            mapped_pc2.data.insert(mapped_pc2.data.end(), msg->data.begin(), msg->data.end());
-        }
-        combined_pc2_pub->publish(mapped_pc2);
-    };
-
-    auto filtered_pc2_callback = [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) -> void {
-        // publish filtered point cloud as mapped point cloud
-        mapped_pc2 = *msg;
-        mapped_pc2_pub->publish(mapped_pc2);
-    };
-
     current_pc2_sub = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-        "current_pc2", 10, current_pc2_callback);
+        "raw_pc2", 1, [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) { current_pc2_callback(msg); });
 
     combined_pc2_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("combined_pc2", 10);
 
     filtered_pc2_sub = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-        "filtered_pc2", 10, filtered_pc2_callback);
+        "filtered_pc2", 1, [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) { filtered_pc2_callback(msg); });
 
     mapped_pc2_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("mapped_pc2", 10);
 }
@@ -46,6 +45,33 @@ Pc2Mapping::Pc2Mapping(const rclcpp::NodeOptions & options)
 Pc2Mapping::~Pc2Mapping()
 {
 }
+
+void Pc2Mapping::current_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg){
+    mutex_.lock();
+    // combine point cloud
+    if(combined_pc2.data.size() == 0){
+        combined_pc2 = *msg;
+    }else{
+        // TODO: combine point cloud without using pcl
+        pcl::PointCloud<pcl::PointXYZ>::Ptr msg_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        pcl::fromROSMsg(*msg, *msg_cloud);
+        pcl::PointCloud<pcl::PointXYZ>::Ptr combined_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        pcl::fromROSMsg(combined_pc2, *combined_cloud);
+        *combined_cloud += *msg_cloud;
+        pcl::toROSMsg(*combined_cloud, combined_pc2);
+    }
+
+    combined_pc2_pub->publish(combined_pc2);
+    mutex_.unlock();
+};
+
+void Pc2Mapping::filtered_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg){
+    mutex_.lock();
+    // publish filtered point cloud as mapped point cloud
+    mapped_pc2 = *msg;
+    mapped_pc2_pub->publish(mapped_pc2);
+    mutex_.unlock();
+};
 
 }  // namespace localization_dev
 

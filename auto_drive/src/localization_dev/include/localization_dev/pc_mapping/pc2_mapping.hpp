@@ -4,6 +4,7 @@
 #include "localization_dev/visibility_control.h"
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
+#include <mutex>
 
 
 namespace localization_dev
@@ -25,6 +26,11 @@ private:
 
     sensor_msgs::msg::PointCloud2 combined_pc2;
     sensor_msgs::msg::PointCloud2 mapped_pc2;
+
+    void current_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+    void filtered_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+
+    std::mutex mutex_;
 };
 
 }  // namespace localization_dev

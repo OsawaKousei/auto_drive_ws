@@ -28,7 +28,10 @@ private:
 
     pcl::PointCloud<pcl::PointXYZ> filtered_pc2;
     void filter_pc2(pcl::PointCloud<pcl::PointXYZ> cloud);
-    
+
+    void topic_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+
+    std::mutex mutex_;
 };
 
 }  // namespace localization_dev

@@ -21,6 +21,10 @@ public:
 private:
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pc2_pub;
+
+    void scan_callback(const sensor_msgs::msg::LaserScan &scan);
+
+    std::mutex mutex_;
 };
 
 }  // namespace localization_dev

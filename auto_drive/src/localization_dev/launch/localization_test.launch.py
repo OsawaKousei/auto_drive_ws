@@ -136,7 +136,7 @@ def generate_launch_description():
         executable='localization_test_node',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}],
-        prefix="xterm -e"
+        # prefix="xterm -e"
     )
     
     return LaunchDescription([
