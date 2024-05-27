@@ -25,12 +25,13 @@ link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 ament_auto_find_build_dependencies()
 
+# localization_test
 ament_auto_add_library(local_accuracy src/localization_test/local_accuracy.cpp)
 ament_auto_add_library(localization src/localization_test/localization.cpp)
 ament_auto_add_library(noisy_odom src/localization_test/noisy_odom.cpp)
-rclcpp_components_register_nodes(local_accuracy "holonomic_sim::LocalAccuracy")
-rclcpp_components_register_nodes(localization "holonomic_sim::Localization")
-rclcpp_components_register_nodes(noisy_odom "holonomic_sim::NoisyOdom")
+rclcpp_components_register_nodes(local_accuracy "localization_dev::LocalAccuracy")
+rclcpp_components_register_nodes(localization "localization_dev::Localization")
+rclcpp_components_register_nodes(noisy_odom "localization_dev::NoisyOdom")
 ament_auto_add_executable(
 localization_test_node src/localization_test/localization_test_node.cpp
   src/localization_test/local_accuracy.cpp
@@ -38,6 +39,30 @@ localization_test_node src/localization_test/localization_test_node.cpp
   src/localization_test/noisy_odom.cpp
 )
 
+# pc_mapping
+ament_auto_add_library(pc2_filter src/pc_mapping/pc2_filter.cpp)
+ament_auto_add_library(pc2_mapping src/pc_mapping/pc2_mapping.cpp)
+ament_auto_add_library(scan2pc2 src/pc_mapping/scan2pc2.cpp)
+rclcpp_components_register_nodes(pc2_filter "localization_dev::Pc2Filter")
+rclcpp_components_register_nodes(pc2_mapping "localization_dev::Pc2Mapping")
+rclcpp_components_register_nodes(scan2pc2 "localization_dev::Scan2pc2")
+ament_auto_add_executable(
+  pc_mapping_node
+  src/pc_mapping/pc_mapping_node.cpp
+  src/pc_mapping/pc2_filter.cpp
+  src/pc_mapping/pc2_mapping.cpp
+  src/pc_mapping/scan2pc2.cpp
+)
+
+# settig to use PCL in ros2 node
+target_link_libraries(pc2_filter ${PCL_LIBRARIES})
+ament_target_dependencies(pc2_filter
+ rclcpp 
+ sensor_msgs
+ pcl_conversions
+)
+
+# test node in pc_mapping
 ament_auto_add_executable(pc_test_node src/pc_mapping/pc_test_node.cpp)
 ament_auto_add_executable(dammy_scan_node src/pc_mapping/dammy_scan_node.cpp)
 ament_auto_add_executable(pcl_test_node src/pc_mapping/pcl_test_node.cpp)
