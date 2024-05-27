@@ -12,7 +12,7 @@ class DammyScanNode : public rclcpp::Node {
 public:
     DammyScanNode() : Node("dammy_scan_node") {
 
-        publisher_ = this->create_publisher<sensor_msgs::msg::LaserScan>("dammy_scan", 10);
+        publisher_ = this->create_publisher<sensor_msgs::msg::LaserScan>("scan", 10);
 
         auto publish_msg_callback = [this]() -> void {
             auto message = sensor_msgs::msg::LaserScan();

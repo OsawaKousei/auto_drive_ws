@@ -41,6 +41,7 @@ localization_test_node src/localization_test/localization_test_node.cpp
 ament_auto_add_executable(pc_test_node src/pc_mapping/pc_test_node.cpp)
 ament_auto_add_executable(dammy_scan_node src/pc_mapping/dammy_scan_node.cpp)
 ament_auto_add_executable(pcl_test_node src/pc_mapping/pcl_test_node.cpp)
+ament_auto_add_executable(scan2pc2_node src/pc_mapping/scan2pc2_node.cpp)
 
 ament_target_dependencies(pcl_test_node
  rclcpp 

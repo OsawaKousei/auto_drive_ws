@@ -23,26 +23,19 @@ using namespace std::chrono_literals;
 
 class PclTestNode : public rclcpp::Node {
 public:
-    PclTestNode() : Node("pubsub_node") {
+    PclTestNode() : Node("pcl_test_node") {
         pc2_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("filtered_pc2", 10);
 
-        auto publish_msg_callback = [this]() -> void {
+        auto topic_callback = [this](const sensor_msgs::msg::PointCloud2 &msg) -> void {
             auto message = sensor_msgs::msg::PointCloud2();
 
             this->pc2_pub->publish(message);
         }; 
 
-        timer_ = this->create_wall_timer(500ms, publish_msg_callback);
-
-        auto topic_callback = [this](const sensor_msgs::msg::LaserScan &msg) -> void {
-            
-        }; 
-
-        scan_sub = this->create_subscription<sensor_msgs::msg::LaserScan>("dammy_scan", 10, topic_callback);
+        pc2_sub = this->create_subscription<sensor_msgs::msg::PointCloud2>("raw_pc2", 10, topic_callback);
     }
 private:
-    rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub;
-    rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr pc2_sub;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pc2_pub;
 };
 
