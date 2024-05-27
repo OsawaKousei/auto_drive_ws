@@ -62,14 +62,14 @@ Pc2Mapping::~Pc2Mapping()
 }
 
 void Pc2Mapping::current_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg){
-    mutex_.lock();
+    mutex_.lock();;
     // transform point cloud
     sensor_msgs::msg::PointCloud2 transformed_pc2;
     try{
         tf_buffer_->transform(*msg, transformed_pc2, "map");
     }catch(tf2::TransformException &ex){
         RCLCPP_ERROR(this->get_logger(), "Transform error: %s", ex.what());
-        return;
+        // return; // skip this point cloud if transform error. It is likely that tf publisher between map and base_footprint has not been initialized yet.
     }
 
     *msg = transformed_pc2;

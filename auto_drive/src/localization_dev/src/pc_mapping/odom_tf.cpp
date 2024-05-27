@@ -19,7 +19,6 @@ OdomTf::OdomTf(const rclcpp::NodeOptions & options)
     odom_sub = this->create_subscription<nav_msgs::msg::Odometry>(
         "odom", 1, [this](const nav_msgs::msg::Odometry::SharedPtr msg) { odom_callback(msg); });
     tf_broadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
-    mutex_.unlock();
 }
 
 // デストラクタ

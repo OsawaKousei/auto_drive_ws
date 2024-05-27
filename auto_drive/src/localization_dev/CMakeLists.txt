@@ -56,6 +56,14 @@ pc_mapping_node src/pc_mapping/pc_mapping_node.cpp
   src/pc_mapping/odom_tf.cpp
 )
 
+ament_auto_add_executable(
+odom_tf_node src/pc_mapping/odom_tf_node.cpp
+  src/pc_mapping/pc2_filter.cpp
+  src/pc_mapping/pc2_mapping.cpp
+  src/pc_mapping/scan2pc2.cpp
+  src/pc_mapping/odom_tf.cpp
+)
+
 # settig to use PCL in ros2 node
 target_link_libraries(pc2_filter ${PCL_LIBRARIES})
 ament_target_dependencies(pc2_filter
