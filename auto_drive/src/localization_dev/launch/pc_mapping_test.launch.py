@@ -143,10 +143,8 @@ def generate_launch_description():
         package='localization_dev',
         executable='pc_mapping_node',
         output='screen',
-        parameters=[{
-            'use_sim_time': use_sim_time,
-        }],
-        prefix="xterm -e"
+        parameters=[{'use_sim_time': use_sim_time}],
+        # prefix="xterm -e"
     )
     
     return LaunchDescription([
@@ -175,5 +173,5 @@ def generate_launch_description():
 
         # ign_debug,
         # localization_test
-        pc_mapping_test
+        pc_mapping_test,
     ])

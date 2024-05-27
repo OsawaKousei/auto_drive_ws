@@ -68,6 +68,9 @@ target_link_libraries(pc2_mapping ${PCL_LIBRARIES})
 ament_target_dependencies(pc2_mapping
  rclcpp 
  sensor_msgs
+ tf2
+ tf2_ros
+ tf2_geometry_msgs
  pcl_conversions
 )
 

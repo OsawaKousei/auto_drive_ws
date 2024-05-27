@@ -74,8 +74,6 @@ void Pc2Filter::topic_callback(const sensor_msgs::msg::PointCloud2::SharedPtr ms
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(*msg, *cloud);
 
-    RCLCPP_INFO(this->get_logger(), "points_size(%d,%d)",msg->height,msg->width);
-
     // PassThrough Filter
     filter_pc2(*cloud);
 

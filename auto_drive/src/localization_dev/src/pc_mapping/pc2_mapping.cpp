@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include <iostream>
+#include <chrono>
 
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
@@ -24,6 +25,13 @@
 #include "tf2/exceptions.h"
 #include "tf2_ros/transform_listener.h"
 #include "tf2_ros/buffer.h"
+#include "tf2/tf2/convert.h"
+#include "tf2_ros/buffer_interface.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+#include <tf2_sensor_msgs/tf2_sensor_msgs.h>
+
+#include <tf2/transform_datatypes.h>
+#include <tf2_eigen/tf2_eigen.h>
 
 using namespace std::chrono_literals;
 
@@ -43,6 +51,9 @@ Pc2Mapping::Pc2Mapping(const rclcpp::NodeOptions & options)
         "filtered_pc2", 1, [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) { filtered_pc2_callback(msg); });
 
     mapped_pc2_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("mapped_pc2", 10);
+
+    tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+    tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 }
 
 // デストラクタ
@@ -52,6 +63,17 @@ Pc2Mapping::~Pc2Mapping()
 
 void Pc2Mapping::current_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg){
     mutex_.lock();
+    // transform point cloud
+    sensor_msgs::msg::PointCloud2 transformed_pc2;
+    try{
+        tf_buffer_->transform(*msg, transformed_pc2, "map");
+    }catch(tf2::TransformException &ex){
+        RCLCPP_ERROR(this->get_logger(), "Transform error: %s", ex.what());
+        return;
+    }
+
+    *msg = transformed_pc2;
+
     // combine point cloud
     if(combined_pc2.data.size() == 0){
         combined_pc2 = *msg;
