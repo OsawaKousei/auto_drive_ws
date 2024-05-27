@@ -43,6 +43,8 @@ ament_auto_add_executable(dammy_scan_node src/pc_mapping/dammy_scan_node.cpp)
 ament_auto_add_executable(pcl_test_node src/pc_mapping/pcl_test_node.cpp)
 ament_auto_add_executable(scan2pc2_node src/pc_mapping/scan2pc2_node.cpp)
 
+# settig to use PCL in ros2 node
+target_link_libraries(pcl_test_node ${PCL_LIBRARIES})
 ament_target_dependencies(pcl_test_node
  rclcpp 
  sensor_msgs

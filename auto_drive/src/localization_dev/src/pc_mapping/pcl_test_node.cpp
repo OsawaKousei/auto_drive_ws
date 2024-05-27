@@ -27,8 +27,43 @@ public:
         pc2_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("filtered_pc2", 10);
 
         auto topic_callback = [this](const sensor_msgs::msg::PointCloud2 &msg) -> void {
-            auto message = sensor_msgs::msg::PointCloud2();
+            pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+            pcl::fromROSMsg(msg, *cloud);
 
+            RCLCPP_INFO(this->get_logger(), "points_size(%d,%d)",msg.height,msg.width);
+
+            pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
+
+            // PassThrough Filter
+            pcl::PassThrough<pcl::PointXYZ> pass;
+            pass.setInputCloud(cloud);
+            pass.setFilterFieldName("x");  // x axis
+            // extract point cloud between 1.0 and 3.0 m
+            pass.setFilterLimits(1.0,3.0);
+            // pass.setFilterLimitsNegative (true);   // extract range reverse
+            pass.filter(*cloud_filtered);
+
+            // // Voxel Grid: pattern 1
+            // pcl::VoxelGrid<pcl::PointXYZ> voxelGrid;
+            // voxelGrid.setInputCloud(cloud);
+            // float leaf_size_ = 0.1;
+            // // set the leaf size (x, y, z)
+            // voxelGrid.setLeafSize(leaf_size_, leaf_size_, leaf_size_);
+            // // apply the filter to dereferenced cloudVoxel
+            // voxelGrid.filter(*cloud_filtered);
+
+            // // Radius Outlier Removal
+            // pcl::RadiusOutlierRemoval<pcl::PointXYZ> outrem;
+            // outrem.setInputCloud(cloud);
+            // outrem.setRadiusSearch(0.1);
+            // outrem.setMinNeighborsInRadius(2);
+            // outrem.setKeepOrganized(true);
+            // outrem.filter(*cloud_filtered);
+
+            // publish filtered point cloud
+            auto message = sensor_msgs::msg::PointCloud2();
+            pcl::toROSMsg(*cloud_filtered, message);
+            message.header.frame_id = "map";
             this->pc2_pub->publish(message);
         }; 
 

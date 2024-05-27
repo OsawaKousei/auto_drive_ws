@@ -11,7 +11,7 @@ class PcTestNode : public rclcpp::Node {
 public:
     PcTestNode() : Node("pc_test_node") {
 
-        publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("test_pc2", 10);
+        publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("raw_pc2", 10);
 
         auto publish_msg_callback = [this]() -> void {
             auto message = sensor_msgs::msg::PointCloud2();
