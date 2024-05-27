@@ -1,0 +1,3 @@
+[submodule "auto_drive/src/pointcloud_to_laserscan"]
+	path = auto_drive/src/pointcloud_to_laserscan
+	url = https://github.com/ros-perception/pointcloud_to_laserscan.git
