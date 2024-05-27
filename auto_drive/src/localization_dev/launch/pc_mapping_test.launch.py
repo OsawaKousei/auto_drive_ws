@@ -98,6 +98,13 @@ def generate_launch_description():
             parameters=[{'robot_description': robot_desc,
                          'use_sim_time': use_sim_time,}])
     
+    #mapトピックとodomの関係を定義
+    map_static_tf = Node(package='tf2_ros',
+                        executable='static_transform_publisher',
+                        name='static_transform_publisher',
+                        output='log',
+                        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'map', 'odom'])
+    
     #rviz2の設定フィルのパスを取得
     rviz_config_dir = os.path.join(
         pkg_share_dir,
@@ -163,6 +170,7 @@ def generate_launch_description():
         rqt,
 
         robot_state_publisher,
+        map_static_tf,
         rviz2,
 
         # ign_debug,

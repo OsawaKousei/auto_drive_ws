@@ -43,14 +43,17 @@ localization_test_node src/localization_test/localization_test_node.cpp
 ament_auto_add_library(pc2_filter src/pc_mapping/pc2_filter.cpp)
 ament_auto_add_library(pc2_mapping src/pc_mapping/pc2_mapping.cpp)
 ament_auto_add_library(scan2pc2 src/pc_mapping/scan2pc2.cpp)
+ament_auto_add_library(odom_tf src/pc_mapping/odom_tf.cpp)
 rclcpp_components_register_nodes(pc2_filter "localization_dev::Pc2Filter")
 rclcpp_components_register_nodes(pc2_mapping "localization_dev::Pc2Mapping")
 rclcpp_components_register_nodes(scan2pc2 "localization_dev::Scan2pc2")
+rclcpp_components_register_nodes(odom_tf "localization_dev::OdomTf")
 ament_auto_add_executable(
 pc_mapping_node src/pc_mapping/pc_mapping_node.cpp
   src/pc_mapping/pc2_filter.cpp
   src/pc_mapping/pc2_mapping.cpp
   src/pc_mapping/scan2pc2.cpp
+  src/pc_mapping/odom_tf.cpp
 )
 
 # settig to use PCL in ros2 node
