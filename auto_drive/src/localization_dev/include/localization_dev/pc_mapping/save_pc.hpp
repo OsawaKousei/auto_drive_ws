@@ -34,7 +34,7 @@ private:
     void save_pc(pcl::PointCloud<pcl::PointXYZ> cloud);
 
     //declare parameter
-    std::string pkg_path;
+    std::string map_dir;
 
     std::mutex mutex_;
 };

@@ -12,9 +12,6 @@
 #include <ament_index_cpp/get_package_prefix.hpp>
 
 using namespace std::chrono_literals;
-using namespace ament_index_cpp;
-namespace fs = std::filesystem;
-
 
 namespace localization_dev
 {
@@ -22,10 +19,10 @@ namespace localization_dev
 SavePc::SavePc(const rclcpp::NodeOptions & options)
 : rclcpp::Node("save_pc", options)
 {
-    declare_parameter("pkg_path", "default");
-    get_parameter("pkg_path", pkg_path);
+    declare_parameter("map_dir", "default");
+    get_parameter("map_dir", map_dir);
     // configure parameters
-    std::cout << "pkg_path: " << pkg_path << std::endl;
+    std::cout << "map_dir: " << map_dir << std::endl;
 
     current_map_sub = this->create_subscription<sensor_msgs::msg::PointCloud2>(
         "mapped_pc2", 1, [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) { map_callback(msg); });
@@ -56,14 +53,13 @@ void SavePc::save_pc(pcl::PointCloud<pcl::PointXYZ> cloud)
 {
     // get project path
     std::string file_dir;
-    file_dir = pkg_path + "/map/"+ "map.pcd";
-
+    std::string file_name;
+    // set file name as current time
+    std::time_t now = std::time(nullptr);
+    file_name = std::to_string(now);
+    file_dir = map_dir + file_name + ".pcd";
+ 
     std::cout << "file_dir: " << file_dir << std::endl;
-    if (fs::exists(pkg_path) && fs::is_directory(pkg_path)) {
-        std::cout << "ディレクトリが存在します。" << std::endl;
-    } else {
-        std::cout << "ディレクトリは存在しません。" << std::endl;
-    }
 
     try{
         pcl::io::savePCDFileASCII(file_dir, cloud);
