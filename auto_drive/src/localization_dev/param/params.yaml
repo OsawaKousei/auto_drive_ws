@@ -5,4 +5,4 @@ save_pc:
 map_publisher:
   ros__parameters:
     map_dir: "/home/kousei/auto_drive_ws/auto_drive/src/localization_dev/map/"
-    map_name: "1716881195.pcd"
+    map_name: "map.pcd"

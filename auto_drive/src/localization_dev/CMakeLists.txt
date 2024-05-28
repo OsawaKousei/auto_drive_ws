@@ -79,7 +79,6 @@ ament_target_dependencies(map_publisher
  pcl_conversions
 )
 
-
 # test node in pc_mapping
 ament_auto_add_executable(dammy_scan_node src/pc_mapping/dammy_scan_node.cpp)
 
