@@ -20,13 +20,12 @@ int main(int argc, char * argv[])
 
     // PassThrough Filter
     pcl::PassThrough<pcl::PointXYZ> pass;
-    pass.setInputCloud(cloud); // Use ConstPtr
-    pass.setFilterFieldName("z");  // axis
-    // extract point cloud
-    pass.setFilterLimits(0.04,1.0);
+    pass.setInputCloud(cloud);
+    pass.setFilterFieldName("z");  //z axis
+    pass.setFilterLimits(0.04,1.0); // filter limits
     pass.filter(*cloud);
 
-    // set each point z to 0
+    // set each point's z to 0
     for (size_t i = 0; i < cloud->points.size(); i++){
         cloud->points[i].z = 0;
     }
@@ -34,18 +33,16 @@ int main(int argc, char * argv[])
     // Statistical Outlier Removal
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
     sor.setInputCloud(cloud);
-    sor.setMeanK(50);
-    sor.setStddevMulThresh(0.5);
+    sor.setMeanK(50); // number of neighbors to analyze for each point
+    sor.setStddevMulThresh(0.5); // standard deviation multiplier
     sor.setNegative(false);
     sor.filter (*cloud);
 
-    // Voxel Grid: pattern 1
+    // Voxel Grid Filter
     pcl::VoxelGrid<pcl::PointXYZ> voxelGrid;
     voxelGrid.setInputCloud(cloud);
-    float leaf_size_ = 0.075;
-    // set the leaf size (x, y, z)
+    float leaf_size_ = 0.075; // leaf size of the grid
     voxelGrid.setLeafSize(leaf_size_, leaf_size_, leaf_size_);
-    // apply the filter to dereferenced cloudVoxel
     voxelGrid.filter(*cloud);
 
     // save pcd file

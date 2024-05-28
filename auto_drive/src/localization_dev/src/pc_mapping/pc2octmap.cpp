@@ -36,7 +36,6 @@ Pc2octmap::Pc2octmap(const rclcpp::NodeOptions & options)
     map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>("map", 1);
 }
 
-// デストラクタ
 Pc2octmap::~Pc2octmap()
 {
 }
@@ -45,7 +44,7 @@ void Pc2octmap::map_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
 {
     mutex_.lock();
 
-    // ポイントクラウドデータをグリッドマップに変換
+    // create the occupancy grid map
     nav_msgs::msg::OccupancyGrid map;
     map.header = msg->header;
     map.info.map_load_time = msg->header.stamp;
@@ -61,7 +60,7 @@ void Pc2octmap::map_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
     map.info.origin.orientation.w = 1.0;
     map.data.resize(map.info.width * map.info.height);
 
-    // グリッドマップを初期化
+    // innitialize the occupancy grid map
     for (int i = 0; i < map.info.width; i++)
     {
         for (int j = 0; j < map.info.height; j++)
@@ -70,7 +69,7 @@ void Pc2octmap::map_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         }        
     }
 
-    // ポイントクラウドデータをグリッドマップに変換
+    // transrate the point cloud to the occupancy grid map
     pcl::PointCloud<pcl::PointXYZ> cloud;
     pcl::fromROSMsg(*msg, cloud);
     for (int i = 0; i < cloud.size(); i++)
