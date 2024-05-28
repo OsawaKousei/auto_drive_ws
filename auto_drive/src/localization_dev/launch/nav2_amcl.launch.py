@@ -179,6 +179,13 @@ def generate_launch_description():
                         {'node_names': lifecycle_nodes}],
             prefix="bash -c 'sleep 5; $0 $@' ")
     
+    nav2_accuracy_node = Node(
+        package='localization_dev',
+        executable='nav2_accuracy_node',
+        output='screen',
+        prefix="xterm -e"
+    )
+    
     return LaunchDescription([
         ign_resource_path,
         ignition_spawn_entity,
@@ -205,5 +212,7 @@ def generate_launch_description():
         start_lifecycle_manager,
 
         map_server,
-        start_lifecycle_manager_map
+        start_lifecycle_manager_map,
+
+        nav2_accuracy_node
     ])

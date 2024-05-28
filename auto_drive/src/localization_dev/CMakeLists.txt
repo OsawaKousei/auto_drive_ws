@@ -44,6 +44,8 @@ localization_test_node src/localization_test/localization_test_node.cpp
   src/pc_mapping/pc2octmap.cpp
 )
 
+ament_auto_add_executable(nav2_accuracy_node src/localization_test/nav2_accuracy_node.cpp)
+
 # pc_mapping
 ament_auto_add_library(pc2_filter src/pc_mapping/pc2_filter.cpp)
 ament_auto_add_library(pc2_mapping src/pc_mapping/pc2_mapping.cpp)
@@ -65,11 +67,6 @@ pc_mapping_node src/pc_mapping/pc_mapping_node.cpp
   src/pc_mapping/odom_tf.cpp
   src/pc_mapping/save_pc.cpp
   src/pc_mapping/pc2octmap.cpp
-)
-
-ament_auto_add_executable(
-odom_tf_node src/pc_mapping/odom_tf_node.cpp
-  src/pc_mapping/odom_tf.cpp
 )
 
 # settig to use PCL in ros2 node
