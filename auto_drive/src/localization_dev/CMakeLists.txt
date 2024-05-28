@@ -29,14 +29,18 @@ ament_auto_find_build_dependencies()
 ament_auto_add_library(local_accuracy src/localization_test/local_accuracy.cpp)
 ament_auto_add_library(localization src/localization_test/localization.cpp)
 ament_auto_add_library(noisy_odom src/localization_test/noisy_odom.cpp)
+ament_auto_add_library(map_publisher src/localization_test/map_publisher.cpp)
 rclcpp_components_register_nodes(local_accuracy "localization_dev::LocalAccuracy")
 rclcpp_components_register_nodes(localization "localization_dev::Localization")
 rclcpp_components_register_nodes(noisy_odom "localization_dev::NoisyOdom")
+rclcpp_components_register_nodes(map_publisher "localization_dev::MapPublisher")
 ament_auto_add_executable(
 localization_test_node src/localization_test/localization_test_node.cpp
   src/localization_test/local_accuracy.cpp
   src/localization_test/localization.cpp
   src/localization_test/noisy_odom.cpp
+  src/localization_test/map_publisher.cpp
+  src/pc_mapping/odom_tf.cpp
 )
 
 # pc_mapping
@@ -62,35 +66,22 @@ pc_mapping_node src/pc_mapping/pc_mapping_node.cpp
 # settig to use PCL in ros2 node
 target_link_libraries(pc2_filter ${PCL_LIBRARIES})
 ament_target_dependencies(pc2_filter
- rclcpp 
- sensor_msgs
  pcl_conversions
 )
 
 target_link_libraries(pc2_mapping ${PCL_LIBRARIES})
 ament_target_dependencies(pc2_mapping
- rclcpp 
- sensor_msgs
- tf2
- tf2_ros
- tf2_geometry_msgs
  pcl_conversions
 )
+
+target_link_libraries(map_publisher ${PCL_LIBRARIES})
+ament_target_dependencies(map_publisher
+ pcl_conversions
+)
+
 
 # test node in pc_mapping
-ament_auto_add_executable(pc_test_node src/pc_mapping/pc_test_node.cpp)
 ament_auto_add_executable(dammy_scan_node src/pc_mapping/dammy_scan_node.cpp)
-ament_auto_add_executable(pcl_test_node src/pc_mapping/pcl_test_node.cpp)
-ament_auto_add_executable(scan2pc2_node src/pc_mapping/scan2pc2_node.cpp)
-
-# settig to use PCL in ros2 node
-target_link_libraries(pcl_test_node ${PCL_LIBRARIES})
-ament_target_dependencies(pcl_test_node
- rclcpp 
- sensor_msgs
- pcl_conversions
-)
-
 
 install(
   DIRECTORY

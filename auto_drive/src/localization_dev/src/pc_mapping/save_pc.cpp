@@ -37,16 +37,20 @@ SavePc::~SavePc()
 
 void SavePc::map_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
 {
+    mutex_.lock();
     pcl::fromROSMsg(*msg, current_map_pc);
+    mutex_.unlock();
 }
 
 void SavePc::switch_callback(const std_msgs::msg::String::SharedPtr msg)
 {
+    mutex_.lock();
     std::cout << "Received command: " << msg->data << std::endl;
     if (msg->data == "save_map")
     {
         save_pc(current_map_pc);
     }
+    mutex_.unlock();
 }
 
 void SavePc::save_pc(pcl::PointCloud<pcl::PointXYZ> cloud)

@@ -98,11 +98,19 @@ def generate_launch_description():
             parameters=[{'robot_description': robot_desc,
                          'use_sim_time': use_sim_time,}])
     
+    #mapトピックとodomの関係を定義
+    map_static_tf = Node(package='tf2_ros',
+                        executable='static_transform_publisher',
+                        name='static_transform_publisher',
+                        output='log',
+                        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'map', 'odom'],
+                        parameters=[{'use_sim_time': use_sim_time}])
+    
     #rviz2の設定フィルのパスを取得
     rviz_config_dir = os.path.join(
-        sim_pkg_dir,
+        pkg_share_dir,
         'config',
-        'holonomic_test.rviz')
+        'localization_test.rviz')
     
     #rviz2の起動設定
     rviz2 = Node(
@@ -136,8 +144,8 @@ def generate_launch_description():
         package='localization_dev',
         executable='localization_test_node',
         output='screen',
-        parameters=[{'use_sim_time': use_sim_time}],
-        # prefix="xterm -e"
+        parameters=[os.path.join(pkg_share_dir,'param','params.yaml')],
+        prefix="xterm -e"
     )
     
     return LaunchDescription([
@@ -161,6 +169,7 @@ def generate_launch_description():
         rqt,
 
         robot_state_publisher,
+        map_static_tf,
         rviz2,
 
         ign_debug,

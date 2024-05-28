@@ -33,9 +33,7 @@ private:
     void switch_callback(const std_msgs::msg::String::SharedPtr msg);
     void save_pc(pcl::PointCloud<pcl::PointXYZ> cloud);
 
-    //declare parameter
     std::string map_dir;
-
     std::mutex mutex_;
 };
 
