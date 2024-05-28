@@ -3,20 +3,13 @@
 #include <ignition/msgs/float.pb.h>
 #include <ignition/plugin/Register.hh>
 
-namespace model_test
-{
+namespace model_test {
 
-HolonomicPanel::HolonomicPanel() : Plugin()
-{
-  CreateIgnitionIf();
-}
+HolonomicPanel::HolonomicPanel() : Plugin() { CreateIgnitionIf(); }
 
-HolonomicPanel::~HolonomicPanel()
-{
-}
+HolonomicPanel::~HolonomicPanel() {}
 
-void HolonomicPanel::LoadConfig(const tinyxml2::XMLElement * _pluginElem)
-{
+void HolonomicPanel::LoadConfig(const tinyxml2::XMLElement *_pluginElem) {
   if (!_pluginElem) {
     return;
   }
@@ -71,12 +64,14 @@ void HolonomicPanel::OnStopButton(void) {
   wheel_speed_pub_.Publish(float_msg);
 }
 
-void HolonomicPanel::CreateIgnitionIf(void){
-  this->wheel_speed_pub_ = this->node_.Advertise<ignition::msgs::Float>("wheel_speed");
-  this->base_pos_pub_ = this->node_.Advertise<ignition::msgs::Float>("base_pos");
+void HolonomicPanel::CreateIgnitionIf(void) {
+  this->wheel_speed_pub_ =
+      this->node_.Advertise<ignition::msgs::Float>("wheel_speed");
+  this->base_pos_pub_ =
+      this->node_.Advertise<ignition::msgs::Float>("base_pos");
 }
 
-}
+} // namespace model_test
 
 // Register this plugin
 IGNITION_ADD_PLUGIN(model_test::HolonomicPanel, ignition::gui::Plugin)

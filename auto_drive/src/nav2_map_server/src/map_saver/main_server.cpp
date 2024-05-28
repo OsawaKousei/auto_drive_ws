@@ -20,8 +20,7 @@
 #include "nav2_map_server/map_saver.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-int main(int argc, char ** argv)
-{
+int main(int argc, char **argv) {
   rclcpp::init(argc, argv);
 
   auto logger = rclcpp::get_logger("map_saver_server");

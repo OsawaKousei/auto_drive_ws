@@ -12,28 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <memory>
 #include <chrono>
+#include <memory>
 
-#include "rclcpp/rclcpp.hpp"
+#include "geometry_msgs/msg/twist.hpp"
 #include "nav2_util/odometry_utils.hpp"
 #include "nav_msgs/msg/odometry.hpp"
-#include "geometry_msgs/msg/twist.hpp"
+#include "rclcpp/rclcpp.hpp"
 #include "gtest/gtest.h"
 
-using namespace std::chrono;  // NOLINT
-using namespace std::chrono_literals;  // NOLINT
+using namespace std::chrono;          // NOLINT
+using namespace std::chrono_literals; // NOLINT
 
-class RclCppFixture
-{
+class RclCppFixture {
 public:
-  RclCppFixture() {rclcpp::init(0, nullptr);}
-  ~RclCppFixture() {rclcpp::shutdown();}
+  RclCppFixture() { rclcpp::init(0, nullptr); }
+  ~RclCppFixture() { rclcpp::shutdown(); }
 };
 RclCppFixture g_rclcppfixture;
 
-TEST(OdometryUtils, test_smoothed_velocity)
-{
+TEST(OdometryUtils, test_smoothed_velocity) {
   auto node = std::make_shared<rclcpp::Node>("test_node");
   auto odom_pub = node->create_publisher<nav_msgs::msg::Odometry>("odom", 1);
 

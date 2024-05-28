@@ -17,25 +17,22 @@
 #include <stdexcept>
 #include <string>
 
-namespace nav2_map_server
-{
-const char * map_mode_to_string(MapMode map_mode)
-{
+namespace nav2_map_server {
+const char *map_mode_to_string(MapMode map_mode) {
   switch (map_mode) {
-    case MapMode::Trinary:
-      return "trinary";
-    case MapMode::Scale:
-      return "scale";
-    case MapMode::Raw:
-      return "raw";
-    default:
-      throw std::invalid_argument("map_mode");
+  case MapMode::Trinary:
+    return "trinary";
+  case MapMode::Scale:
+    return "scale";
+  case MapMode::Raw:
+    return "raw";
+  default:
+    throw std::invalid_argument("map_mode");
   }
 }
 
-MapMode map_mode_from_string(std::string map_mode_name)
-{
-  for (auto & c : map_mode_name) {
+MapMode map_mode_from_string(std::string map_mode_name) {
+  for (auto &c : map_mode_name) {
     c = tolower(c);
   }
 
@@ -49,4 +46,4 @@ MapMode map_mode_from_string(std::string map_mode_name)
     throw std::invalid_argument("map_mode_name");
   }
 }
-}  // namespace nav2_map_server
+} // namespace nav2_map_server

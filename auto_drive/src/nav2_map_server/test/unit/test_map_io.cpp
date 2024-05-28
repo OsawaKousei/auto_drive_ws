@@ -31,46 +31,42 @@
 
 /* Author: Brian Gerkey */
 
-#include <gtest/gtest.h>
 #include <filesystem>
+#include <fstream>
+#include <gtest/gtest.h>
+#include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <memory>
-#include <iostream>
-#include <fstream>
 
-#include "yaml-cpp/yaml.h"
 #include "nav2_map_server/map_io.hpp"
 #include "nav2_map_server/map_server.hpp"
 #include "nav2_util/lifecycle_node.hpp"
 #include "test_constants/test_constants.h"
+#include "yaml-cpp/yaml.h"
 
 #define TEST_DIR TEST_DIRECTORY
 
-using namespace std;  // NOLINT
-using namespace nav2_map_server;  // NOLINT
+using namespace std;             // NOLINT
+using namespace nav2_map_server; // NOLINT
 using std::filesystem::path;
 
-class RclCppFixture
-{
+class RclCppFixture {
 public:
-  RclCppFixture() {rclcpp::init(0, nullptr);}
-  ~RclCppFixture() {rclcpp::shutdown();}
+  RclCppFixture() { rclcpp::init(0, nullptr); }
+  ~RclCppFixture() { rclcpp::shutdown(); }
 };
 
 RclCppFixture g_rclcppfixture;
 
-class MapIOTester : public ::testing::Test
-{
+class MapIOTester : public ::testing::Test {
 protected:
   // Fill LoadParameters with standard for testing values
   // Input: image_file_name
   // Output: load_parameters
-  void fillLoadParameters(
-    const std::string & image_file_name,
-    LoadParameters & load_parameters)
-  {
+  void fillLoadParameters(const std::string &image_file_name,
+                          LoadParameters &load_parameters) {
     load_parameters.image_file_name = image_file_name;
     load_parameters.resolution = g_valid_image_res;
     load_parameters.origin = g_valid_origin;
@@ -83,11 +79,9 @@ protected:
   // Fill SaveParameters with standard for testing values
   // Input: map_file_name, image_format
   // Output: save_parameters
-  void fillSaveParameters(
-    const std::string & map_file_name,
-    const std::string & image_format,
-    SaveParameters & save_parameters)
-  {
+  void fillSaveParameters(const std::string &map_file_name,
+                          const std::string &image_format,
+                          SaveParameters &save_parameters) {
     save_parameters.map_file_name = map_file_name;
     save_parameters.image_format = image_format;
     save_parameters.free_thresh = g_default_free_thresh;
@@ -97,24 +91,23 @@ protected:
 
   // Check that map_msg corresponds to reference pattern
   // Input: map_msg
-  void verifyMapMsg(const nav_msgs::msg::OccupancyGrid & map_msg)
-  {
+  void verifyMapMsg(const nav_msgs::msg::OccupancyGrid &map_msg) {
     ASSERT_FLOAT_EQ(map_msg.info.resolution, g_valid_image_res);
     ASSERT_EQ(map_msg.info.width, g_valid_image_width);
     ASSERT_EQ(map_msg.info.height, g_valid_image_height);
-    for (unsigned int i = 0; i < map_msg.info.width * map_msg.info.height; i++) {
+    for (unsigned int i = 0; i < map_msg.info.width * map_msg.info.height;
+         i++) {
       ASSERT_EQ(g_valid_image_content[i], map_msg.data[i]);
     }
   }
 };
 
-// Load a valid reference PGM file. Check obtained OccupancyGrid message for consistency:
-// loaded image should match the known dimensions and content of the file.
-// Save obtained OccupancyGrid message into a tmp PGM file. Then load back saved tmp file
-// and check for consistency.
-// Succeeds all steps were passed without a problem or expection.
-TEST_F(MapIOTester, loadSaveValidPGM)
-{
+// Load a valid reference PGM file. Check obtained OccupancyGrid message for
+// consistency: loaded image should match the known dimensions and content of
+// the file. Save obtained OccupancyGrid message into a tmp PGM file. Then load
+// back saved tmp file and check for consistency. Succeeds all steps were passed
+// without a problem or expection.
+TEST_F(MapIOTester, loadSaveValidPGM) {
   // 1. Load reference map file and verify obtained OccupancyGrid
   LoadParameters loadParameters;
   fillLoadParameters(path(TEST_DIR) / path(g_valid_pgm_file), loadParameters);
@@ -126,24 +119,25 @@ TEST_F(MapIOTester, loadSaveValidPGM)
 
   // 2. Save OccupancyGrid into a tmp file
   SaveParameters saveParameters;
-  fillSaveParameters(path(g_tmp_dir) / path(g_valid_map_name), "pgm", saveParameters);
+  fillSaveParameters(path(g_tmp_dir) / path(g_valid_map_name), "pgm",
+                     saveParameters);
 
   ASSERT_TRUE(saveMapToFile(map_msg, saveParameters));
 
   // 3. Load saved map and verify it
-  LOAD_MAP_STATUS status = loadMapFromYaml(path(g_tmp_dir) / path(g_valid_yaml_file), map_msg);
+  LOAD_MAP_STATUS status =
+      loadMapFromYaml(path(g_tmp_dir) / path(g_valid_yaml_file), map_msg);
   ASSERT_EQ(status, LOAD_MAP_SUCCESS);
 
   verifyMapMsg(map_msg);
 }
 
-// Load a valid reference PNG file. Check obtained OccupancyGrid message for consistency:
-// loaded image should match the known dimensions and content of the file.
-// Save obtained OccupancyGrid message into a tmp PNG file. Then load back saved tmp file
-// and check for consistency.
-// Succeeds all steps were passed without a problem or expection.
-TEST_F(MapIOTester, loadSaveValidPNG)
-{
+// Load a valid reference PNG file. Check obtained OccupancyGrid message for
+// consistency: loaded image should match the known dimensions and content of
+// the file. Save obtained OccupancyGrid message into a tmp PNG file. Then load
+// back saved tmp file and check for consistency. Succeeds all steps were passed
+// without a problem or expection.
+TEST_F(MapIOTester, loadSaveValidPNG) {
   // 1. Load reference map file and verify obtained OccupancyGrid
   LoadParameters loadParameters;
   fillLoadParameters(path(TEST_DIR) / path(g_valid_png_file), loadParameters);
@@ -155,24 +149,25 @@ TEST_F(MapIOTester, loadSaveValidPNG)
 
   // 2. Save OccupancyGrid into a tmp file
   SaveParameters saveParameters;
-  fillSaveParameters(path(g_tmp_dir) / path(g_valid_map_name), "png", saveParameters);
+  fillSaveParameters(path(g_tmp_dir) / path(g_valid_map_name), "png",
+                     saveParameters);
 
   ASSERT_TRUE(saveMapToFile(map_msg, saveParameters));
 
   // 3. Load saved map and verify it
-  LOAD_MAP_STATUS status = loadMapFromYaml(path(g_tmp_dir) / path(g_valid_yaml_file), map_msg);
+  LOAD_MAP_STATUS status =
+      loadMapFromYaml(path(g_tmp_dir) / path(g_valid_yaml_file), map_msg);
   ASSERT_EQ(status, LOAD_MAP_SUCCESS);
 
   verifyMapMsg(map_msg);
 }
 
-// Load a valid reference BMP file. Check obtained OccupancyGrid message for consistency:
-// loaded image should match the known dimensions and content of the file.
-// Save obtained OccupancyGrid message into a tmp BMP file. Then load back saved tmp file
-// and check for consistency.
-// Succeeds all steps were passed without a problem or expection.
-TEST_F(MapIOTester, loadSaveValidBMP)
-{
+// Load a valid reference BMP file. Check obtained OccupancyGrid message for
+// consistency: loaded image should match the known dimensions and content of
+// the file. Save obtained OccupancyGrid message into a tmp BMP file. Then load
+// back saved tmp file and check for consistency. Succeeds all steps were passed
+// without a problem or expection.
+TEST_F(MapIOTester, loadSaveValidBMP) {
   // 1. Load reference map file and verify obtained OccupancyGrid
   auto test_bmp = path(TEST_DIR) / path(g_valid_bmp_file);
 
@@ -186,12 +181,14 @@ TEST_F(MapIOTester, loadSaveValidBMP)
 
   // 2. Save OccupancyGrid into a tmp file
   SaveParameters saveParameters;
-  fillSaveParameters(path(g_tmp_dir) / path(g_valid_map_name), "bmp", saveParameters);
+  fillSaveParameters(path(g_tmp_dir) / path(g_valid_map_name), "bmp",
+                     saveParameters);
 
   ASSERT_TRUE(saveMapToFile(map_msg, saveParameters));
 
   // 3. Load saved map and verify it
-  LOAD_MAP_STATUS status = loadMapFromYaml(path(g_tmp_dir) / path(g_valid_yaml_file), map_msg);
+  LOAD_MAP_STATUS status =
+      loadMapFromYaml(path(g_tmp_dir) / path(g_valid_yaml_file), map_msg);
   ASSERT_EQ(status, LOAD_MAP_SUCCESS);
 
   verifyMapMsg(map_msg);
@@ -199,17 +196,18 @@ TEST_F(MapIOTester, loadSaveValidBMP)
 
 // Load map from a valid file. Trying to save map with different modes.
 // Succeeds all steps were passed without a problem or expection.
-TEST_F(MapIOTester, loadSaveMapModes)
-{
+TEST_F(MapIOTester, loadSaveMapModes) {
   // 1. Load map from YAML file
   nav_msgs::msg::OccupancyGrid map_msg;
-  LOAD_MAP_STATUS status = loadMapFromYaml(path(TEST_DIR) / path(g_valid_yaml_file), map_msg);
+  LOAD_MAP_STATUS status =
+      loadMapFromYaml(path(TEST_DIR) / path(g_valid_yaml_file), map_msg);
   ASSERT_EQ(status, LOAD_MAP_SUCCESS);
 
   // No need to check Trinary mode. This already verified in previous testcases.
   // 2. Save map in Scale mode.
   SaveParameters saveParameters;
-  fillSaveParameters(path(g_tmp_dir) / path(g_valid_map_name), "png", saveParameters);
+  fillSaveParameters(path(g_tmp_dir) / path(g_valid_map_name), "png",
+                     saveParameters);
   saveParameters.mode = MapMode::Scale;
 
   ASSERT_TRUE(saveMapToFile(map_msg, saveParameters));
@@ -234,8 +232,7 @@ TEST_F(MapIOTester, loadSaveMapModes)
 
 // Try to load an invalid file with different ways.
 // Succeeds if all cases are got expected fail behaviours.
-TEST_F(MapIOTester, loadInvalidFile)
-{
+TEST_F(MapIOTester, loadInvalidFile) {
   // 1. Trying to load incorrect map by loadMapFromFile()
   auto test_invalid = path(TEST_DIR) / path("foo");
 
@@ -253,13 +250,13 @@ TEST_F(MapIOTester, loadInvalidFile)
   ASSERT_EQ(status, INVALID_MAP_METADATA);
 }
 
-// Load map from a valid file. Trying to save map with different sets of parameters.
-// Succeeds if all cases got expected behaviours.
-TEST_F(MapIOTester, saveInvalidParameters)
-{
+// Load map from a valid file. Trying to save map with different sets of
+// parameters. Succeeds if all cases got expected behaviours.
+TEST_F(MapIOTester, saveInvalidParameters) {
   // 1. Load map from YAML file
   nav_msgs::msg::OccupancyGrid map_msg;
-  LOAD_MAP_STATUS status = loadMapFromYaml(path(TEST_DIR) / path(g_valid_yaml_file), map_msg);
+  LOAD_MAP_STATUS status =
+      loadMapFromYaml(path(TEST_DIR) / path(g_valid_yaml_file), map_msg);
   ASSERT_EQ(status, LOAD_MAP_SUCCESS);
 
   // 2. Trying to save map with different sets of parameters
@@ -289,52 +286,55 @@ TEST_F(MapIOTester, saveInvalidParameters)
 }
 
 // Load valid YAML file and check for consistency
-TEST_F(MapIOTester, loadValidYAML)
-{
+TEST_F(MapIOTester, loadValidYAML) {
   LoadParameters loadParameters;
-  ASSERT_NO_THROW(loadParameters = loadMapYaml(path(TEST_DIR) / path(g_valid_yaml_file)));
+  ASSERT_NO_THROW(loadParameters =
+                      loadMapYaml(path(TEST_DIR) / path(g_valid_yaml_file)));
 
   LoadParameters refLoadParameters;
-  fillLoadParameters(path(TEST_DIR) / path(g_valid_png_file), refLoadParameters);
+  fillLoadParameters(path(TEST_DIR) / path(g_valid_png_file),
+                     refLoadParameters);
   ASSERT_EQ(loadParameters.image_file_name, refLoadParameters.image_file_name);
   ASSERT_FLOAT_EQ(loadParameters.resolution, refLoadParameters.resolution);
   ASSERT_EQ(loadParameters.origin, refLoadParameters.origin);
   ASSERT_FLOAT_EQ(loadParameters.free_thresh, refLoadParameters.free_thresh);
-  ASSERT_FLOAT_EQ(loadParameters.occupied_thresh, refLoadParameters.occupied_thresh);
+  ASSERT_FLOAT_EQ(loadParameters.occupied_thresh,
+                  refLoadParameters.occupied_thresh);
   ASSERT_EQ(loadParameters.mode, refLoadParameters.mode);
   ASSERT_EQ(loadParameters.negate, refLoadParameters.negate);
 }
 
 // Try to load invalid YAML file
-TEST_F(MapIOTester, loadInvalidYAML)
-{
+TEST_F(MapIOTester, loadInvalidYAML) {
   LoadParameters loadParameters;
-  ASSERT_ANY_THROW(loadParameters = loadMapYaml(path(TEST_DIR) / path("invalid_file.yaml")));
+  ASSERT_ANY_THROW(loadParameters =
+                       loadMapYaml(path(TEST_DIR) / path("invalid_file.yaml")));
 }
 
-TEST(HomeUserExpanderTestSuite, homeUserExpanderShouldNotChangeInputStringWhenShorterThanTwo)
-{
+TEST(HomeUserExpanderTestSuite,
+     homeUserExpanderShouldNotChangeInputStringWhenShorterThanTwo) {
   const std::string emptyFileName{};
-  ASSERT_EQ(emptyFileName, expand_user_home_dir_if_needed(emptyFileName, "/home/user"));
+  ASSERT_EQ(emptyFileName,
+            expand_user_home_dir_if_needed(emptyFileName, "/home/user"));
 }
 
 TEST(
-  HomeUserExpanderTestSuite,
-  homeUserExpanderShouldNotChangeInputStringWhenInputStringDoesNotStartWithHomeSequence)
-{
+    HomeUserExpanderTestSuite,
+    homeUserExpanderShouldNotChangeInputStringWhenInputStringDoesNotStartWithHomeSequence) {
   const std::string fileName{"valid_file.yaml"};
   ASSERT_EQ(fileName, expand_user_home_dir_if_needed(fileName, "/home/user"));
 }
 
-TEST(HomeUserExpanderTestSuite, homeUserExpanderShouldNotChangeInputStringWhenHomeVariableNotFound)
-{
+TEST(HomeUserExpanderTestSuite,
+     homeUserExpanderShouldNotChangeInputStringWhenHomeVariableNotFound) {
   const std::string fileName{"~/valid_file.yaml"};
   ASSERT_EQ(fileName, expand_user_home_dir_if_needed(fileName, ""));
 }
 
-TEST(HomeUserExpanderTestSuite, homeUserExpanderShouldExpandHomeSequenceWhenHomeVariableSet)
-{
+TEST(HomeUserExpanderTestSuite,
+     homeUserExpanderShouldExpandHomeSequenceWhenHomeVariableSet) {
   const std::string fileName{"~/valid_file.yaml"};
   const std::string expectedOutputFileName{"/home/user/valid_file.yaml"};
-  ASSERT_EQ(expectedOutputFileName, expand_user_home_dir_if_needed(fileName, "/home/user"));
+  ASSERT_EQ(expectedOutputFileName,
+            expand_user_home_dir_if_needed(fileName, "/home/user"));
 }

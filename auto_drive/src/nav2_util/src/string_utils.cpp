@@ -17,11 +17,9 @@
 
 using std::string;
 
-namespace nav2_util
-{
+namespace nav2_util {
 
-std::string strip_leading_slash(const string & in)
-{
+std::string strip_leading_slash(const string &in) {
   string out = in;
 
   if ((!in.empty()) && (in[0] == '/')) {
@@ -31,8 +29,7 @@ std::string strip_leading_slash(const string & in)
   return out;
 }
 
-Tokens split(const string & tokenstring, char delimiter)
-{
+Tokens split(const string &tokenstring, char delimiter) {
   Tokens tokens;
 
   size_t current_pos = 0;
@@ -45,4 +42,4 @@ Tokens split(const string & tokenstring, char delimiter)
   return tokens;
 }
 
-}  // namespace nav2_util
+} // namespace nav2_util

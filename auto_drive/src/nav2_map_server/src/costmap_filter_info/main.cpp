@@ -17,8 +17,7 @@
 #include "nav2_map_server/costmap_filter_info_server.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-int main(int argc, char * argv[])
-{
+int main(int argc, char *argv[]) {
   auto logger = rclcpp::get_logger("costmap_filter_info_server");
 
   RCLCPP_INFO(logger, "This is costmap filter info publisher");

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <gtest/gtest.h>
 #include "nav2_util/validate_messages.hpp"
+#include <gtest/gtest.h>
 
 TEST(ValidateMessagesTest, DoubleValueCheck) {
   // Test valid double value
@@ -21,11 +21,11 @@ TEST(ValidateMessagesTest, DoubleValueCheck) {
   // Test invalid double value (infinity)
   EXPECT_FALSE(nav2_util::validateMsg(std::numeric_limits<double>::infinity()));
   // Test invalid double value (NaN)
-  EXPECT_FALSE(nav2_util::validateMsg(std::numeric_limits<double>::quiet_NaN()));
+  EXPECT_FALSE(
+      nav2_util::validateMsg(std::numeric_limits<double>::quiet_NaN()));
 }
 
-TEST(ValidateMessagesTest, TimeStampCheck)
-{
+TEST(ValidateMessagesTest, TimeStampCheck) {
   // Test valid time stamp
   builtin_interfaces::msg::Time valid_time_stamp;
   valid_time_stamp.sec = 123;
@@ -34,12 +34,11 @@ TEST(ValidateMessagesTest, TimeStampCheck)
   // Test invalid time stamp (nanosec out of range)
   builtin_interfaces::msg::Time invalid_time_stamp;
   invalid_time_stamp.sec = 123;
-  invalid_time_stamp.nanosec = 1e9;   // 1 second = 1e9 nanoseconds
+  invalid_time_stamp.nanosec = 1e9; // 1 second = 1e9 nanoseconds
   EXPECT_FALSE(nav2_util::validateMsg(invalid_time_stamp));
 }
 
-TEST(ValidateMessagesTest, HeaderCheck)
-{
+TEST(ValidateMessagesTest, HeaderCheck) {
   // Test valid header with non-empty frame_id
   std_msgs::msg::Header valid_header;
   valid_header.stamp.sec = 123;
@@ -58,8 +57,7 @@ TEST(ValidateMessagesTest, HeaderCheck)
   EXPECT_FALSE(nav2_util::validateMsg(invalid_header));
 }
 
-TEST(ValidateMessagesTest, PointCheck)
-{
+TEST(ValidateMessagesTest, PointCheck) {
   // Test valid Point message
   geometry_msgs::msg::Point valid_point;
   valid_point.x = 1.0;
@@ -84,8 +82,7 @@ TEST(ValidateMessagesTest, PointCheck)
   EXPECT_FALSE(nav2_util::validateMsg(invalid_point));
 }
 
-TEST(ValidateMessagesTest, QuaternionCheck)
-{
+TEST(ValidateMessagesTest, QuaternionCheck) {
   // Test valid Quaternion message
   geometry_msgs::msg::Quaternion valid_quaternion;
   valid_quaternion.x = 0.0;
@@ -98,7 +95,7 @@ TEST(ValidateMessagesTest, QuaternionCheck)
   invalid_quaternion.x = 0.1;
   invalid_quaternion.y = 0.2;
   invalid_quaternion.z = 0.3;
-  invalid_quaternion.w = 0.5;   // Invalid magnitude (should be 1.0)
+  invalid_quaternion.w = 0.5; // Invalid magnitude (should be 1.0)
   EXPECT_FALSE(nav2_util::validateMsg(invalid_quaternion));
 
   // One NaN value
@@ -124,8 +121,7 @@ TEST(ValidateMessagesTest, QuaternionCheck)
   EXPECT_FALSE(nav2_util::validateMsg(invalid_quaternion));
 }
 
-TEST(ValidateMessagesTest, PoseCheck)
-{
+TEST(ValidateMessagesTest, PoseCheck) {
   // Test valid Pose message
   geometry_msgs::msg::Pose valid_pose;
   valid_pose.position.x = 1.0;
@@ -156,7 +152,6 @@ TEST(ValidateMessagesTest, PoseCheck)
   invalid_pose.orientation.w = 0.4;
   EXPECT_FALSE(nav2_util::validateMsg(invalid_pose));
 }
-
 
 TEST(ValidateMessagesTest, MapMetaDataCheck) {
   // Test valid MapMetaData message
@@ -213,13 +208,13 @@ TEST(ValidateMessagesTest, OccupancyGridCheck) {
   valid_occupancy_grid.info.resolution = 0.05;
   valid_occupancy_grid.info.width = 100;
   valid_occupancy_grid.info.height = 100;
-  std::vector<int8_t> data(100 * 100, 0);   // Initialize with zeros
+  std::vector<int8_t> data(100 * 100, 0); // Initialize with zeros
   valid_occupancy_grid.data = data;
   EXPECT_TRUE(nav2_util::validateMsg(valid_occupancy_grid));
 
   // Test invalid header message with wrong data size
   nav_msgs::msg::OccupancyGrid invalid_occupancy_grid;
-  invalid_occupancy_grid.header.frame_id = "";    // Incorrect id
+  invalid_occupancy_grid.header.frame_id = ""; // Incorrect id
   invalid_occupancy_grid.info.resolution = 0.05;
   invalid_occupancy_grid.info.width = 100;
   invalid_occupancy_grid.info.height = 100;
@@ -229,7 +224,7 @@ TEST(ValidateMessagesTest, OccupancyGridCheck) {
   // Test invalid info message with wrong data size
   invalid_occupancy_grid.header.frame_id = "map";
   invalid_occupancy_grid.info.resolution = 0.05;
-  invalid_occupancy_grid.info.width = 0;    // Incorrect width
+  invalid_occupancy_grid.info.width = 0; // Incorrect width
   invalid_occupancy_grid.info.height = 100;
   invalid_occupancy_grid.data = data;
   EXPECT_FALSE(nav2_util::validateMsg(invalid_occupancy_grid));
@@ -239,7 +234,7 @@ TEST(ValidateMessagesTest, OccupancyGridCheck) {
   invalid_occupancy_grid.info.resolution = 0.05;
   invalid_occupancy_grid.info.width = 100;
   invalid_occupancy_grid.info.height = 100;
-  std::vector<int8_t> invalid_data(100 * 99, 0);   // Incorrect data size
+  std::vector<int8_t> invalid_data(100 * 99, 0); // Incorrect data size
   invalid_occupancy_grid.data = invalid_data;
   EXPECT_FALSE(nav2_util::validateMsg(invalid_occupancy_grid));
 }
@@ -363,6 +358,5 @@ TEST(ValidateMessagesTest, PoseWithCovarianceStampedCheck) {
 
   EXPECT_FALSE(nav2_util::validateMsg(invalidate_msg2));
 }
-
 
 // Add more test cases for other validateMsg functions if needed

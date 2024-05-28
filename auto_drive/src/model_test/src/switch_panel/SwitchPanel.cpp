@@ -3,20 +3,13 @@
 #include <ignition/msgs/float.pb.h>
 #include <ignition/plugin/Register.hh>
 
-namespace model_test
-{
+namespace model_test {
 
-SwitchPanel::SwitchPanel() : Plugin()
-{
-  CreateIgnitionIf();
-}
+SwitchPanel::SwitchPanel() : Plugin() { CreateIgnitionIf(); }
 
-SwitchPanel::~SwitchPanel()
-{
-}
+SwitchPanel::~SwitchPanel() {}
 
-void SwitchPanel::LoadConfig(const tinyxml2::XMLElement * _pluginElem)
-{
+void SwitchPanel::LoadConfig(const tinyxml2::XMLElement *_pluginElem) {
   if (!_pluginElem) {
     return;
   }
@@ -71,12 +64,14 @@ void SwitchPanel::OnLeftButton(void) {
   base_speed_pub_.Publish(float_msg);
 }
 
-void SwitchPanel::CreateIgnitionIf(void){
-  this->wheel_speed_pub_ = this->node_.Advertise<ignition::msgs::Float>("wheel_speed");
-  this->base_speed_pub_ = this->node_.Advertise<ignition::msgs::Float>("base_speed");
+void SwitchPanel::CreateIgnitionIf(void) {
+  this->wheel_speed_pub_ =
+      this->node_.Advertise<ignition::msgs::Float>("wheel_speed");
+  this->base_speed_pub_ =
+      this->node_.Advertise<ignition::msgs::Float>("base_speed");
 }
 
-}
+} // namespace model_test
 
 // Register this plugin
 IGNITION_ADD_PLUGIN(model_test::SwitchPanel, ignition::gui::Plugin)
