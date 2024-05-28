@@ -1,3 +1,10 @@
+/**
+ * @file noisy_odom.cpp
+ * @brief Implementation file for the NoisyOdom class
+ * @author kousei
+ * @date 2024-05-29
+*/
+
 #include "localization_dev/localization_test/noisy_odom.hpp"
 #include <rclcpp_components/register_node_macro.hpp>
 #include <functional>

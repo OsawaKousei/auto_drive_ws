@@ -9,7 +9,7 @@
 - user have to implement estimate_pose() function in /src/localization_test/localization.cpp
 - available information is lidar scan, odometry (add some noise), mapp data (pointcloud or occupancy grid)
 
-    user can get these information in localization.cpp calling interface function (get_~())
+    user can get these information by acces private member of Localization
 
 massege type:
 
