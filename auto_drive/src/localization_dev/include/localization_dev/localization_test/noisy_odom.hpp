@@ -45,6 +45,8 @@ namespace localization_dev
     std::default_random_engine generator;
     std::normal_distribution<double> xy_dist;
     std::normal_distribution<double> th_dist;
+
+    std::mutex mutex_;
   };
 
 }  // namespace localization_dev

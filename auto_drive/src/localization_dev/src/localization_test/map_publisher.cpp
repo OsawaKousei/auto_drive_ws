@@ -3,7 +3,7 @@
  * @brief Implementation file for the MapPublisher class
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 
 #include "localization_dev/localization_test/map_publisher.hpp"
 #include <rclcpp_components/register_node_macro.hpp>
@@ -16,7 +16,6 @@
 #include <pcl_conversions/pcl_conversions.h>
 
 using namespace std::chrono_literals;
-
 
 namespace localization_dev
 {
@@ -33,8 +32,7 @@ MapPublisher::MapPublisher(const rclcpp::NodeOptions & options)
     std::cout << "map_name: " << map_name << std::endl;
 
     map_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("mapped_pc2", 10);
-    timer_ = this->create_wall_timer(
-        2000ms, std::bind(&MapPublisher::timer_callback, this));
+    timer_ = this->create_wall_timer(2000ms, std::bind(&MapPublisher::timer_callback, this));
 }
 
 MapPublisher::~MapPublisher()
@@ -47,13 +45,12 @@ void MapPublisher::timer_callback()
 
     // read pcd file
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    try{
+    try {
         pcl::io::loadPCDFile<pcl::PointXYZ>(map_dir + "/" + map_name, *cloud);
-    } catch (std::runtime_error e){
+    } catch (std::runtime_error e) {
         std::cerr << "Error in reading pcd file: " << e.what() << std::endl;
-    
     }
-    
+
     sensor_msgs::msg::PointCloud2 msg;
     pcl::toROSMsg(*cloud, msg);
     msg.header.frame_id = "map";
@@ -62,6 +59,7 @@ void MapPublisher::timer_callback()
 
     mutex_.unlock();
 }
+
 }  // namespace localization_dev
 
 RCLCPP_COMPONENTS_REGISTER_NODE(localization_dev::MapPublisher)
