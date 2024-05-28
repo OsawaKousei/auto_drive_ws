@@ -23,7 +23,7 @@ int main(int argc, char * argv[])
     pass.setInputCloud(cloud); // Use ConstPtr
     pass.setFilterFieldName("z");  // axis
     // extract point cloud
-    pass.setFilterLimits(0.05,1.0);
+    pass.setFilterLimits(0.04,1.0);
     pass.filter(*cloud);
 
     // set each point z to 0
@@ -42,7 +42,7 @@ int main(int argc, char * argv[])
     // Voxel Grid: pattern 1
     pcl::VoxelGrid<pcl::PointXYZ> voxelGrid;
     voxelGrid.setInputCloud(cloud);
-    float leaf_size_ = 0.05;
+    float leaf_size_ = 0.075;
     // set the leaf size (x, y, z)
     voxelGrid.setLeafSize(leaf_size_, leaf_size_, leaf_size_);
     // apply the filter to dereferenced cloudVoxel

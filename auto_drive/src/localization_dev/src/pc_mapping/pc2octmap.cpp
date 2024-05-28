@@ -45,15 +45,13 @@ void Pc2octmap::map_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
 {
     mutex_.lock();
 
-    std::cout << "map_callback" << std::endl;
-
     // ポイントクラウドデータをグリッドマップに変換
     nav_msgs::msg::OccupancyGrid map;
     map.header = msg->header;
     map.info.map_load_time = msg->header.stamp;
-    map.info.resolution = 0.1;
-    map.info.width = 100;
-    map.info.height = 100;
+    map.info.resolution = 0.075;
+    map.info.width = 150;
+    map.info.height = 150;
     map.info.origin.position.x = 0.0;
     map.info.origin.position.y = 0.0;
     map.info.origin.position.z = 0.0;

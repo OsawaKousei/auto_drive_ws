@@ -172,6 +172,6 @@ def generate_launch_description():
         map_static_tf,
         rviz2,
 
-        ign_debug,
+        # ign_debug,
         localization_test
     ])
