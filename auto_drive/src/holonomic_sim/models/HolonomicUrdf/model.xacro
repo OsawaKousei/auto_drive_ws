@@ -1,4 +1,3 @@
-
 <robot name="HolonomicUrdf" xmlns:xacro="http://ros.org/wiki/xacro">
     <xacro:include filename="$(find holonomic_sim)/models/xacro/common.xacro"/>
 
@@ -34,6 +33,7 @@
             <topic>joint_states</topic>
         </plugin>
 
+        <!-- Holonomic plugin -->
         <plugin filename="libHolonomicPlugin.so" name="holonomic_sim::HolonomicPlugin">
             <wheel_joint>wheel_joint</wheel_joint>
             <top_base_joint>top_wheel_base_joint</top_base_joint>
