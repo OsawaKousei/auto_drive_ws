@@ -31,7 +31,9 @@ Pc2octmap::Pc2octmap(const rclcpp::NodeOptions &options)
   map_sub = this->create_subscription<sensor_msgs::msg::PointCloud2>(
       "mapped_pc2", 1,
       std::bind(&Pc2octmap::map_callback, this, std::placeholders::_1));
-  map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>("map", 1);
+  map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>("map", rclcpp::QoS(1)
+            .reliable()
+            .transient_local());
 }
 
 Pc2octmap::~Pc2octmap() {}

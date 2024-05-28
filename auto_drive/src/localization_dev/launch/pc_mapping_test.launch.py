@@ -144,7 +144,7 @@ def generate_launch_description():
         package='localization_dev',
         executable='pc_mapping_node',
         output='screen',
-        parameters=[os.path.join(pkg_share_dir,'param','params.yaml')],
+        parameters=[os.path.join(pkg_share_dir,'params','params.yaml')],
         # prefix="xterm -e"
     )
 

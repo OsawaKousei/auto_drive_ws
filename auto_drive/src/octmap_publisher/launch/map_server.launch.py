@@ -7,11 +7,7 @@ from launch.actions import ExecuteProcess
 from launch.substitutions import LaunchConfiguration
 import launch_ros.actions
 
-
 def generate_launch_description():
-
-    ld = LaunchDescription()
-
     # map file
     map_file_path = os.path.join(
         get_package_share_directory('octmap_publisher'),
@@ -19,7 +15,7 @@ def generate_launch_description():
         'map.yaml'
     )
 
-    map_server_cmd = Node(
+    map_server = Node(
         package='nav2_map_server',
         executable='map_server',
         output='screen',
@@ -30,7 +26,7 @@ def generate_launch_description():
     use_sim_time = True
     autostart = True
 
-    start_lifecycle_manager_cmd = launch_ros.actions.Node(
+    start_lifecycle_manager = launch_ros.actions.Node(
             package='nav2_lifecycle_manager',
             executable='lifecycle_manager',
             name='lifecycle_manager',
@@ -39,9 +35,8 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time},
                         {'autostart': autostart},
                         {'node_names': lifecycle_nodes}])
-
-
-    ld.add_action(map_server_cmd)
-    ld.add_action(start_lifecycle_manager_cmd)
-
-    return ld
+    
+    return LaunchDescription([
+        map_server,
+        start_lifecycle_manager
+    ])

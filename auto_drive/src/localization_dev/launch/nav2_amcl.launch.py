@@ -1,11 +1,12 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
+import launch_ros
 from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription, SetEnvironmentVariable
+from launch_ros.actions import Node
+from launch.actions import IncludeLaunchDescription, SetEnvironmentVariable, TimerAction, LogInfo
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch_ros.actions import Node
 import xacro
 
 def generate_launch_description():
@@ -103,14 +104,14 @@ def generate_launch_description():
                         executable='static_transform_publisher',
                         name='static_transform_publisher',
                         output='log',
-                        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'map', 'odom'],
+                        arguments=['0.5', '0.5', '0.0', '0.0', '0.0', '0.0', 'map', 'odom'],
                         parameters=[{'use_sim_time': use_sim_time}])
     
     #rviz2の設定フィルのパスを取得
     rviz_config_dir = os.path.join(
         pkg_share_dir,
         'config',
-        'localization_test.rviz')
+        'amcl.rviz')
     
     #rviz2の起動設定
     rviz2 = Node(
@@ -122,31 +123,61 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen')
     
-    #rqt_publisherの起動設定
-    rqt = Node(
-            package='rqt_publisher',
-            executable='rqt_publisher',
-            name='rqt_publisher',
-            output='screen')
-    
-    #ign gzのデバッグ用ノードの起動設定
-    ign_debug = Node(
-        package='holonomic_sim',
-        executable='ign_ros_node',
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time}],
-        #別ターミナルで起動する設定
-        prefix="xterm -e"
+    param_file_path = os.path.join(
+        get_package_share_directory('localization_dev'),
+        'params',
+        'amcl_param.yaml'
     )
 
-    #自己位置推定のテスト用ノード
-    localization_test = Node(
-        package='localization_dev',
-        executable='localization_test_node',
+    amcl = Node(
+        package='nav2_amcl',
+        executable='amcl',
         output='screen',
-        parameters=[os.path.join(pkg_share_dir,'params','params.yaml')],
-        prefix="xterm -e"
+        parameters=[param_file_path]
+        )
+
+
+    lifecycle_nodes = ['amcl']
+    use_sim_time_ = True
+    autostart = True
+
+    start_lifecycle_manager = launch_ros.actions.Node(
+            package='nav2_lifecycle_manager',
+            executable='lifecycle_manager',
+            name='lifecycle_manager',
+            output='screen',
+            emulate_tty=True,  # https://github.com/ros2/launch/issues/188
+            parameters=[{'use_sim_time': use_sim_time_},
+                        {'autostart': autostart},
+                        {'node_names': lifecycle_nodes}])
+    
+    map_file_path = os.path.join(
+        get_package_share_directory('octmap_publisher'),
+        'maps',
+        'map.yaml'
     )
+
+    map_server = Node(
+        package='nav2_map_server',
+        executable='map_server',
+        output='screen',
+        parameters=[{'yaml_filename': map_file_path}])
+
+
+    lifecycle_nodes = ['map_server']
+    use_sim_time_ = True
+    autostart = True
+
+    start_lifecycle_manager_map = launch_ros.actions.Node(
+            package='nav2_lifecycle_manager',
+            executable='lifecycle_manager',
+            name='lifecycle_manager_map',
+            output='screen',
+            emulate_tty=True,  # https://github.com/ros2/launch/issues/188
+            parameters=[{'use_sim_time': use_sim_time_},
+                        {'autostart': autostart},
+                        {'node_names': lifecycle_nodes}],
+            prefix="bash -c 'sleep 5; $0 $@' ")
     
     return LaunchDescription([
         ign_resource_path,
@@ -165,13 +196,14 @@ def generate_launch_description():
             'world_name',
             default_value=world_name,
             description='World name'),
-
-        rqt,
-
+        
         robot_state_publisher,
         map_static_tf,
         rviz2,
 
-        # ign_debug,
-        localization_test
+        amcl,
+        start_lifecycle_manager,
+
+        map_server,
+        start_lifecycle_manager_map
     ])
