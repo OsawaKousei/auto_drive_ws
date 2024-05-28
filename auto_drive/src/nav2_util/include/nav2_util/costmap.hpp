@@ -15,19 +15,17 @@
 #ifndef NAV2_UTIL__COSTMAP_HPP_
 #define NAV2_UTIL__COSTMAP_HPP_
 
-#include <vector>
 #include <cstdint>
+#include <vector>
 
-#include "rclcpp/rclcpp.hpp"
 #include "nav2_msgs/msg/costmap.hpp"
 #include "nav2_msgs/msg/costmap_meta_data.hpp"
 #include "nav_msgs/msg/occupancy_grid.hpp"
+#include "rclcpp/rclcpp.hpp"
 
-namespace nav2_util
-{
+namespace nav2_util {
 
-enum class TestCostmap
-{
+enum class TestCostmap {
   open_space,
   bounded,
   bottom_left_obstacle,
@@ -41,8 +39,7 @@ enum class TestCostmap
  * @brief Class for a single layered costmap initialized from an
  * occupancy grid representing the map.
  */
-class Costmap
-{
+class Costmap {
 public:
   typedef uint8_t CostValue;
 
@@ -54,9 +51,9 @@ public:
    * @param lethal_threshold The lethal space cost threshold to use
    * @param unknown_cost_value Internal costmap cell value for unknown space
    */
-  Costmap(
-    rclcpp::Node * node, bool trinary_costmap = true, bool track_unknown_space = true,
-    int lethal_threshold = 100, int unknown_cost_value = -1);
+  Costmap(rclcpp::Node *node, bool trinary_costmap = true,
+          bool track_unknown_space = true, int lethal_threshold = 100,
+          int unknown_cost_value = -1);
   Costmap() = delete;
   ~Costmap();
 
@@ -64,32 +61,36 @@ public:
    * @brief Set the static map of this costmap
    * @param occupancy_grid Occupancy grid to populate this costmap with
    */
-  void set_static_map(const nav_msgs::msg::OccupancyGrid & occupancy_grid);
+  void set_static_map(const nav_msgs::msg::OccupancyGrid &occupancy_grid);
 
   /**
    * @brief Set the test costmap type of this costmap
    * @param testCostmapType Type of stored costmap to use
    */
-  void set_test_costmap(const TestCostmap & testCostmapType);
+  void set_test_costmap(const TestCostmap &testCostmapType);
 
   /**
    * @brief Get a costmap message from this object
    * @param specifications Parameters of costmap
    * @return Costmap msg of this costmap
    */
-  nav2_msgs::msg::Costmap get_costmap(const nav2_msgs::msg::CostmapMetaData & specifications);
+  nav2_msgs::msg::Costmap
+  get_costmap(const nav2_msgs::msg::CostmapMetaData &specifications);
 
   /**
    * @brief Get a metadata message from this object
    * @return Costmap metadata of this costmap
    */
-  nav2_msgs::msg::CostmapMetaData get_properties() {return costmap_properties_;}
+  nav2_msgs::msg::CostmapMetaData get_properties() {
+    return costmap_properties_;
+  }
 
   /**
    * @brief Get whether some coordinates are free
    * @return bool if free
    */
-  bool is_free(const unsigned int x_coordinate, const unsigned int y_coordinate) const;
+  bool is_free(const unsigned int x_coordinate,
+               const unsigned int y_coordinate) const;
 
   /**
    * @brief Get whether some index in the costmap is free
@@ -118,7 +119,7 @@ private:
   uint8_t interpret_value(const int8_t value) const;
 
   // Costmap isn't itself a node
-  rclcpp::Node * node_;
+  rclcpp::Node *node_;
 
   // TODO(orduno): For now, only holding costs from static map
   nav2_msgs::msg::CostmapMetaData costmap_properties_;
@@ -135,6 +136,6 @@ private:
   bool using_test_map_;
 };
 
-}  // namespace nav2_util
+} // namespace nav2_util
 
-#endif  // NAV2_UTIL__COSTMAP_HPP_
+#endif // NAV2_UTIL__COSTMAP_HPP_

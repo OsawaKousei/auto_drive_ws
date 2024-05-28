@@ -1,18 +1,16 @@
+#include <ignition/gui/Plugin.hh>
 #include <ignition/gui/qt.h>
 #include <ignition/transport/Node.hh>
-#include <ignition/gui/Plugin.hh>
 
-namespace holonomic_sim
-{
+namespace holonomic_sim {
 
-class PcMappingSwitch : public ignition::gui::Plugin
-{
+class PcMappingSwitch : public ignition::gui::Plugin {
   Q_OBJECT
 
 public:
   PcMappingSwitch();
   virtual ~PcMappingSwitch();
-  void LoadConfig(const tinyxml2::XMLElement * _pluginElem) override;
+  void LoadConfig(const tinyxml2::XMLElement *_pluginElem) override;
 
 protected slots:
   void OnSaveMapButton(void);
@@ -25,4 +23,4 @@ private:
   ignition::transport::Node::Publisher PcMapping_pub_;
 };
 
-}  // namespace holonomic_sim
+} // namespace holonomic_sim

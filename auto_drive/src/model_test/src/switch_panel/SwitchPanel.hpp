@@ -1,18 +1,16 @@
+#include <ignition/gui/Plugin.hh>
 #include <ignition/gui/qt.h>
 #include <ignition/transport/Node.hh>
-#include <ignition/gui/Plugin.hh>
 
-namespace model_test
-{
+namespace model_test {
 
-class SwitchPanel : public ignition::gui::Plugin
-{
+class SwitchPanel : public ignition::gui::Plugin {
   Q_OBJECT
 
 public:
   SwitchPanel();
   virtual ~SwitchPanel();
-  void LoadConfig(const tinyxml2::XMLElement * _pluginElem) override;
+  void LoadConfig(const tinyxml2::XMLElement *_pluginElem) override;
 
 protected slots:
   void OnForwardButton(void);
@@ -33,4 +31,4 @@ private:
   float reverse_speed_{-1.0f};
 };
 
-}
+} // namespace model_test

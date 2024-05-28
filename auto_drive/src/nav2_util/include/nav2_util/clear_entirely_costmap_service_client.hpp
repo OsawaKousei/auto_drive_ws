@@ -15,35 +15,32 @@
 #ifndef NAV2_UTIL__CLEAR_ENTIRELY_COSTMAP_SERVICE_CLIENT_HPP_
 #define NAV2_UTIL__CLEAR_ENTIRELY_COSTMAP_SERVICE_CLIENT_HPP_
 
-#include <string>
+#include "nav2_msgs/srv/clear_entire_costmap.hpp"
 #include "nav2_util/service_client.hpp"
 #include "std_srvs/srv/empty.hpp"
-#include "nav2_msgs/srv/clear_entire_costmap.hpp"
+#include <string>
 
-namespace nav2_util
-{
+namespace nav2_util {
 /**
  * @class nav2_util::ClearEntirelyCostmapServiceClient
  * @brief A service client to clear costmaps entirely
  */
 class ClearEntirelyCostmapServiceClient
-  : public nav2_util::ServiceClient<nav2_msgs::srv::ClearEntireCostmap>
-{
+    : public nav2_util::ServiceClient<nav2_msgs::srv::ClearEntireCostmap> {
 public:
   /**
-* @brief A constructor for nav2_util::ClearEntirelyCostmapServiceClient
+   * @brief A constructor for nav2_util::ClearEntirelyCostmapServiceClient
    */
-  explicit ClearEntirelyCostmapServiceClient(const std::string & service_name)
-  : nav2_util::ServiceClient<nav2_msgs::srv::ClearEntireCostmap>(service_name)
-  {
-  }
+  explicit ClearEntirelyCostmapServiceClient(const std::string &service_name)
+      : nav2_util::ServiceClient<nav2_msgs::srv::ClearEntireCostmap>(
+            service_name) {}
 
   using clearEntirelyCostmapServiceRequest =
-    nav2_util::ServiceClient<nav2_msgs::srv::ClearEntireCostmap>::RequestType;
-  using clearEntirelyCostmapServiceResponse =
-    nav2_util::ServiceClient<nav2_msgs::srv::ClearEntireCostmap>::ResponseType;
+      nav2_util::ServiceClient<nav2_msgs::srv::ClearEntireCostmap>::RequestType;
+  using clearEntirelyCostmapServiceResponse = nav2_util::ServiceClient<
+      nav2_msgs::srv::ClearEntireCostmap>::ResponseType;
 };
 
-}  // namespace nav2_util
+} // namespace nav2_util
 
-#endif  // NAV2_UTIL__CLEAR_ENTIRELY_COSTMAP_SERVICE_CLIENT_HPP_
+#endif // NAV2_UTIL__CLEAR_ENTIRELY_COSTMAP_SERVICE_CLIENT_HPP_
