@@ -29,6 +29,16 @@ target_link_libraries(LocalizationSwitch
   ${IGNITION-GUI_LIBRARIES}
 )
 
+qt5_add_resources(resources_rcc src/pc_mapping_switch/PcMappingSwitch.qrc)
+add_library(PcMappingSwitch SHARED
+  src/pc_mapping_switch/PcMappingSwitch.cpp
+  ${resources_rcc}
+)
+target_link_libraries(PcMappingSwitch
+  ${IGNITION-COMMON_LIBRARY_DIRS}
+  ${IGNITION-GUI_LIBRARIES}
+)
+
 # system plugin
 add_library(HolonomicPlugin SHARED
   src/holonomic_plugin/holonomic_plugin.cpp
@@ -39,7 +49,7 @@ target_link_libraries(HolonomicPlugin
 )
 
 install(
-  TARGETS HolonomicPlugin LocalizationSwitch
+  TARGETS HolonomicPlugin LocalizationSwitch PcMappingSwitch
   LIBRARY DESTINATION lib
 )
 

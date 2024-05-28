@@ -15,6 +15,7 @@ def generate_launch_description():
     sim_pkg_dir = get_package_share_directory('holonomic_sim')
     #モデルの格納されているパスを設定
     model_path = os.path.join(sim_pkg_dir, "models")
+    pkg_share_dir = get_package_share_directory('localization_dev')
 
     #ignition gazeboがモデルにアクセスできるように設定
     ign_resource_path = SetEnvironmentVariable(
@@ -73,7 +74,7 @@ def generate_launch_description():
         executable='parameter_bridge',
         parameters=[{
             #brigdeの設定ファイルを指定
-            'config_file': os.path.join(sim_pkg_dir, 'config', 'localization_test.yaml'),
+            'config_file': os.path.join(pkg_share_dir, 'config', 'localization_test.yaml'),
             #QoSの設定
             'qos_overrides./tf_static.publisher.durability': 'transient_local',
             'qos_overrides./odom.publisher.durability': 'transient_local',

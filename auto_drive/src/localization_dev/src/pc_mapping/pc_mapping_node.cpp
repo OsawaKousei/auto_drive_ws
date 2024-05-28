@@ -4,6 +4,7 @@
 #include "localization_dev/pc_mapping/pc2_filter.hpp"
 #include "localization_dev/pc_mapping/scan2pc2.hpp"
 #include "localization_dev/pc_mapping/odom_tf.hpp"
+#include "localization_dev/pc_mapping/save_pc.hpp"
 
 int main(int argc, char * argv[])
 {
@@ -17,6 +18,8 @@ int main(int argc, char * argv[])
     exec.add_node(noisy_odom);
     const auto odom_tf = std::make_shared<localization_dev::OdomTf>(rclcpp::NodeOptions());
     exec.add_node(odom_tf);
+    const auto save_pc = std::make_shared<localization_dev::SavePc>(rclcpp::NodeOptions());
+    exec.add_node(save_pc);
     exec.spin();
     rclcpp::shutdown();
 }

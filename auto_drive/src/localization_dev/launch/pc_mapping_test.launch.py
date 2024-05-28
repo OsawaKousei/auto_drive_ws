@@ -56,7 +56,7 @@ def generate_launch_description():
         )
     
     #ワールドのsdfファイルを設定(worldタグのあるsdfファイル)
-    world = os.path.join(model_path,"worlds", "localization_test.sdf")
+    world = os.path.join(model_path,"worlds", "pc_mapping.sdf")
 
     #ignition gazeboの起動設定
     ign_gz = IncludeLaunchDescription(
@@ -74,7 +74,7 @@ def generate_launch_description():
         executable='parameter_bridge',
         parameters=[{
             #brigdeの設定ファイルを指定
-            'config_file': os.path.join(sim_pkg_dir, 'config', 'localization_test.yaml'),
+            'config_file': os.path.join(pkg_share_dir, 'config', 'pc_mapping.yaml'),
             #QoSの設定
             'qos_overrides./tf_static.publisher.durability': 'transient_local',
             'qos_overrides./odom.publisher.durability': 'transient_local',
@@ -104,13 +104,6 @@ def generate_launch_description():
                         name='static_transform_publisher',
                         output='log',
                         arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'map', 'odom'],
-                        parameters=[{'use_sim_time': use_sim_time}])
-    
-    odom_static_tf = Node(package='tf2_ros',
-                        executable='static_transform_publisher',
-                        name='static_transform_publisher',
-                        output='log',
-                        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'odom', 'baes_footprint'],
                         parameters=[{'use_sim_time': use_sim_time}])
     
     #rviz2の設定フィルのパスを取得
@@ -151,19 +144,10 @@ def generate_launch_description():
         package='localization_dev',
         executable='pc_mapping_node',
         output='screen',
-        parameters=[{'use_sim_time': use_sim_time}],
-        # prefix="xterm -e"
+        parameters=[os.path.join(pkg_share_dir,'param','params.yaml')],
+        prefix="xterm -e"
     )
 
-    #odom_tf node
-    odom_tf = Node(
-        package='localization_dev',
-        executable='odom_tf_node',
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time}],
-        # prefix="xterm -e"
-    )
-    
     return LaunchDescription([
         ign_resource_path,
         ignition_spawn_entity,
@@ -186,11 +170,9 @@ def generate_launch_description():
 
         robot_state_publisher,
         map_static_tf,
-        # odom_static_tf,
         rviz2,
 
         # ign_debug,
         # localization_test
         pc_mapping_test,
-        # odom_tf
     ])
