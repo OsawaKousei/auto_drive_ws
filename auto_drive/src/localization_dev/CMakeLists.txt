@@ -41,6 +41,7 @@ localization_test_node src/localization_test/localization_test_node.cpp
   src/localization_test/noisy_odom.cpp
   src/localization_test/map_publisher.cpp
   src/pc_mapping/odom_tf.cpp
+  src/pc_mapping/pc2octmap.cpp
 )
 
 # pc_mapping
@@ -49,11 +50,13 @@ ament_auto_add_library(pc2_mapping src/pc_mapping/pc2_mapping.cpp)
 ament_auto_add_library(scan2pc2 src/pc_mapping/scan2pc2.cpp)
 ament_auto_add_library(odom_tf src/pc_mapping/odom_tf.cpp)
 ament_auto_add_library(save_pc src/pc_mapping/save_pc.cpp)
+ament_auto_add_library(pc2octmap src/pc_mapping/pc2octmap.cpp)
 rclcpp_components_register_nodes(pc2_filter "localization_dev::Pc2Filter")
 rclcpp_components_register_nodes(pc2_mapping "localization_dev::Pc2Mapping")
 rclcpp_components_register_nodes(scan2pc2 "localization_dev::Scan2pc2")
 rclcpp_components_register_nodes(odom_tf "localization_dev::OdomTf")
 rclcpp_components_register_nodes(save_pc "localization_dev::SavePc")
+rclcpp_components_register_nodes(pc2octmap "localization_dev::Pc2octmap")
 ament_auto_add_executable(
 pc_mapping_node src/pc_mapping/pc_mapping_node.cpp
   src/pc_mapping/pc2_filter.cpp
@@ -61,6 +64,7 @@ pc_mapping_node src/pc_mapping/pc_mapping_node.cpp
   src/pc_mapping/scan2pc2.cpp
   src/pc_mapping/odom_tf.cpp
   src/pc_mapping/save_pc.cpp
+  src/pc_mapping/pc2octmap.cpp
 )
 
 # settig to use PCL in ros2 node
@@ -76,6 +80,11 @@ ament_target_dependencies(pc2_mapping
 
 target_link_libraries(map_publisher ${PCL_LIBRARIES})
 ament_target_dependencies(map_publisher
+ pcl_conversions
+)
+
+target_link_libraries(pc2octmap ${PCL_LIBRARIES})
+ament_target_dependencies(pc2octmap
  pcl_conversions
 )
 

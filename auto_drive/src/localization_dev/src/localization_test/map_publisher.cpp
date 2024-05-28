@@ -20,7 +20,7 @@ MapPublisher::MapPublisher(const rclcpp::NodeOptions & options)
     // configure parameters
     std::cout << "map_dir: " << map_dir << std::endl;
     std::cout << "map_name: " << map_name << std::endl;
-    map_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("map", 10);
+    map_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("mapped_pc2", 10);
     timer_ = this->create_wall_timer(
         500ms, std::bind(&MapPublisher::timer_callback, this));
 }

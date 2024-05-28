@@ -5,6 +5,7 @@
 #include "localization_dev/pc_mapping/scan2pc2.hpp"
 #include "localization_dev/pc_mapping/odom_tf.hpp"
 #include "localization_dev/pc_mapping/save_pc.hpp"
+#include "localization_dev/pc_mapping/pc2octmap.hpp"
 
 int main(int argc, char * argv[])
 {
@@ -20,6 +21,8 @@ int main(int argc, char * argv[])
     exec.add_node(odom_tf);
     const auto save_pc = std::make_shared<localization_dev::SavePc>(rclcpp::NodeOptions());
     exec.add_node(save_pc);
+    const auto pc2octmap = std::make_shared<localization_dev::Pc2octmap>(rclcpp::NodeOptions());
+    exec.add_node(pc2octmap);
     exec.spin();
     rclcpp::shutdown();
 }

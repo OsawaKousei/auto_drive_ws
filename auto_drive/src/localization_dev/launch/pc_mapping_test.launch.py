@@ -145,7 +145,7 @@ def generate_launch_description():
         executable='pc_mapping_node',
         output='screen',
         parameters=[os.path.join(pkg_share_dir,'param','params.yaml')],
-        prefix="xterm -e"
+        # prefix="xterm -e"
     )
 
     return LaunchDescription([
