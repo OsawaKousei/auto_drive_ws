@@ -6,7 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /Grid1
+        - /Odometry1
         - /Odometry1/Topic1
+        - /LaserScan1
         - /Map1
       Splitter Ratio: 0.5
     Tree Height: 549
@@ -159,7 +161,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /odom
+        Value: /raw_odom
       Value: true
     - Class: rviz_default_plugins/TF
       Enabled: true
@@ -237,9 +239,9 @@ Visualization Manager:
       Name: LaserScan
       Position Transformer: XYZ
       Selectable: true
-      Size (Pixels): 3
+      Size (Pixels): 5
       Size (m): 0.009999999776482582
-      Style: Flat Squares
+      Style: Points
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -351,7 +353,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 34.40523147583008
+      Distance: 13.311397552490234
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -387,5 +389,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 439
-  Y: 36
+  X: 407
+  Y: 4

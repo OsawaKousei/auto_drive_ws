@@ -4,9 +4,6 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
-        - /Grid1
-        - /Odometry1
         - /Odometry1/Topic1
       Splitter Ratio: 0.5
     Tree Height: 549
@@ -317,7 +314,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 7.553248405456543
+      Distance: 14.273942947387695
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -353,5 +350,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 375
-  Y: -28
+  X: 348
+  Y: 55

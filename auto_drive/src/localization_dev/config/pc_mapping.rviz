@@ -5,7 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Odometry1/Topic1
-        - /PointCloud21/Topic1
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz_common/Selection
@@ -44,7 +43,7 @@ Visualization Manager:
         Y: 0
         Z: 0
       Plane: XY
-      Plane Cell Count: 10
+      Plane Cell Count: 15
       Reference Frame: <Fixed Frame>
       Value: true
     - Alpha: 1
@@ -157,7 +156,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /odom
+        Value: /raw_odom
       Value: true
     - Class: rviz_default_plugins/TF
       Enabled: true
@@ -235,9 +234,9 @@ Visualization Manager:
       Name: LaserScan
       Position Transformer: XYZ
       Selectable: true
-      Size (Pixels): 3
+      Size (Pixels): 5
       Size (m): 0.009999999776482582
-      Style: Flat Squares
+      Style: Points
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -269,8 +268,8 @@ Visualization Manager:
       Name: PointCloud2
       Position Transformer: XYZ
       Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (Pixels): 5
+      Size (m): 5
       Style: Points
       Topic:
         Depth: 5
@@ -349,7 +348,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 9.711627960205078
+      Distance: 12.561065673828125
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -364,10 +363,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3653985261917114
+      Pitch: 0.6303988099098206
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.5753975510597229
+      Yaw: 1.0203981399536133
     Saved: ~
 Window Geometry:
   Displays:
@@ -385,5 +384,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 550
-  Y: -15
+  X: 375
+  Y: -28

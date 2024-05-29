@@ -96,7 +96,7 @@
     </xacro:macro>
 
     <!-- lidar macro with lidar plugin for ign gz-->
-    <xacro:macro name="lidar_macro" params="suffix parent x y z rate max_range samples angle">
+    <xacro:macro name="lidar_macro" params="suffix parent x y z rate max_range samples angle noise">
         <xacro:cylinder_link_macro suffix="${suffix}_lidar" mass="0.0001" arg="0.0001" radius="0.05" length="0.05" if_collision="false"  if_visual="true"/>
         <joint name="${suffix}_lidar_joint" type="fixed">
             <parent link="${parent}"/>
@@ -124,7 +124,7 @@
                   <noise>
                     <type>gaussian</type>
                     <mean>0.0</mean>
-                    <stddev>0.0</stddev>
+                    <stddev>${noise}</stddev>
                   </noise>
                 </ray>
                 <always_on>true</always_on>
