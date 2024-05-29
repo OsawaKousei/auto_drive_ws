@@ -1,8 +1,0 @@
-save_pc:
-  ros__parameters:
-    map_dir: "/home/kousei/auto_drive_ws/auto_drive/src/localization_dev/map/"
-
-map_publisher:
-  ros__parameters:
-    map_dir: "/home/kousei/auto_drive_ws/auto_drive/src/localization_dev/map/"
-    map_name: "map.pcd"

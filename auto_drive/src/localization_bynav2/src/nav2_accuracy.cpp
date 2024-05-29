@@ -5,20 +5,20 @@
  * @date 2024-05-29
  */
 
-#include "nav2_localization/nav2_accuracy.hpp"
+#include "localization_bynav2/nav2_accuracy.hpp"
 #include <iostream>
 #include <rclcpp_components/register_node_macro.hpp>
 #include <tf2/utils.h> //getEulerYPR
 
 using namespace std::chrono_literals;
 
-namespace nav2_localization {
+namespace localization_bynav2 {
 
 Nav2Accuracy::Nav2Accuracy(const rclcpp::NodeOptions &options)
  : rclcpp::Node("nav2_accuracy", options) {
   // create subscription to the estimated odometry
   estimated_odom_sub = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
-      "estimated_odom", 10, [this](const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg) {
+      "amcl_pose", 10, [this](const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg) {
         mutex_.lock();
         accuracy = 1 / (1 + cbrt(pow(msg->pose.pose.position.x - real_odom.pose.pose.position.x, 2) +
                                     pow(msg->pose.pose.position.y - real_odom.pose.pose.position.y, 2) +
@@ -55,6 +55,6 @@ float Nav2Accuracy::get_yaw(const geometry_msgs::msg::Quaternion &q) {
   tf2::Matrix3x3(tf_q).getRPY(roll, pitch, yaw);
   return yaw;
 }
-} // namespace nav2_localization
+} // namespace localization_bynav2
 
-RCLCPP_COMPONENTS_REGISTER_NODE(nav2_localization::Nav2Accuracy)
+RCLCPP_COMPONENTS_REGISTER_NODE(localization_bynav2::Nav2Accuracy)

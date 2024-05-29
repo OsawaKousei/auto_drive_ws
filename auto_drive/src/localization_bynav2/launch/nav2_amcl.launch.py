@@ -16,7 +16,7 @@ def generate_launch_description():
     sim_pkg_dir = get_package_share_directory('holonomic_sim')
     #モデルの格納されているパスを設定
     model_path = os.path.join(sim_pkg_dir, "models")
-    pkg_share_dir = get_package_share_directory('localization_dev')
+    pkg_share_dir = get_package_share_directory('localization_bynav2')
 
     #ignition gazeboがモデルにアクセスできるように設定
     ign_resource_path = SetEnvironmentVariable(
@@ -80,6 +80,9 @@ def generate_launch_description():
             'qos_overrides./tf_static.publisher.durability': 'transient_local',
             'qos_overrides./odom.publisher.durability': 'transient_local',
         },{'use_sim_time': use_sim_time}],
+       remappings=[
+            ("/odom", "/raw_odom"),
+        ],
         output='screen'
     )
     
@@ -124,7 +127,7 @@ def generate_launch_description():
             output='screen')
     
     param_file_path = os.path.join(
-        get_package_share_directory('localization_dev'),
+        get_package_share_directory('localization_bynav2'),
         'params',
         'amcl_param.yaml'
     )
@@ -180,7 +183,7 @@ def generate_launch_description():
             prefix="bash -c 'sleep 5; $0 $@' ")
     
     nav2_amcl_node = Node(
-        package='localization_dev',
+        package='localization_bynav2',
         executable='nav2_amcl_node',
         output='screen',
         prefix="xterm -e"

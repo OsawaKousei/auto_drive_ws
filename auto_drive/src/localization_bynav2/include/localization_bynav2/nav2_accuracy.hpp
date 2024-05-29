@@ -5,17 +5,17 @@
  * @date 2024-05-29
 */
 
-#ifndef NAV2_LOCALIZATION__NAV2_ACCURACY_HPP_
-#define NAV2_LOCALIZATION__NAV2_ACCURACY_HPP_
+#ifndef LOCALIZATION_BYNAV2__NAV2_ACCURACY_HPP_
+#define LOCALIZATION_BYNAV2__NAV2_ACCURACY_HPP_
 
-#include "nav2_localization/visibility_control.h"
+#include "localization_bynav2/visibility_control.h"
 #include <geometry_msgs/msg/twist.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float64.hpp>
 #include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 
-namespace nav2_localization {
+namespace localization_bynav2 {
 /// @brief A class to calculate the accuracy of the navigation system.
 /// @details This class calculates the accuracy of the navigation system by
 /// comparing the estimated odometry and the real odometry. The estimated odometry
@@ -41,6 +41,6 @@ private:
   float get_yaw(const geometry_msgs::msg::Quaternion &q);
 };
 
-} // namespace nav2_localization
+} // namespace localization_bynav2
 
-#endif // NAV2_LOCALIZATION__NAV2_ACCURACY_HPP_
+#endif // localization_bynav2__NAV2_ACCURACY_HPP_

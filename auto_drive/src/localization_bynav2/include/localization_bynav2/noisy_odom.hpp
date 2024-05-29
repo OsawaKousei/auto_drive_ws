@@ -5,15 +5,15 @@
  * @date 2024-05-29
  */
 
-#ifndef NAV2_LOCALIZATION__NOISY_ODOM_HPP_
-#define NAV2_LOCALIZATION__NOISY_ODOM_HPP_
+#ifndef LOCALIZATION_BYNAV2__NOISY_ODOM_HPP_
+#define LOCALIZATION_BYNAV2__NOISY_ODOM_HPP_
 
-#include "nav2_localization/visibility_control.h"
+#include "localization_bynav2/visibility_control.h"
 #include <nav_msgs/msg/odometry.hpp>
 #include <random>
 #include <rclcpp/rclcpp.hpp>
 
-namespace nav2_localization {
+namespace localization_bynav2 {
 /// @brief A class to add noise to the odometry.
 /// @details This class adds noise to the odometry and publishes the noisy
 /// odometry. The noisy odometry is published as an Odometry message. The real
@@ -47,6 +47,6 @@ private:
   std::mutex mutex_;
 };
 
-} // namespace nav2_localization
+} // namespace localization_bynav2
 
-#endif // NAV2_LOCALIZATION__NOISY_ODOM_HPP_
+#endif // LOCALIZATION_BYNAV2__NOISY_ODOM_HPP_

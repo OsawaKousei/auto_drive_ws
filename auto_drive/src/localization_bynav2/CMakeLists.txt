@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(nav2_localization)
+project(localization_bynav2)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)

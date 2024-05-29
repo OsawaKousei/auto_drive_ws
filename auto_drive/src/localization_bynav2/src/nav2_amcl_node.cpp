@@ -7,8 +7,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "nav2_localization/nav2_accuracy.hpp"
-#include "nav2_localization/noisy_odom.hpp"
+#include "localization_bynav2/nav2_accuracy.hpp"
+#include "localization_bynav2/noisy_odom.hpp"
 
 
 int main(int argc, char *argv[]) {
@@ -16,11 +16,11 @@ int main(int argc, char *argv[]) {
   rclcpp::executors::MultiThreadedExecutor exec;
 
   const auto nav2_accuracy =
-      std::make_shared<nav2_localization::Nav2Accuracy>(rclcpp::NodeOptions());
+      std::make_shared<localization_bynav2::Nav2Accuracy>(rclcpp::NodeOptions());
   exec.add_node(nav2_accuracy);
 
   const auto noisy_odom =
-      std::make_shared<nav2_localization::NoisyOdom>(rclcpp::NodeOptions());
+      std::make_shared<localization_bynav2::NoisyOdom>(rclcpp::NodeOptions());
   exec.add_node(noisy_odom);
 
   exec.spin();
