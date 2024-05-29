@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Grid1
+        - /Odometry1
         - /Odometry1/Topic1
       Splitter Ratio: 0.5
     Tree Height: 549
@@ -158,7 +159,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /odom
+        Value: /raw_odom
       Value: true
     - Class: rviz_default_plugins/TF
       Enabled: true
@@ -316,7 +317,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 34.40523147583008
+      Distance: 7.553248405456543
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -352,5 +353,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 407
-  Y: 4
+  X: 375
+  Y: -28
