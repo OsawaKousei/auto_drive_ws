@@ -5,7 +5,7 @@
  * @date 2024-05-29
  */
 
-#include "localization_dev/localization_test/noisy_odom.hpp"
+#include "nav2_localization/noisy_odom.hpp"
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -13,7 +13,7 @@
 
 using namespace std::chrono_literals;
 
-namespace localization_dev {
+namespace nav2_localization {
 
 NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
     : rclcpp::Node("odom", options) {
@@ -47,6 +47,6 @@ NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
 
 NoisyOdom::~NoisyOdom() {}
 
-} // namespace localization_dev
+} // namespace nav2_localization
 
-RCLCPP_COMPONENTS_REGISTER_NODE(localization_dev::NoisyOdom)
+RCLCPP_COMPONENTS_REGISTER_NODE(nav2_localization::NoisyOdom)

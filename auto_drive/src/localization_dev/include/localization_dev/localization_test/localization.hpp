@@ -44,7 +44,7 @@ private:
 
   geometry_msgs::msg::Pose estimated_pose;
   sensor_msgs::msg::LaserScan scan;
-  nav_msgs::msg::Odometry noisy_odom;
+  nav_msgs::msg::Odometry odom;
   nav_msgs::msg::OccupancyGrid map;
   sensor_msgs::msg::PointCloud2 pc;
 

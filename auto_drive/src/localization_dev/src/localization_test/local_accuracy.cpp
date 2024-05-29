@@ -49,7 +49,7 @@ LocalAccuracy::LocalAccuracy(const rclcpp::NodeOptions &options)
           "estimated_odom", 10, estimated_odom_callback);
 
   this->real_odom_sub = this->create_subscription<nav_msgs::msg::Odometry>(
-      "odom", 10, [this](const nav_msgs::msg::Odometry &msg) -> void {
+      "raw_odom", 10, [this](const nav_msgs::msg::Odometry &msg) -> void {
         mutex_.lock();
         this->real_odom = msg;
         mutex_.unlock();

@@ -4,7 +4,7 @@
   ros_type_name: "geometry_msgs/msg/Twist"
   gz_type_name: "ignition.msgs.Twist"
   direction: ROS_TO_GZ
-- ros_topic_name: "/raw_odom"
+- ros_topic_name: "/odom"
   gz_topic_name: "/odom"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
@@ -36,8 +36,8 @@
   gz_type_name: "ignition.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
  #user message
-- ros_topic_name: "if_localize"
-  gz_topic_name: "if_localize"
+- ros_topic_name: "pc_mapping_cmd"
+  gz_topic_name: "pc_mapping_cmd"
   ros_type_name: "std_msgs/msg/String"
   gz_type_name: "ignition.msgs.StringMsg"
   direction: GZ_TO_ROS

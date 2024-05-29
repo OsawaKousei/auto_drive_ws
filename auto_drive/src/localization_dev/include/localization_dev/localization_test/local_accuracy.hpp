@@ -9,7 +9,7 @@
 #define LOCALIZATION_DEV__LOCAL_ACCURACY_HPP_
 
 #include "localization_dev/visibility_control.h"
-#include <geometry_msgs/msg/twist.hpp>
+#include <geometry_msgs/msg/pose.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float64.hpp>

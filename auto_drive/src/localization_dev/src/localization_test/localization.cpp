@@ -34,9 +34,9 @@ Localization::Localization(const rclcpp::NodeOptions &options)
           "if_localize", 1, localization_switch_callback);
 
   this->noisy_odom_sub = this->create_subscription<nav_msgs::msg::Odometry>(
-      "noisy_odom", 1, [this](const nav_msgs::msg::Odometry &msg) -> void {
+      "odom", 1, [this](const nav_msgs::msg::Odometry &msg) -> void {
         mutex_.lock();
-        this->noisy_odom = msg;
+        this->odom = msg;
         mutex_.unlock();
       });
 
@@ -73,10 +73,10 @@ Localization::~Localization() {}
 // TODO: Implement the estimate_pose function
 geometry_msgs::msg::Pose Localization::estimate_pose() {
   double yaw, pitch, roll;
-  tf2::getEulerYPR(this->noisy_odom.pose.pose.orientation, yaw, pitch,
+  tf2::getEulerYPR(this->odom.pose.pose.orientation, yaw, pitch,
                    roll); // quaternion to euler
-  estimated_pose.position.x = this->noisy_odom.pose.pose.position.x;
-  estimated_pose.position.y = this->noisy_odom.pose.pose.position.y;
+  estimated_pose.position.x = this->odom.pose.pose.position.x;
+  estimated_pose.position.y = this->odom.pose.pose.position.y;
   estimated_pose.position.z = yaw;
 
   std::cout << "Estimated pose: x: " << estimated_pose.position.x
