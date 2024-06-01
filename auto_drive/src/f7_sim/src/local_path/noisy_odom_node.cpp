@@ -9,6 +9,10 @@ using namespace std::chrono_literals;
 using Point = geometry_msgs::msg::Point;
 using Odometry = nav_msgs::msg::Odometry;
 
+float noise_x = 0;
+float noise_y = 0;
+float noise_z = 0;
+
 namespace f7_sim {
 
 NoisyOdomNode::NoisyOdomNode(const rclcpp::NodeOptions &options): rclcpp::Node("noisy_odom_node", options) {
@@ -27,10 +31,14 @@ NoisyOdomNode::NoisyOdomNode(const rclcpp::NodeOptions &options): rclcpp::Node("
     noisy_odom.z = yaw;
 
     if(!DISABLE_NOISE){ //hppでdefineされている
-    noisy_odom.x += this->xy_dist(this->generator);
-    noisy_odom.y += this->xy_dist(this->generator);
-    noisy_odom.z += this->th_dist(this->generator);
-    }
+    noise_x += this->xy_dist(this->generator);
+    noise_y += this->xy_dist(this->generator);
+    noise_z += this->th_dist(this->generator);
+
+    noisy_odom.x = msg.pose.pose.position.x + noise_x;
+    noisy_odom.y = msg.pose.pose.position.y + noise_y;
+    noisy_odom.z = yaw + noise_z;
+    }else
 
     this->noisy_odom_pub->publish(noisy_odom);
   };
