@@ -22,9 +22,11 @@ F7_SIMNode::F7_SIMNode(const rclcpp::NodeOptions &options) : rclcpp::Node("f7_si
 
     auto timer_callback = [this]() -> void{
         // 絶対座標用
-        // pos_error.x = pos_cmd_data.x - pos_data.x;
-        // pos_error.y = pos_cmd_data.y - pos_data.y;
-        // pos_error.z = pos_cmd_data.z - pos_data.z;
+        if(ABS_COORDINATE){
+        pos_error.x = pos_cmd_data.x - pos_data.x;
+        pos_error.y = pos_cmd_data.y - pos_data.y;
+        pos_error.z = pos_cmd_data.z - pos_data.z;
+        }
 
         // グローバル座標と向きが同じ相対座標
 
@@ -40,22 +42,31 @@ F7_SIMNode::F7_SIMNode(const rclcpp::NodeOptions &options) : rclcpp::Node("f7_si
 
             //PID制御
             //TODO:不完全微分の導入
-            //TODO:アンチワインドアップの導入（I項がまともに使えない）
-            // double global_x = std::max(-MAX_VEL_M,std::min((double)(pos_error.x*pos_linear_pid.P + pos_error_I.x*pos_linear_pid.I + (prior_pos_error.x - pos_error.x)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
-            // double global_y = std::max(-MAX_VEL_M,std::min((double)(pos_error.y*pos_linear_pid.P + pos_error_I.y*pos_linear_pid.I + (prior_pos_error.y - pos_error.y)*pos_linear_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_M[m/s]
-            // double global_z = std::max(-MAX_VEL_RAD,std::min((double)(pos_error.z*pos_angular_pid.P + pos_error_I.z*pos_angular_pid.I + (prior_pos_error.z - pos_error.z)*pos_angular_pid.D), MAX_VEL_M)); // 最大でMAX_VEL_RAD[rad/s]
+            //TODO:アンチワインドアップの修正（今のままではI項がまともに使えない）
+
+            //fix MAX_VEL_M direction （MERGINの分だけ少し変になる
+            double X_M_V_M = abs((MAX_VEL_M-MERGIN) * cos(pos_error.z))+MERGIN; 
+            double Y_M_V_M = abs((MAX_VEL_M-MERGIN) * sin(pos_error.z))+MERGIN;
+            //double Y_M_V_M = MAX_VEL_M;
+
+            double global_x; // 最大でMAX_VEL_M[m/s]
+            double global_y; // 最大でMAX_VEL_M[m/s]
+            double global_z; // 最大でMAX_VEL_RAD[rad/s]
+            if(chclip(global_x,(double)(pos_error.x*pos_linear_pid.P + pos_error_I.x*pos_linear_pid.I + (prior_pos_error.x - pos_error.x)*pos_linear_pid.D),-X_M_V_M,X_M_V_M)){
+                pos_error_I.x = 0;
+                global_x = clip((double)(pos_error.x*pos_linear_pid.P + pos_error_I.x*pos_linear_pid.I + (prior_pos_error.x - pos_error.x)*pos_linear_pid.D),-X_M_V_M,X_M_V_M);
+            } // 最大でMAX_VEL_M[m/s]
+            if(chclip(global_y,(double)(pos_error.y*pos_linear_pid.P + pos_error_I.y*pos_linear_pid.I + (prior_pos_error.y - pos_error.y)*pos_linear_pid.D),-Y_M_V_M,Y_M_V_M)){
+                pos_error_I.y = 0;
+                global_y = clip((double)(pos_error.y*pos_linear_pid.P + pos_error_I.y*pos_linear_pid.I + (prior_pos_error.y - pos_error.y)*pos_linear_pid.D),-Y_M_V_M,Y_M_V_M);
+            } // 最大でMAX_VEL_M[m/s]
+            if(chclip(global_z,(double)(pos_error.z*pos_angular_pid.P + pos_error_I.z*pos_angular_pid.I + (prior_pos_error.z - pos_error.z)*pos_angular_pid.D),-MAX_VEL_RAD,MAX_VEL_RAD)){
+                pos_error_I.z = 0;
+                global_z = clip((double)(pos_error.z*pos_angular_pid.P + pos_error_I.z*pos_angular_pid.I + (prior_pos_error.z - pos_error.z)*pos_angular_pid.D),-MAX_VEL_RAD,MAX_VEL_RAD);
+            } // 最大でMAX_VEL_RAD[rad/s]
             
-            //fix MAX_VEL_M direction （MERGINの分だけ少し変になる）
-            double X_M_V_M = abs((MAX_VEL_M-MERGIN) * cos(pos_data.z + pos_error.z))+MERGIN; 
-            double Y_M_V_M = abs((MAX_VEL_M-MERGIN) * sin(pos_data.z + pos_error.z))+MERGIN;
-
-            double global_x = clip((double)(pos_error.x*pos_linear_pid.P + pos_error_I.x*pos_linear_pid.I + (prior_pos_error.x - pos_error.x)*pos_linear_pid.D),-X_M_V_M,X_M_V_M); // 最大でMAX_VEL_M[m/s]
-            double global_y = clip((double)(pos_error.y*pos_linear_pid.P + pos_error_I.y*pos_linear_pid.I + (prior_pos_error.y - pos_error.y)*pos_linear_pid.D),-Y_M_V_M,Y_M_V_M); // 最大でMAX_VEL_M[m/s]
-            double global_z = clip((double)(pos_error.z*pos_angular_pid.P + pos_error_I.z*pos_angular_pid.I + (prior_pos_error.z - pos_error.z)*pos_angular_pid.D),-MAX_VEL_RAD,MAX_VEL_RAD); // 最大でMAX_VEL_RAD[rad/s]
-
-            //TODO:計算間違ってる（後日修正）
-            cmd_vel_msg.linear.x = global_x*cos(pos_data.z) - global_y*sin(pos_data.z);
-            cmd_vel_msg.linear.y = global_x*sin(pos_data.z) + global_y*cos(pos_data.z);
+            cmd_vel_msg.linear.x = global_x*cos(pos_data.z) + global_y*sin(pos_data.z);
+            cmd_vel_msg.linear.y = -global_x*sin(pos_data.z) + global_y*cos(pos_data.z);
             cmd_vel_msg.angular.z = global_z;
 
             //差分を保存
@@ -73,20 +84,22 @@ F7_SIMNode::F7_SIMNode(const rclcpp::NodeOptions &options) : rclcpp::Node("f7_si
     };
 
     auto cmd_pos_callback = [this](const Point& msg) -> void{
-        // // 位置指令を取得
-        // pos_cmd_data.x = msg.x;
-        // pos_cmd_data.y = msg.y;
-        // pos_cmd_data.z = msg.z;
-
+        if(ABS_COORDINATE){
+        // 位置指令を取得
+        pos_cmd_data.x = msg.x;
+        pos_cmd_data.y = msg.y;
+        pos_cmd_data.z = msg.z;
+        }else{
         // 相対位置指令を取得
         pos_error.x = msg.x;
         pos_error.y = msg.y;
         pos_error.z = msg.z;
+        }
     };
 
     auto odom_callback = [this](const Point& msg) -> void{
 
-        // 絶対座標用
+        // 直接odometryをとる場合
         // // 現在位置を取得
         // tf2::Quaternion quat;
         // quat.setW(msg.pose.pose.orientation.w);
@@ -103,7 +116,7 @@ F7_SIMNode::F7_SIMNode(const rclcpp::NodeOptions &options) : rclcpp::Node("f7_si
                 //for debug
         //std::cout << pos_data.z << std::endl;
 
-        // グローバル座標と向きが同じ相対座標用
+        //noisy_odom_nodeからとる場合
         pos_data.x = msg.x;
         pos_data.y = msg.y;
         pos_data.z = msg.z;

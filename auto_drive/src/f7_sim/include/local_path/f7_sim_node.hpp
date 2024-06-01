@@ -19,6 +19,8 @@
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include <tf2/utils.h>
 
+#define ABS_COORDINATE 1
+
 using namespace std::chrono_literals;
 using Bool = std_msgs::msg::Bool;
 using Point = geometry_msgs::msg::Point;
@@ -51,7 +53,7 @@ const struct PID_PARAM pos_angular_pid={2.0,0.00,0.01};
 
 const double MAX_VEL_M = 1.0; // 最大速度[m/s]
 const double MAX_VEL_RAD = 0.5; // 最大角速度[rad/s]
-const float EPSILON_M = 0.08; // 許容誤差[m]
+const float EPSILON_M = 0.03; // 許容誤差[m]
 const float EPSILON_RAD = M_PI/120.0; // 許容誤差[rad]
 const float MERGIN = 0.1; //最大速度補正時の余裕
 // ********************************************************************************************************************
