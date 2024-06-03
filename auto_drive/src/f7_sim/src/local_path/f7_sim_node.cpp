@@ -44,9 +44,10 @@ F7_SIMNode::F7_SIMNode(const rclcpp::NodeOptions &options) : rclcpp::Node("f7_si
             //TODO:不完全微分の導入
             //TODO:アンチワインドアップの修正（今のままではI項がまともに使えない）
 
+            double move_yaw = atan2(pos_error.y,pos_error.x);
             //fix MAX_VEL_M direction （MERGINの分だけ少し変になる
-            double X_M_V_M = abs((MAX_VEL_M-MERGIN) * cos(pos_error.z))+MERGIN; 
-            double Y_M_V_M = abs((MAX_VEL_M-MERGIN) * sin(pos_error.z))+MERGIN;
+            double X_M_V_M = abs((MAX_VEL_M-MERGIN) * cos(move_yaw))+MERGIN; 
+            double Y_M_V_M = abs((MAX_VEL_M-MERGIN) * sin(move_yaw))+MERGIN;
             //double Y_M_V_M = MAX_VEL_M;
 
             double global_x; // 最大でMAX_VEL_M[m/s]
