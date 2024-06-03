@@ -1,3 +1,9 @@
+/**
+ * @file pc2_filter.cpp
+ * @brief Implementation file for the Pc2Filter class
+ * @author kousei
+ * @date 2024-05-29
+*/
 #include "localization_dev/pc_mapping/pc2_filter.hpp"
 #include <functional>
 #include <iostream>
@@ -37,7 +43,6 @@ Pc2Filter::Pc2Filter(const rclcpp::NodeOptions &options)
       this->create_publisher<sensor_msgs::msg::PointCloud2>("filtered_pc2", 10);
 }
 
-// デストラクタ
 Pc2Filter::~Pc2Filter() {}
 
 // PassThrough Filter

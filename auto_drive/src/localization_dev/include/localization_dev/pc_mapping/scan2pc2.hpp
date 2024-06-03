@@ -1,3 +1,9 @@
+/**
+ * @file scan2pc2.hpp
+ * @brief Header file for the Scan2pc2 class
+ * @author kousei
+ * @date 2024-05-29
+*/
 #ifndef LOCALIZATION_DEV__SCAN2PC2_HPP_
 #define LOCALIZATION_DEV__SCAN2PC2_HPP_
 
@@ -7,7 +13,10 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
 namespace localization_dev {
-
+/// @brief A class to convert the LaserScan data to the PointCloud2 data.
+/// @details This class converts the LaserScan data to the PointCloud2 data
+/// The raw data is received from the "scan" topic.
+/// The converted data is published to the "raw_pc2" topic.
 class Scan2pc2 : public rclcpp::Node {
 public:
   TUTORIAL_PUBLIC

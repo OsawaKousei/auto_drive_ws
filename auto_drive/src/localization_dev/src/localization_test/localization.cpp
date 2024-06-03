@@ -78,7 +78,6 @@ geometry_msgs::msg::Pose Localization::estimate_pose() {
   estimated_pose.position.x = this->odom.pose.pose.position.x;
   estimated_pose.position.y = this->odom.pose.pose.position.y;
   estimated_pose.position.z = yaw;
-
   std::cout << "Estimated pose: x: " << estimated_pose.position.x
             << ", y: " << estimated_pose.position.y
             << ", th:" << estimated_pose.position.z << std::endl;

@@ -1,3 +1,10 @@
+/**
+ * @file dammy_scan_node.cpp
+ * @brief Publish a dammy scan data to the "scan" topic
+ * @author kousei
+ * @date 2024-05-29
+ */
+
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include <chrono>

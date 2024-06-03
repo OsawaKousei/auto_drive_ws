@@ -1,3 +1,9 @@
+/**
+ * @file odom_tf.cpp
+ * @brief Implementation file for the OdomTf class
+ * @author kousei
+ * @date 2024-05-29
+*/
 #include "localization_dev/pc_mapping/odom_tf.hpp"
 #include <functional>
 #include <iostream>
@@ -20,7 +26,6 @@ OdomTf::OdomTf(const rclcpp::NodeOptions &options)
   tf_broadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 }
 
-// デストラクタ
 OdomTf::~OdomTf() {}
 
 void OdomTf::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {

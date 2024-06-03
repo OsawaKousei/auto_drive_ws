@@ -1,3 +1,9 @@
+/**
+ * @file scan2pc2.cpp
+ * @brief Implementation file for the Scan2pc2 class
+ * @author kousei
+ * @date 2024-05-29
+*/
 #include "localization_dev/pc_mapping/scan2pc2.hpp"
 #include <functional>
 #include <iostream>

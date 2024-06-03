@@ -1,3 +1,9 @@
+/**
+ * @file pc2_mapping.cpp
+ * @brief Implementation file for the Pc2Mapping class
+ * @author kousei
+ * @date 2024-05-29
+*/
 #include "localization_dev/pc_mapping/pc2_mapping.hpp"
 #include <chrono>
 #include <functional>
@@ -60,13 +66,12 @@ Pc2Mapping::Pc2Mapping(const rclcpp::NodeOptions &options)
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 }
 
-// デストラクタ
 Pc2Mapping::~Pc2Mapping() {}
 
 void Pc2Mapping::current_pc2_callback(
     const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
   mutex_.lock();
-  ;
+
   // transform point cloud
   sensor_msgs::msg::PointCloud2 transformed_pc2;
   try {

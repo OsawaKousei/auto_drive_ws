@@ -1,3 +1,9 @@
+/**
+ * @file pc2_mapping.hpp
+ * @brief Header file for the Pc2Mapping class
+ * @author kousei
+ * @date 2024-05-29
+*/
 #ifndef LOCALIZATION_DEV__PC2_MAPPING_HPP_
 #define LOCALIZATION_DEV__PC2_MAPPING_HPP_
 
@@ -11,6 +17,14 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
 namespace localization_dev {
+/// @brief A class to map the PointCloud2 data.
+/// @details This class maps the PointCloud2 data
+/// this class combines current map and new point cloud data which is got from the lidar sensor.
+/// The raw data is received from the "raw_pc2" topic.
+/// The combined data is published to the "combined_pc2" topic.
+/// this class get the filtered point cloud data and publish it as mapped point cloud data.
+/// The filtered data is received from the "filtered_pc2" topic.
+/// The mapped data is published to the "mapped_pc2" topic.
 
 class Pc2Mapping : public rclcpp::Node {
 public:
@@ -34,8 +48,7 @@ private:
   sensor_msgs::msg::PointCloud2 mapped_pc2;
 
   void current_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
-  void
-  filtered_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
+  void filtered_pc2_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
 
   std::mutex mutex_;
 };

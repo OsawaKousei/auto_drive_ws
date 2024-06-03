@@ -1,3 +1,9 @@
+/**
+ * @file pc2octmap.cpp
+ * @brief Implementation file for the Pc2octmap class
+ * @author kousei
+ * @date 2024-05-29
+*/
 #include "localization_dev/pc_mapping/pc2octmap.hpp"
 #include <functional>
 #include <iostream>
