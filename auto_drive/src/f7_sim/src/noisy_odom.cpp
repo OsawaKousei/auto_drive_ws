@@ -51,7 +51,7 @@ NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
       noisy_odom.x = msg.pose.pose.position.x + noise_x;
       noisy_odom.y = msg.pose.pose.position.y + noise_y;
       noisy_odom.z = yaw + noise_z;
-    } else
+    }
 
     this->noisy_odom_pub->publish(noisy_odom);
     mutex_.unlock();
