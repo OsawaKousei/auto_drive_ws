@@ -1,6 +1,5 @@
-
-#ifndef F7_SIM__F7_SIM_NODE_HPP_
-#define F7_SIM__F7_SIM_NODE_HPP_
+#ifndef F7_SIM__F7_SIM_HPP_
+#define F7_SIM__F7_SIM_HPP_
 
 // ********************************************************************************************************************
 // ライブラリのインクルードなど
@@ -18,6 +17,8 @@
 #include "tf2/LinearMath/Matrix3x3.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include <tf2/utils.h>
+
+#include "f7_sim/visibility_control.h"
 
 #define ABS_COORDINATE 1
 
@@ -61,13 +62,13 @@ const float MERGIN = 0.1; //最大速度補正時の余裕
 // ********************************************************************************************************************
 namespace f7_sim {
 
-class F7_SIMNode : public rclcpp::Node{
-    public:
-    //TUTORIAL_PUBLIC
-    explicit F7_SIMNode(const rclcpp::NodeOptions &options);
-    virtual ~F7_SIMNode();
-    
-    private:
+class F7Sim : public rclcpp::Node {
+public:
+  TUTORIAL_PUBLIC
+  explicit F7Sim(const rclcpp::NodeOptions &options);
+  virtual ~F7Sim();
+
+private:
     rclcpp::TimerBase::SharedPtr timer;
     rclcpp::Publisher<Twist>::SharedPtr cmd_vel_pub;
     rclcpp::Subscription<Point>::SharedPtr cmd_pos_sub;
@@ -83,7 +84,6 @@ class F7_SIMNode : public rclcpp::Node{
     bool flag_f = false;
 };
 
-}
+} // namespace f7_sim
 
-
-#endif // F7_SIM__F7_SIM_NODE_HPP_
+#endif // F7_SIM__F7_SIM_HPP_

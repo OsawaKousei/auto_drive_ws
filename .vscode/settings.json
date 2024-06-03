@@ -1,5 +1,5 @@
 { 
-    "editor.tabSize": 4, 
+    "editor.tabSize": 2, 
     "files.associations": { 
         "*.rviz": "yaml", 
         "*.sdf": "xml", 
@@ -22,6 +22,4 @@
         "**/install": true, 
         "**/log": true 
     }, 
-    "python.analysis.autoImportCompletions": true, 
-    "python.analysis.typeCheckingMode": "basic" 
 } 

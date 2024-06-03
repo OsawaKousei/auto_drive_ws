@@ -8,16 +8,15 @@ endif()
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
-
-# ament_auto_add_library(f7_sim src/f7_sim.cpp)
-# ament_auto_add_library(noisy_odom src/noisy_odom.cpp)
-# rclcpp_components_register_nodes(f7_sim "f7_sim::F7Sim")
-# rclcpp_components_register_nodes(noisy_odom "f7_sim::NoisyOdom")
-# ament_auto_add_executable(
-# f7_sim_node src/f7_sim_node.cpp
-#   src/f7_sim.cpp
-#   src/noisy_odom.cpp
-# )
+ament_auto_add_library(f7_sim src/f7_sim.cpp)
+ament_auto_add_library(noisy_odom src/noisy_odom.cpp)
+rclcpp_components_register_nodes(f7_sim "f7_sim::F7Sim")
+rclcpp_components_register_nodes(noisy_odom "f7_sim::NoisyOdom")
+ament_auto_add_executable(
+f7_sim_node src/f7_sim_node.cpp
+  src/f7_sim.cpp
+  src/noisy_odom.cpp
+)
 
 install(
   DIRECTORY

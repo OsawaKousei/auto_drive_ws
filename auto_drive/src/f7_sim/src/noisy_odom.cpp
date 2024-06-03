@@ -1,7 +1,4 @@
-#include "local_path/noisy_odom_node.hpp"
-#include <functional>
-#include <iostream>
-#include <memory>
+#include "f7_sim/noisy_odom.hpp"
 #include <rclcpp_components/register_node_macro.hpp>
 
 using namespace std::chrono_literals;
@@ -15,8 +12,9 @@ float noise_z = 0;
 
 namespace f7_sim {
 
-NoisyOdomNode::NoisyOdomNode(const rclcpp::NodeOptions &options): rclcpp::Node("noisy_odom_node", options) {
-  // Define random generator with Gaussian distribution
+NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
+    : rclcpp::Node("noisy_odom", options) {
+    // Define random generator with Gaussian distribution
   this->xy_dist = std::normal_distribution<double>(xy_mean, xy_stddev);
   this->th_dist = std::normal_distribution<double>(th_mean, th_stddev);
 
@@ -48,9 +46,9 @@ NoisyOdomNode::NoisyOdomNode(const rclcpp::NodeOptions &options): rclcpp::Node("
   this->noisy_odom_pub =this->create_publisher<Point>("noisy_odom", qos);
 }
 
-NoisyOdomNode::~NoisyOdomNode() {}
+NoisyOdom::~NoisyOdom() {}
 
-} // namespace localization_dev
 
-RCLCPP_COMPONENTS_REGISTER_NODE(f7_sim::NoisyOdomNode)
+} // namespace f7_sim
 
+RCLCPP_COMPONENTS_REGISTER_NODE(f7_sim::NoisyOdom)

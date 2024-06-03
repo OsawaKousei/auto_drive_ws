@@ -1,5 +1,7 @@
-#ifndef F7_SIM__NOISY_ODOM_NODE_HPP_
-#define F7_SIM__NOISY_ODOM_NODE_HPP_
+#ifndef F7_SIM__NOISY_ODOM_HPP_
+#define F7_SIM__NOISY_ODOM_HPP_
+
+#include "f7_sim/visibility_control.h"
 
 #include <random>
 #include <rclcpp/rclcpp.hpp>
@@ -12,10 +14,11 @@
 
 namespace f7_sim {
 
-class NoisyOdomNode : public rclcpp::Node {
+class NoisyOdom : public rclcpp::Node {
 public:
-  explicit NoisyOdomNode(const rclcpp::NodeOptions &options);
-  virtual ~NoisyOdomNode();
+  TUTORIAL_PUBLIC
+  explicit NoisyOdom(const rclcpp::NodeOptions &options);
+  virtual ~NoisyOdom();
 
 private:
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr real_odom_sub;
@@ -34,10 +37,8 @@ private:
   std::default_random_engine generator;
   std::normal_distribution<double> xy_dist;
   std::normal_distribution<double> th_dist;
-
 };
 
 } // namespace f7_sim
 
-#endif // F7_SIM__NOISY_ODOM_NODE_HPP_
-
+#endif // F7_SIM__NOISY_ODOM_HPP_

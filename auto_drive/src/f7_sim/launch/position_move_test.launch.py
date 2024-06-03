@@ -143,7 +143,7 @@ def generate_launch_description():
     # launch f7_sim
     f7_sim = Node( # f7_sim
         package='f7_sim',
-        executable='f7_sim_exec',
+        executable='f7_sim_node',
         output='screen',
     )
     
