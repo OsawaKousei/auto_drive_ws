@@ -30,10 +30,12 @@ ament_auto_add_library(local_accuracy src/localization_test/local_accuracy.cpp)
 ament_auto_add_library(localization src/localization_test/localization.cpp)
 ament_auto_add_library(noisy_odom src/localization_test/noisy_odom.cpp)
 ament_auto_add_library(map_publisher src/localization_test/map_publisher.cpp)
+ament_auto_add_library(odom_modifier src/localization_test/odom_modifier.cpp)
 rclcpp_components_register_nodes(local_accuracy "localization_dev::LocalAccuracy")
 rclcpp_components_register_nodes(localization "localization_dev::Localization")
 rclcpp_components_register_nodes(noisy_odom "localization_dev::NoisyOdom")
 rclcpp_components_register_nodes(map_publisher "localization_dev::MapPublisher")
+rclcpp_components_register_nodes(odom_modifier "localization_dev::OdomModifier")
 ament_auto_add_executable(
 localization_test_node src/localization_test/localization_test_node.cpp
   src/localization_test/local_accuracy.cpp
@@ -42,6 +44,7 @@ localization_test_node src/localization_test/localization_test_node.cpp
   src/localization_test/map_publisher.cpp
   src/pc_mapping/odom_tf.cpp
   src/pc_mapping/pc2octmap.cpp
+  src/localization_test/odom_modifier.cpp
 )
 
 # pc_mapping

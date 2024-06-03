@@ -10,6 +10,8 @@
 #include <iostream>
 #include <memory>
 #include <rclcpp_components/register_node_macro.hpp>
+#include <tf2/utils.h> //getEulerYPR
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 
 using namespace std::chrono_literals;
 
@@ -24,14 +26,17 @@ NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
   auto real_odom_callback = [this](const nav_msgs::msg::Odometry &msg) -> void {
     mutex_.lock();
 
-    nav_msgs::msg::Odometry noisy_odom = msg;
-    noisy_odom.pose.pose.position.x += this->xy_dist(this->generator);
-    noisy_odom.pose.pose.position.y += this->xy_dist(this->generator);
-    noisy_odom.pose.pose.position.z += this->xy_dist(this->generator);
-    noisy_odom.pose.pose.orientation.x += this->th_dist(this->generator);
-    noisy_odom.pose.pose.orientation.y += this->th_dist(this->generator);
-    noisy_odom.pose.pose.orientation.z += this->th_dist(this->generator);
-    noisy_odom.pose.pose.orientation.w += this->th_dist(this->generator);
+    geometry_msgs::msg::Point noisy_odom;
+    noisy_odom.x = msg.pose.pose.position.x;
+    noisy_odom.y = msg.pose.pose.position.y;
+    double yaw, pitch, roll;
+    tf2::getEulerYPR(msg.pose.pose.orientation, yaw, pitch,
+                   roll); // quaternion to euler
+    noisy_odom.z = yaw;
+    
+    noisy_odom.x += this->xy_dist(this->generator);
+    noisy_odom.y += this->xy_dist(this->generator);
+    noisy_odom.z += this->xy_dist(this->generator);
 
     this->noisy_odom_pub->publish(noisy_odom);
 
@@ -39,10 +44,10 @@ NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
   };
 
   this->real_odom_sub = this->create_subscription<nav_msgs::msg::Odometry>(
-      "odom", 10, real_odom_callback);
+      "raw_odom", 10, real_odom_callback);
 
   this->noisy_odom_pub =
-      this->create_publisher<nav_msgs::msg::Odometry>("noisy_odom", 10);
+      this->create_publisher<geometry_msgs::msg::Point>("noisy_odom", 10);
 }
 
 NoisyOdom::~NoisyOdom() {}

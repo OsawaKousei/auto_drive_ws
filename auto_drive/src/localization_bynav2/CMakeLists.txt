@@ -28,13 +28,16 @@ ament_auto_find_build_dependencies()
 # localization_test
 ament_auto_add_library(noisy_odom src/noisy_odom.cpp)
 ament_auto_add_library(nav2_accuracy src/nav2_accuracy.cpp)
+ament_auto_add_library(odom_modifier src/odom_modifier.cpp)
 rclcpp_components_register_nodes(nav2_accuracy "localization_dev::Nav2Accuracy")
 rclcpp_components_register_nodes(noisy_odom "localization_dev::NoisyOdom")
+rclcpp_components_register_nodes(odom_modifier "localization_dev::OdomModifier")
 
 ament_auto_add_executable(
 nav2_amcl_node src/nav2_amcl_node.cpp
   src/nav2_accuracy.cpp
   src/noisy_odom.cpp
+  src/odom_modifier.cpp
 )
 
 install(

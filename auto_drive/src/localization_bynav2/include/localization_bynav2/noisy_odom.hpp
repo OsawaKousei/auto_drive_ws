@@ -10,6 +10,7 @@
 
 #include "localization_bynav2/visibility_control.h"
 #include <nav_msgs/msg/odometry.hpp>
+#include <geometry_msgs/msg/point.hpp>
 #include <random>
 #include <rclcpp/rclcpp.hpp>
 
@@ -28,7 +29,7 @@ public:
 
 private:
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr real_odom_sub;
-  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr noisy_odom_pub;
+  rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr noisy_odom_pub;
 
   //! mean of the Gaussian distribution for x and y
   const double xy_mean = 0.0;

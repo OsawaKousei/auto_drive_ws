@@ -9,6 +9,7 @@
 
 #include "localization_bynav2/nav2_accuracy.hpp"
 #include "localization_bynav2/noisy_odom.hpp"
+#include "localization_bynav2/odom_modifier.hpp"
 
 int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
@@ -22,6 +23,10 @@ int main(int argc, char *argv[]) {
   const auto noisy_odom =
       std::make_shared<localization_bynav2::NoisyOdom>(rclcpp::NodeOptions());
   exec.add_node(noisy_odom);
+
+  const auto odom_modifier =
+      std::make_shared<localization_bynav2::OdomModifier>(rclcpp::NodeOptions());
+  exec.add_node(odom_modifier);
 
   exec.spin();
   rclcpp::shutdown();
