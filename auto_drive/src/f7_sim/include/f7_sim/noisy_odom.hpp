@@ -37,6 +37,8 @@ private:
   std::default_random_engine generator;
   std::normal_distribution<double> xy_dist;
   std::normal_distribution<double> th_dist;
+
+  std::mutex mutex_;
 };
 
 } // namespace f7_sim

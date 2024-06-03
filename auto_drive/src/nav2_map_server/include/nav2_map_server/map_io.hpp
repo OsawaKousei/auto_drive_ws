@@ -25,9 +25,11 @@
 
 /* Map input part */
 
-namespace nav2_map_server {
+namespace nav2_map_server
+{
 
-struct LoadParameters {
+struct LoadParameters
+{
   std::string image_file_name;
   double resolution{0};
   std::vector<double> origin{0, 0, 0};
@@ -37,7 +39,8 @@ struct LoadParameters {
   bool negate;
 };
 
-typedef enum {
+typedef enum
+{
   LOAD_MAP_SUCCESS,
   MAP_DOES_NOT_EXIST,
   INVALID_MAP_METADATA,
@@ -50,7 +53,7 @@ typedef enum {
  * @return Map loading parameters obtained from YAML file
  * @throw YAML::Exception
  */
-LoadParameters loadMapYaml(const std::string &yaml_filename);
+LoadParameters loadMapYaml(const std::string & yaml_filename);
 
 /**
  * @brief Load the image from map file and generate an OccupancyGrid
@@ -58,8 +61,9 @@ LoadParameters loadMapYaml(const std::string &yaml_filename);
  * @param map Output loaded map
  * @throw std::exception
  */
-void loadMapFromFile(const LoadParameters &load_parameters,
-                     nav_msgs::msg::OccupancyGrid &map);
+void loadMapFromFile(
+  const LoadParameters & load_parameters,
+  nav_msgs::msg::OccupancyGrid & map);
 
 /**
  * @brief Load the map YAML, image from map file and
@@ -68,12 +72,15 @@ void loadMapFromFile(const LoadParameters &load_parameters,
  * @param map Output loaded map
  * @return status of map loaded
  */
-LOAD_MAP_STATUS loadMapFromYaml(const std::string &yaml_file,
-                                nav_msgs::msg::OccupancyGrid &map);
+LOAD_MAP_STATUS loadMapFromYaml(
+  const std::string & yaml_file,
+  nav_msgs::msg::OccupancyGrid & map);
+
 
 /* Map output part */
 
-struct SaveParameters {
+struct SaveParameters
+{
   std::string map_file_name{""};
   std::string image_format{""};
   double free_thresh{0.0};
@@ -87,8 +94,9 @@ struct SaveParameters {
  * @param save_parameters Map saving parameters.
  * @return true or false
  */
-bool saveMapToFile(const nav_msgs::msg::OccupancyGrid &map,
-                   const SaveParameters &save_parameters);
+bool saveMapToFile(
+  const nav_msgs::msg::OccupancyGrid & map,
+  const SaveParameters & save_parameters);
 
 /**
  * @brief Expand ~/ to home user dir.
@@ -97,9 +105,10 @@ bool saveMapToFile(const nav_msgs::msg::OccupancyGrid &map,
  *
  * @return Expanded string or input string if `~/` not expanded
  */
-std::string expand_user_home_dir_if_needed(std::string yaml_filename,
-                                           std::string home_dir);
+std::string expand_user_home_dir_if_needed(
+  std::string yaml_filename,
+  std::string home_dir);
 
-} // namespace nav2_map_server
+}  // namespace nav2_map_server
 
-#endif // NAV2_MAP_SERVER__MAP_IO_HPP_
+#endif  // NAV2_MAP_SERVER__MAP_IO_HPP_

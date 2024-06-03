@@ -15,26 +15,29 @@
 #ifndef NAV2_UTIL__TEST__TEST_LIFECYCLE_CLI_NODE_HPP_
 #define NAV2_UTIL__TEST__TEST_LIFECYCLE_CLI_NODE_HPP_
 
+#include <cstdlib>
+#include <memory>
+#include "gtest/gtest.h"
 #include "nav2_util/lifecycle_node.hpp"
 #include "nav2_util/lifecycle_utils.hpp"
 #include "nav2_util/node_thread.hpp"
 #include "rclcpp/rclcpp.hpp"
-#include "gtest/gtest.h"
-#include <cstdlib>
-#include <memory>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-class DummyNode : public nav2_util::LifecycleNode {
+class DummyNode : public nav2_util::LifecycleNode
+{
 public:
-  DummyNode() : nav2_util::LifecycleNode("nav2_test_cli", "") {
+  DummyNode()
+  : nav2_util::LifecycleNode("nav2_test_cli", "")
+  {
     activated = false;
   }
 
-  nav2_util::CallbackReturn
-  on_activate(const rclcpp_lifecycle::State & /*state*/) {
+  nav2_util::CallbackReturn on_activate(const rclcpp_lifecycle::State & /*state*/)
+  {
     activated = true;
     return nav2_util::CallbackReturn::SUCCESS;
   }
@@ -42,14 +45,16 @@ public:
   bool activated;
 };
 
-class Handle {
+class Handle
+{
 public:
-  Handle() {
+  Handle()
+  {
     node = std::make_shared<DummyNode>();
-    thread = std::make_shared<nav2_util::NodeThread>(
-        node->get_node_base_interface());
+    thread = std::make_shared<nav2_util::NodeThread>(node->get_node_base_interface());
   }
-  ~Handle() {
+  ~Handle()
+  {
     thread.reset();
     node.reset();
   }
@@ -58,16 +63,24 @@ public:
   std::shared_ptr<DummyNode> node;
 };
 
-class RclCppFixture {
+class RclCppFixture
+{
 public:
-  RclCppFixture() { rclcpp::init(0, nullptr); }
+  RclCppFixture()
+  {
+    rclcpp::init(0, nullptr);
+  }
 
-  ~RclCppFixture() { rclcpp::shutdown(); }
+  ~RclCppFixture()
+  {
+    rclcpp::shutdown();
+  }
 };
 
 RclCppFixture g_rclcppfixture;
 
-TEST(LifeycleCLI, fails_no_node_name) {
+TEST(LifeycleCLI, fails_no_node_name)
+{
   Handle handle;
   auto rc = system("ros2 run nav2_util lifecycle_bringup");
   (void)rc;
@@ -81,7 +94,8 @@ TEST(LifeycleCLI, fails_no_node_name) {
   SUCCEED();
 }
 
-TEST(LifeycleCLI, succeeds_node_name) {
+TEST(LifeycleCLI, succeeds_node_name)
+{
   Handle handle;
   auto rc = system("ros2 run nav2_util lifecycle_bringup nav2_test_cli");
 #ifdef _WIN32
@@ -95,4 +109,4 @@ TEST(LifeycleCLI, succeeds_node_name) {
   SUCCEED();
 }
 
-#endif // NAV2_UTIL__TEST__TEST_LIFECYCLE_CLI_NODE_HPP_
+#endif  // NAV2_UTIL__TEST__TEST_LIFECYCLE_CLI_NODE_HPP_

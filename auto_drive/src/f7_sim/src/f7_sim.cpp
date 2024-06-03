@@ -15,6 +15,7 @@ F7Sim::F7Sim(const rclcpp::NodeOptions &options)
   RCLCPP_INFO(this->get_logger(), "f7_sim_node is activated");
 
   auto timer_callback = [this]() -> void {
+    mutex_.lock();
     // 絶対座標用
     if (ABS_COORDINATE) {
       pos_error.x = pos_cmd_data.x - pos_data.x;
@@ -105,9 +106,11 @@ F7Sim::F7Sim(const rclcpp::NodeOptions &options)
     }
 
     cmd_vel_pub->publish(cmd_vel_msg);
+    mutex_.unlock();
   };
 
   auto cmd_pos_callback = [this](const Point &msg) -> void {
+    mutex_.lock();
     if (ABS_COORDINATE) {
       // 位置指令を取得
       pos_cmd_data.x = msg.x;
@@ -119,9 +122,11 @@ F7Sim::F7Sim(const rclcpp::NodeOptions &options)
       pos_error.y = msg.y;
       pos_error.z = msg.z;
     }
+    mutex_.unlock();
   };
 
   auto odom_callback = [this](const Point &msg) -> void {
+    mutex_.lock();
     // 直接odometryをとる場合
     // // 現在位置を取得
     // tf2::Quaternion quat;
@@ -142,11 +147,14 @@ F7Sim::F7Sim(const rclcpp::NodeOptions &options)
     pos_data.x = msg.x;
     pos_data.y = msg.y;
     pos_data.z = msg.z;
+    mutex_.unlock();
   };
 
   auto flag_finish_callback =
       [this](const Bool &msg) -> void { // TODO:未実装(callback内のif文も要修正)
+    mutex_.lock();
     flag_f = msg.data;
+    mutex_.unlock();
   };
 
   rclcpp::QoS qos(rclcpp::KeepLast(10));

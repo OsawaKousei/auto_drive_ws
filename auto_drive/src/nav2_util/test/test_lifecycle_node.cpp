@@ -14,14 +14,15 @@
 
 #include <memory>
 
+#include "gtest/gtest.h"
 #include "nav2_util/lifecycle_node.hpp"
 #include "rclcpp/rclcpp.hpp"
-#include "gtest/gtest.h"
 
-class RclCppFixture {
+class RclCppFixture
+{
 public:
-  RclCppFixture() { rclcpp::init(0, nullptr); }
-  ~RclCppFixture() { rclcpp::shutdown(); }
+  RclCppFixture() {rclcpp::init(0, nullptr);}
+  ~RclCppFixture() {rclcpp::shutdown();}
 };
 RclCppFixture g_rclcppfixture;
 
@@ -29,15 +30,16 @@ RclCppFixture g_rclcppfixture;
 // the overall test will hang since the rclcpp thread will still be running,
 // preventing the executable from exiting (the test will hang)
 
-TEST(LifecycleNode, RclcppNodeExitsCleanly) {
-  // Make sure the node exits cleanly when using an rclcpp_node and associated
-  // thread
+TEST(LifecycleNode, RclcppNodeExitsCleanly)
+{
+  // Make sure the node exits cleanly when using an rclcpp_node and associated thread
   auto node1 = std::make_shared<nav2_util::LifecycleNode>("test_node", "");
   std::this_thread::sleep_for(std::chrono::seconds(1));
   SUCCEED();
 }
 
-TEST(LifecycleNode, MultipleRclcppNodesExitCleanly) {
+TEST(LifecycleNode, MultipleRclcppNodesExitCleanly)
+{
   // Try a couple nodes w/ rclcpp_node and threads
   auto node1 = std::make_shared<nav2_util::LifecycleNode>("test_node1", "");
   auto node2 = std::make_shared<nav2_util::LifecycleNode>("test_node2", "");
@@ -46,18 +48,22 @@ TEST(LifecycleNode, MultipleRclcppNodesExitCleanly) {
   SUCCEED();
 }
 
-TEST(LifecycleNode, OnPreshutdownCbFires) {
+TEST(LifecycleNode, OnPreshutdownCbFires)
+{
   // Ensure the on_rcl_preshutdown_cb fires
 
-  class MyNodeType : public nav2_util::LifecycleNode {
-  public:
-    MyNodeType(const std::string &node_name)
-        : nav2_util::LifecycleNode(node_name) {}
+  class MyNodeType : public nav2_util::LifecycleNode
+  {
+public:
+    MyNodeType(
+      const std::string & node_name)
+    : nav2_util::LifecycleNode(node_name) {}
 
     bool fired = false;
 
-  protected:
-    void on_rcl_preshutdown() override {
+protected:
+    void on_rcl_preshutdown() override
+    {
       fired = true;
 
       nav2_util::LifecycleNode::on_rcl_preshutdown();

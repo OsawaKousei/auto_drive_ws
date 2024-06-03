@@ -16,28 +16,30 @@
 #ifndef NAV2_UTIL__ODOMETRY_UTILS_HPP_
 #define NAV2_UTIL__ODOMETRY_UTILS_HPP_
 
-#include <chrono>
 #include <cmath>
-#include <deque>
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <deque>
 
 #include "geometry_msgs/msg/twist.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
-#include "nav2_util/lifecycle_node.hpp"
-#include "nav2_util/node_utils.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "nav2_util/lifecycle_node.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "nav2_util/node_utils.hpp"
 
-namespace nav2_util {
+namespace nav2_util
+{
 
 /**
  * @class OdomSmoother
  * Wrapper for getting smooth odometry readings using a simple moving avergae.
  * Subscribes to the topic with a mutex.
  */
-class OdomSmoother {
+class OdomSmoother
+{
 public:
   /**
    * @brief Constructor that subscribes to an Odometry topic
@@ -45,9 +47,10 @@ public:
    * @param filter_duration Duration for odom history (seconds)
    * @param odom_topic Topic on which odometry should be received
    */
-  explicit OdomSmoother(const rclcpp::Node::WeakPtr &parent,
-                        double filter_duration = 0.3,
-                        const std::string &odom_topic = "odom");
+  explicit OdomSmoother(
+    const rclcpp::Node::WeakPtr & parent,
+    double filter_duration = 0.3,
+    const std::string & odom_topic = "odom");
 
   /**
    * @brief Overloadded Constructor for nav_util::LifecycleNode parent
@@ -56,23 +59,22 @@ public:
    * @param filter_duration Duration for odom history (seconds)
    * @param odom_topic Topic on which odometry should be received
    */
-  explicit OdomSmoother(const nav2_util::LifecycleNode::WeakPtr &parent,
-                        double filter_duration = 0.3,
-                        const std::string &odom_topic = "odom");
+  explicit OdomSmoother(
+    const nav2_util::LifecycleNode::WeakPtr & parent,
+    double filter_duration = 0.3,
+    const std::string & odom_topic = "odom");
 
   /**
    * @brief Get twist msg from smoother
    * @return twist Twist msg
    */
-  inline geometry_msgs::msg::Twist getTwist() { return vel_smooth_.twist; }
+  inline geometry_msgs::msg::Twist getTwist() {return vel_smooth_.twist;}
 
   /**
    * @brief Get twist stamped msg from smoother
    * @return twist TwistStamped msg
    */
-  inline geometry_msgs::msg::TwistStamped getTwistStamped() {
-    return vel_smooth_;
-  }
+  inline geometry_msgs::msg::TwistStamped getTwistStamped() {return vel_smooth_;}
 
 protected:
   /**
@@ -95,6 +97,6 @@ protected:
   std::deque<nav_msgs::msg::Odometry> odom_history_;
 };
 
-} // namespace nav2_util
+}  // namespace nav2_util
 
-#endif // NAV2_UTIL__ODOMETRY_UTILS_HPP_
+#endif  // NAV2_UTIL__ODOMETRY_UTILS_HPP_

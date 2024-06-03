@@ -19,6 +19,7 @@ NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
   this->th_dist = std::normal_distribution<double>(th_mean, th_stddev);
 
   auto real_odom_callback = [this](const Odometry &msg) -> void {
+    mutex_.lock();
     Point noisy_odom;
     double roll = 0.0, pitch = 0.0, yaw = 0.0;
     tf2::getEulerYPR(msg.pose.pose.orientation, yaw, pitch,
@@ -38,7 +39,8 @@ NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
       noisy_odom.z = yaw + noise_z;
     } else
 
-      this->noisy_odom_pub->publish(noisy_odom);
+    this->noisy_odom_pub->publish(noisy_odom);
+    mutex_.unlock();
   };
 
   rclcpp::QoS qos(rclcpp::KeepLast(10));

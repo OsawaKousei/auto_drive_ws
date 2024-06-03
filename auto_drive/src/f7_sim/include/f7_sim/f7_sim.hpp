@@ -81,6 +81,8 @@ private:
   struct Point2D pos_error_I = point_init;
   struct Point2D prior_pos_error = point_init; // 前回の誤差
   bool flag_f = false;
+
+  std::mutex mutex_;
 };
 
 } // namespace f7_sim

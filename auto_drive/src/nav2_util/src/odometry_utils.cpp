@@ -17,19 +17,23 @@
 
 #include "nav2_util/odometry_utils.hpp"
 
-using namespace std::chrono;          // NOLINT
-using namespace std::chrono_literals; // NOLINT
+using namespace std::chrono;  // NOLINT
+using namespace std::chrono_literals;  // NOLINT
 
-namespace nav2_util {
+namespace nav2_util
+{
 
-OdomSmoother::OdomSmoother(const rclcpp::Node::WeakPtr &parent,
-                           double filter_duration,
-                           const std::string &odom_topic)
-    : odom_history_duration_(rclcpp::Duration::from_seconds(filter_duration)) {
+OdomSmoother::OdomSmoother(
+  const rclcpp::Node::WeakPtr & parent,
+  double filter_duration,
+  const std::string & odom_topic)
+: odom_history_duration_(rclcpp::Duration::from_seconds(filter_duration))
+{
   auto node = parent.lock();
   odom_sub_ = node->create_subscription<nav_msgs::msg::Odometry>(
-      odom_topic, rclcpp::SystemDefaultsQoS(),
-      std::bind(&OdomSmoother::odomCallback, this, std::placeholders::_1));
+    odom_topic,
+    rclcpp::SystemDefaultsQoS(),
+    std::bind(&OdomSmoother::odomCallback, this, std::placeholders::_1));
 
   odom_cumulate_.twist.twist.linear.x = 0;
   odom_cumulate_.twist.twist.linear.y = 0;
@@ -39,14 +43,17 @@ OdomSmoother::OdomSmoother(const rclcpp::Node::WeakPtr &parent,
   odom_cumulate_.twist.twist.angular.z = 0;
 }
 
-OdomSmoother::OdomSmoother(const nav2_util::LifecycleNode::WeakPtr &parent,
-                           double filter_duration,
-                           const std::string &odom_topic)
-    : odom_history_duration_(rclcpp::Duration::from_seconds(filter_duration)) {
+OdomSmoother::OdomSmoother(
+  const nav2_util::LifecycleNode::WeakPtr & parent,
+  double filter_duration,
+  const std::string & odom_topic)
+: odom_history_duration_(rclcpp::Duration::from_seconds(filter_duration))
+{
   auto node = parent.lock();
   odom_sub_ = node->create_subscription<nav_msgs::msg::Odometry>(
-      odom_topic, rclcpp::SystemDefaultsQoS(),
-      std::bind(&OdomSmoother::odomCallback, this, std::placeholders::_1));
+    odom_topic,
+    rclcpp::SystemDefaultsQoS(),
+    std::bind(&OdomSmoother::odomCallback, this, std::placeholders::_1));
 
   odom_cumulate_.twist.twist.linear.x = 0;
   odom_cumulate_.twist.twist.linear.y = 0;
@@ -56,7 +63,8 @@ OdomSmoother::OdomSmoother(const nav2_util::LifecycleNode::WeakPtr &parent,
   odom_cumulate_.twist.twist.angular.z = 0;
 }
 
-void OdomSmoother::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
+void OdomSmoother::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
+{
   std::lock_guard<std::mutex> lock(odom_mutex_);
 
   // update cumulated odom only if history is not empty
@@ -69,7 +77,7 @@ void OdomSmoother::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
 
     // update cumulated odom when duration has exceeded and pop earliest msg
     while (current_time - front_time > odom_history_duration_) {
-      const auto &odom = odom_history_.front();
+      const auto & odom = odom_history_.front();
       odom_cumulate_.twist.twist.linear.x -= odom.twist.twist.linear.x;
       odom_cumulate_.twist.twist.linear.y -= odom.twist.twist.linear.y;
       odom_cumulate_.twist.twist.linear.z -= odom.twist.twist.linear.z;
@@ -91,8 +99,9 @@ void OdomSmoother::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
   updateState();
 }
 
-void OdomSmoother::updateState() {
-  const auto &odom = odom_history_.back();
+void OdomSmoother::updateState()
+{
+  const auto & odom = odom_history_.back();
   odom_cumulate_.twist.twist.linear.x += odom.twist.twist.linear.x;
   odom_cumulate_.twist.twist.linear.y += odom.twist.twist.linear.y;
   odom_cumulate_.twist.twist.linear.z += odom.twist.twist.linear.z;
@@ -101,18 +110,12 @@ void OdomSmoother::updateState() {
   odom_cumulate_.twist.twist.angular.z += odom.twist.twist.angular.z;
 
   vel_smooth_.header = odom.header;
-  vel_smooth_.twist.linear.x =
-      odom_cumulate_.twist.twist.linear.x / odom_history_.size();
-  vel_smooth_.twist.linear.y =
-      odom_cumulate_.twist.twist.linear.y / odom_history_.size();
-  vel_smooth_.twist.linear.z =
-      odom_cumulate_.twist.twist.linear.z / odom_history_.size();
-  vel_smooth_.twist.angular.x =
-      odom_cumulate_.twist.twist.angular.x / odom_history_.size();
-  vel_smooth_.twist.angular.y =
-      odom_cumulate_.twist.twist.angular.y / odom_history_.size();
-  vel_smooth_.twist.angular.z =
-      odom_cumulate_.twist.twist.angular.z / odom_history_.size();
+  vel_smooth_.twist.linear.x = odom_cumulate_.twist.twist.linear.x / odom_history_.size();
+  vel_smooth_.twist.linear.y = odom_cumulate_.twist.twist.linear.y / odom_history_.size();
+  vel_smooth_.twist.linear.z = odom_cumulate_.twist.twist.linear.z / odom_history_.size();
+  vel_smooth_.twist.angular.x = odom_cumulate_.twist.twist.angular.x / odom_history_.size();
+  vel_smooth_.twist.angular.y = odom_cumulate_.twist.twist.angular.y / odom_history_.size();
+  vel_smooth_.twist.angular.z = odom_cumulate_.twist.twist.angular.z / odom_history_.size();
 }
 
-} // namespace nav2_util
+}  // namespace nav2_util
