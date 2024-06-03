@@ -14,8 +14,8 @@ ament_auto_find_build_dependencies()
 # f7_sim
 ament_auto_add_library(f7_sim_node src/local_path/f7_sim_node.cpp)
 ament_auto_add_library(noisy_odom_node src/local_path/noisy_odom_node.cpp)
-rclcpp_components_register_nodes(f7_sim_node "f7_sim::F7_SIMNode")
-rclcpp_components_register_nodes(noisy_odom_node "f7_sim::NoisyOdomNode")
+# rclcpp_components_register_nodes(f7_sim_node "f7_sim::F7_SIMNode")
+# rclcpp_components_register_nodes(noisy_odom_node "f7_sim::NoisyOdomNode")
 ament_auto_add_executable(
   f7_sim_exec src/local_path/f7_sim.cpp
   src/local_path/f7_sim_node.cpp
