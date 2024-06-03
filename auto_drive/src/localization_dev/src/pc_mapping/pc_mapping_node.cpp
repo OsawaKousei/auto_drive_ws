@@ -3,7 +3,7 @@
  * @brief Main file for the pc_mapping node
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 #include <rclcpp/rclcpp.hpp>
 
 #include "localization_dev/pc_mapping/odom_tf.hpp"

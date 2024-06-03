@@ -3,7 +3,7 @@
  * @brief Implementation file for the SavePc class
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 #include "localization_dev/pc_mapping/save_pc.hpp"
 #include <filesystem>
 #include <functional>

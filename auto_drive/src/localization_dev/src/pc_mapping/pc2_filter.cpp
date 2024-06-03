@@ -3,7 +3,7 @@
  * @brief Implementation file for the Pc2Filter class
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 #include "localization_dev/pc_mapping/pc2_filter.hpp"
 #include <functional>
 #include <iostream>

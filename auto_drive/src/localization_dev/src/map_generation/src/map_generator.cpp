@@ -3,7 +3,7 @@
  * @brief Generate a 2D point cloud map from the 3D point cloud data
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 #include <pcl/common/common.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
@@ -26,8 +26,9 @@ int main(int argc, char *argv[]) {
   // PassThrough Filter
   pcl::PassThrough<pcl::PointXYZ> pass;
   pass.setInputCloud(cloud);
-  pass.setFilterFieldName("z");    // z axis
-  pass.setFilterLimits(0.04, 1.0); // extract point cloud between specified limits
+  pass.setFilterFieldName("z"); // z axis
+  pass.setFilterLimits(0.04,
+                       1.0); // extract point cloud between specified limits
   pass.filter(*cloud);
 
   // set each point's z to 0

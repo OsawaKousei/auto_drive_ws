@@ -3,7 +3,7 @@
  * @brief Header file for the Pc2Filter class
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 #ifndef LOCALIZATION_DEV__PC2_FILTER_HPP_
 #define LOCALIZATION_DEV__PC2_FILTER_HPP_
 

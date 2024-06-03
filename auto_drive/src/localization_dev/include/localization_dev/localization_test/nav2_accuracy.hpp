@@ -9,17 +9,18 @@
 #define LOCALIZATION_DEV__NAV2_ACCURACY_HPP_
 
 #include "localization_dev/visibility_control.h"
+#include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float64.hpp>
-#include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 
 namespace localization_dev {
 /// @brief A class to calculate the accuracy of the navigation system.
 /// @details This class calculates the accuracy of the navigation system by
-/// comparing the estimated odometry and the real odometry. The estimated odometry
-/// is obtained from the /estimated_odom topic, and the real odometry is obtained
+/// comparing the estimated odometry and the real odometry. The estimated
+/// odometry is obtained from the /estimated_odom topic, and the real odometry
+/// is obtained
 class Nav2Accuracy : public rclcpp::Node {
 public:
   TUTORIAL_PUBLIC
@@ -27,7 +28,8 @@ public:
   virtual ~Nav2Accuracy();
 
 private:
-  rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr estimated_odom_sub;
+  rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr
+      estimated_odom_sub;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr real_odom_sub;
   rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr accuracy_pub;
 
@@ -37,7 +39,6 @@ private:
 
   std::mutex mutex_;
 
-  
   float get_yaw(const geometry_msgs::msg::Quaternion &q);
 };
 

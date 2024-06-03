@@ -19,24 +19,18 @@
  *
  */
 
-
-#include <math.h>
 #include <assert.h>
+#include <math.h>
 
 #include "nav2_amcl/sensors/laser/laser.hpp"
 
-namespace nav2_amcl
-{
+namespace nav2_amcl {
 
 LikelihoodFieldModelProb::LikelihoodFieldModelProb(
-  double z_hit, double z_rand, double sigma_hit,
-  double max_occ_dist, bool do_beamskip,
-  double beam_skip_distance,
-  double beam_skip_threshold,
-  double beam_skip_error_threshold,
-  size_t max_beams, map_t * map)
-: Laser(max_beams, map)
-{
+    double z_hit, double z_rand, double sigma_hit, double max_occ_dist,
+    bool do_beamskip, double beam_skip_distance, double beam_skip_threshold,
+    double beam_skip_error_threshold, size_t max_beams, map_t *map)
+    : Laser(max_beams, map) {
   z_hit_ = z_hit;
   z_rand_ = z_rand;
   sigma_hit_ = sigma_hit;
@@ -48,16 +42,15 @@ LikelihoodFieldModelProb::LikelihoodFieldModelProb(
 }
 
 // Determine the probability for the given pose
-double
-LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set)
-{
-  LikelihoodFieldModelProb * self;
+double LikelihoodFieldModelProb::sensorFunction(LaserData *data,
+                                                pf_sample_set_t *set) {
+  LikelihoodFieldModelProb *self;
   int i, j, step;
   double z, pz;
   double log_p;
   double obs_range, obs_bearing;
   double total_weight;
-  pf_sample_t * sample;
+  pf_sample_t *sample;
   pf_vector_t pose;
   pf_vector_t hit;
 
@@ -76,11 +69,12 @@ LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set
   double z_hit_denom = 2 * self->sigma_hit_ * self->sigma_hit_;
   double z_rand_mult = 1.0 / data->range_max;
 
-  double max_dist_prob = exp(-(self->map_->max_occ_dist * self->map_->max_occ_dist) / z_hit_denom);
+  double max_dist_prob =
+      exp(-(self->map_->max_occ_dist * self->map_->max_occ_dist) / z_hit_denom);
 
-  // Beam skipping - ignores beams for which a majoirty of particles do not agree with the map
-  // prevents correct particles from getting down weighted because of unexpected obstacles
-  // such as humans
+  // Beam skipping - ignores beams for which a majoirty of particles do not
+  // agree with the map prevents correct particles from getting down weighted
+  // because of unexpected obstacles such as humans
 
   bool do_beamskip = self->do_beamskip_;
   double beam_skip_distance = self->beam_skip_distance_;
@@ -92,15 +86,16 @@ LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set
   }
 
   // we need a count the no of particles for which the beam agreed with the map
-  int * obs_count = new int[self->max_beams_]();
+  int *obs_count = new int[self->max_beams_]();
 
-  // we also need a mask of which observations to integrate (to decide which beams to integrate to
-  // all particles)
-  bool * obs_mask = new bool[self->max_beams_]();
+  // we also need a mask of which observations to integrate (to decide which
+  // beams to integrate to all particles)
+  bool *obs_mask = new bool[self->max_beams_]();
 
   int beam_ind = 0;
 
-  // realloc indicates if we need to reallocate the temp data structure needed to do beamskipping
+  // realloc indicates if we need to reallocate the temp data structure needed
+  // to do beamskipping
   bool realloc = false;
 
   if (do_beamskip) {
@@ -114,7 +109,8 @@ LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set
 
     if (realloc) {
       self->reallocTempData(set->sample_count, self->max_beams_);
-      fprintf(stderr, "Reallocing temp weights %d - %d\n", self->max_samples_, self->max_obs_);
+      fprintf(stderr, "Reallocing temp weights %d - %d\n", self->max_samples_,
+              self->max_obs_);
     }
   }
 
@@ -194,7 +190,8 @@ LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set
   if (do_beamskip) {
     int skipped_beam_count = 0;
     for (beam_ind = 0; beam_ind < self->max_beams_; beam_ind++) {
-      if ((obs_count[beam_ind] / static_cast<double>(set->sample_count)) > beam_skip_threshold) {
+      if ((obs_count[beam_ind] / static_cast<double>(set->sample_count)) >
+          beam_skip_threshold) {
         obs_mask[beam_ind] = true;
       } else {
         obs_mask[beam_ind] = false;
@@ -202,18 +199,18 @@ LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set
       }
     }
 
-    // we check if there is at least a critical number of beams that agreed with the map
-    // otherwise it probably indicates that the filter converged to a wrong solution
-    // if that's the case we integrate all the beams and hope the filter might converge to
-    // the right solution
+    // we check if there is at least a critical number of beams that agreed with
+    // the map otherwise it probably indicates that the filter converged to a
+    // wrong solution if that's the case we integrate all the beams and hope the
+    // filter might converge to the right solution
     bool error = false;
 
     if (skipped_beam_count >= (beam_ind * self->beam_skip_error_threshold_)) {
-      fprintf(
-        stderr,
-        "Over %f%% of the observations were not in the map - pf may have converged to wrong pose -"
-        " integrating all observations\n",
-        (100 * self->beam_skip_error_threshold_));
+      fprintf(stderr,
+              "Over %f%% of the observations were not in the map - pf may have "
+              "converged to wrong pose -"
+              " integrating all observations\n",
+              (100 * self->beam_skip_error_threshold_));
       error = true;
     }
 
@@ -240,15 +237,13 @@ LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set
   return total_weight;
 }
 
-bool
-LikelihoodFieldModelProb::sensorUpdate(pf_t * pf, LaserData * data)
-{
+bool LikelihoodFieldModelProb::sensorUpdate(pf_t *pf, LaserData *data) {
   if (max_beams_ < 2) {
     return false;
   }
-  pf_update_sensor(pf, (pf_sensor_model_fn_t) sensorFunction, data);
+  pf_update_sensor(pf, (pf_sensor_model_fn_t)sensorFunction, data);
 
   return true;
 }
 
-}  // namespace nav2_amcl
+} // namespace nav2_amcl

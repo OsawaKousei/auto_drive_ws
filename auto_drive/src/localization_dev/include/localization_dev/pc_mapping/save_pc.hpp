@@ -3,7 +3,7 @@
  * @brief Header file for the SavePc class
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 #ifndef LOCALIZATION_DEV__SAVE_PC_HPP_
 #define LOCALIZATION_DEV__SAVE_PC_HPP_
 
@@ -23,8 +23,8 @@ namespace localization_dev {
 /// @details This class saves the PointCloud data
 /// the map point cloud data is received from the "mapped_pc2" topic.
 /// The command data is received from the "pc_mapping_cmd" topic.
-/// The directory to save the point cloud data is set by the parameter in yaml file.
-/// The parameter file is passed in the launch file.
+/// The directory to save the point cloud data is set by the parameter in yaml
+/// file. The parameter file is passed in the launch file.
 class SavePc : public rclcpp::Node {
 public:
   TUTORIAL_PUBLIC

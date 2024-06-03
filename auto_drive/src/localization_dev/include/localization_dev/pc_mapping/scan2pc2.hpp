@@ -3,7 +3,7 @@
  * @brief Header file for the Scan2pc2 class
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 #ifndef LOCALIZATION_DEV__SCAN2PC2_HPP_
 #define LOCALIZATION_DEV__SCAN2PC2_HPP_
 

@@ -15,25 +15,39 @@ using namespace std::chrono_literals;
 namespace localization_bynav2 {
 
 Nav2Accuracy::Nav2Accuracy(const rclcpp::NodeOptions &options)
- : rclcpp::Node("nav2_accuracy", options) {
+    : rclcpp::Node("nav2_accuracy", options) {
   // create subscription to the estimated odometry
-  estimated_odom_sub = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
-      "amcl_pose", 10, [this](const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg) {
-        mutex_.lock();
-        accuracy = 1 / (1 + cbrt(pow(msg->pose.pose.position.x - real_odom.pose.pose.position.x, 2) +
-                                    pow(msg->pose.pose.position.y - real_odom.pose.pose.position.y, 2) +
-                                    pow(get_yaw(msg->pose.pose.orientation) - get_yaw(real_odom.pose.pose.orientation), 2)));
+  estimated_odom_sub =
+      this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
+          "amcl_pose", 10,
+          [this](const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr
+                     msg) {
+            mutex_.lock();
+            accuracy =
+                1 / (1 + cbrt(pow(msg->pose.pose.position.x -
+                                      real_odom.pose.pose.position.x,
+                                  2) +
+                              pow(msg->pose.pose.position.y -
+                                      real_odom.pose.pose.position.y,
+                                  2) +
+                              pow(get_yaw(msg->pose.pose.orientation) -
+                                      get_yaw(real_odom.pose.pose.orientation),
+                                  2)));
 
-        auto accuracy_msg = std_msgs::msg::Float64();
-        accuracy_msg.data = accuracy;
-        accuracy_pub->publish(accuracy_msg);
-        RCLCPP_INFO(this->get_logger(), "Real odom: x: %f, y: %f, th: %f", real_odom.pose.pose.position.x,
-                real_odom.pose.pose.position.y, get_yaw(real_odom.pose.pose.orientation));
-        RCLCPP_INFO(this->get_logger(), "Estimated pose: x: %f, y: %f, th: %f", msg->pose.pose.position.x,
-                msg->pose.pose.position.y, get_yaw(msg->pose.pose.orientation));
-        RCLCPP_INFO(this->get_logger(), "Estimate Accuracy: %f", accuracy);
-        mutex_.unlock();
-      });
+            auto accuracy_msg = std_msgs::msg::Float64();
+            accuracy_msg.data = accuracy;
+            accuracy_pub->publish(accuracy_msg);
+            RCLCPP_INFO(this->get_logger(), "Real odom: x: %f, y: %f, th: %f",
+                        real_odom.pose.pose.position.x,
+                        real_odom.pose.pose.position.y,
+                        get_yaw(real_odom.pose.pose.orientation));
+            RCLCPP_INFO(this->get_logger(),
+                        "Estimated pose: x: %f, y: %f, th: %f",
+                        msg->pose.pose.position.x, msg->pose.pose.position.y,
+                        get_yaw(msg->pose.pose.orientation));
+            RCLCPP_INFO(this->get_logger(), "Estimate Accuracy: %f", accuracy);
+            mutex_.unlock();
+          });
 
   // create subscription to the real odometry
   real_odom_sub = this->create_subscription<nav_msgs::msg::Odometry>(
@@ -42,7 +56,7 @@ Nav2Accuracy::Nav2Accuracy(const rclcpp::NodeOptions &options)
         real_odom = *msg;
         mutex_.unlock();
       });
-  
+
   // create publisher for the accuracy
   accuracy_pub = this->create_publisher<std_msgs::msg::Float64>("accuracy", 10);
 }

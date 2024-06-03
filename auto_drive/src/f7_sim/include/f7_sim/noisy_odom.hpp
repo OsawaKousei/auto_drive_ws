@@ -3,11 +3,11 @@
 
 #include "f7_sim/visibility_control.h"
 
+#include "geometry_msgs/msg/point.hpp"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp" //avoid the error
+#include <nav_msgs/msg/odometry.hpp>
 #include <random>
 #include <rclcpp/rclcpp.hpp>
-#include <nav_msgs/msg/odometry.hpp>
-#include "geometry_msgs/msg/point.hpp"
-#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp" //avoid the error 
 #include <tf2/utils.h> //getEulerYPR
 
 #define DISABLE_NOISE 1

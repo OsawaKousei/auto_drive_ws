@@ -3,7 +3,7 @@
  * @brief Implementation file for the Pc2octmap class
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 #include "localization_dev/pc_mapping/pc2octmap.hpp"
 #include <functional>
 #include <iostream>
@@ -37,9 +37,8 @@ Pc2octmap::Pc2octmap(const rclcpp::NodeOptions &options)
   map_sub = this->create_subscription<sensor_msgs::msg::PointCloud2>(
       "mapped_pc2", 1,
       std::bind(&Pc2octmap::map_callback, this, std::placeholders::_1));
-  map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>("map", rclcpp::QoS(1)
-            .reliable()
-            .transient_local());
+  map_pub = this->create_publisher<nav_msgs::msg::OccupancyGrid>(
+      "map", rclcpp::QoS(1).reliable().transient_local());
 }
 
 Pc2octmap::~Pc2octmap() {}

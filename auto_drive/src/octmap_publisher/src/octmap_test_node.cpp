@@ -3,7 +3,7 @@
  * @brief Publish a octmap data to the "octmap" topic
  * @author kousei
  * @date 2024-05-29
-*/
+ */
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include <chrono>

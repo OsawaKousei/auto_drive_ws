@@ -10,13 +10,13 @@
 #include "localization_bynav2/nav2_accuracy.hpp"
 #include "localization_bynav2/noisy_odom.hpp"
 
-
 int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
   rclcpp::executors::MultiThreadedExecutor exec;
 
   const auto nav2_accuracy =
-      std::make_shared<localization_bynav2::Nav2Accuracy>(rclcpp::NodeOptions());
+      std::make_shared<localization_bynav2::Nav2Accuracy>(
+          rclcpp::NodeOptions());
   exec.add_node(nav2_accuracy);
 
   const auto noisy_odom =
