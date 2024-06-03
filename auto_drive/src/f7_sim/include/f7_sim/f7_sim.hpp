@@ -20,8 +20,6 @@
 
 #include "f7_sim/visibility_control.h"
 
-#define ABS_COORDINATE 1
-
 using namespace std::chrono_literals;
 using Bool = std_msgs::msg::Bool;
 using Point = geometry_msgs::msg::Point;
@@ -81,6 +79,8 @@ private:
   struct Point2D pos_error_I = point_init;
   struct Point2D prior_pos_error = point_init; // 前回の誤差
   bool flag_f = false;
+
+  int abs_coordinate = 1;
 
   std::mutex mutex_;
 };

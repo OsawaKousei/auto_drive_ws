@@ -14,6 +14,20 @@ namespace f7_sim {
 
 NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
     : rclcpp::Node("noisy_odom", options) {
+
+  declare_parameter("xy_mean", 1.0);
+  declare_parameter("xy_stddev", 1.0);
+  declare_parameter("th_mean", 1.0);
+  declare_parameter("th_stddev", 1.0);
+  get_parameter("xy_mean", xy_mean);
+  get_parameter("xy_stddev", xy_stddev);
+  get_parameter("th_mean", xy_mean);
+  get_parameter("th_stddev", th_stddev);
+  std::cout << "xy_mean: " << xy_mean << std::endl;
+  std::cout << "xy_stddev: " << xy_stddev << std::endl;
+  std::cout << "th_mean: " << th_mean << std::endl;
+  std::cout << "th_stddev: " << th_stddev << std::endl;
+  
   // Define random generator with Gaussian distribution
   this->xy_dist = std::normal_distribution<double>(xy_mean, xy_stddev);
   this->th_dist = std::normal_distribution<double>(th_mean, th_stddev);

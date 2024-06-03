@@ -1,0 +1,10 @@
+f7_sim:
+  ros__parameters:
+    abs_coordinate: 0
+
+noisy_odom:
+  ros__parameters:
+    xy_mean: 0.0
+    xy_stddev: 0.01
+    th_mean: 0.0
+    th_stddev: 0.01

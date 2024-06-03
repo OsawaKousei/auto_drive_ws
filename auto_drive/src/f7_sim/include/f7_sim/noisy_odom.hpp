@@ -25,13 +25,13 @@ private:
   rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr noisy_odom_pub;
 
   //! mean of the Gaussian distribution for x and y
-  const double xy_mean = 0.0;
+  double xy_mean;
   //! standard deviation of the Gaussian distribution for x and y
-  const double xy_stddev = 0.001;
+  double xy_stddev;
   //! mean of the Gaussian distribution for theta
-  const double th_mean = 0.0;
+  double th_mean;
   //! standard deviation of the Gaussian distribution for theta
-  const double th_stddev = 0.1;
+  double th_stddev;
 
   //! random number generator
   std::default_random_engine generator;

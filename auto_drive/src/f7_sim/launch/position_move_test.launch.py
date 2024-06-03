@@ -12,10 +12,10 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     world_name = LaunchConfiguration('world_name', default='test_world')
     #pkg_share_dirにパッケージのパスを取得
-    pkg_share_dir = get_package_share_directory('holonomic_sim')
-    pkg_share_dir_f7 = get_package_share_directory('f7_sim')
+    pkg_share_dir = get_package_share_directory('f7_sim')
     #モデルの格納されているパスを設定
-    model_path = os.path.join(pkg_share_dir, "models")
+    model_pkg_dir = get_package_share_directory('holonomic_sim')
+    model_path = os.path.join(model_pkg_dir, "models")
 
     #ignition gazeboがモデルにアクセスできるように設定
     ign_resource_path = SetEnvironmentVariable(
@@ -74,7 +74,7 @@ def generate_launch_description():
         executable='parameter_bridge',
         parameters=[{
             #brigdeの設定ファイルを指定
-            'config_file': os.path.join(pkg_share_dir, 'config', 'holonomic_test.yaml'),
+            'config_file': os.path.join(model_pkg_dir, 'config', 'holonomic_test.yaml'),
             #QoSの設定
             'qos_overrides./tf_static.publisher.durability': 'transient_local',
             'qos_overrides./odom.publisher.durability': 'transient_local',
@@ -104,7 +104,7 @@ def generate_launch_description():
     
     #rviz2の設定フィルのパスを取得
     rviz_config_dir = os.path.join(
-        pkg_share_dir,
+        model_pkg_dir,
         'config',
         'holonomic_test.rviz')
     
@@ -144,6 +144,8 @@ def generate_launch_description():
     f7_sim = Node( # f7_sim
         package='f7_sim',
         executable='f7_sim_node',
+        parameters=[os.path.join(pkg_share_dir,'params','params.yaml')],
+        prefix='xterm -e',
         output='screen',
     )
     

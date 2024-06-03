@@ -14,10 +14,15 @@ F7Sim::F7Sim(const rclcpp::NodeOptions &options)
     : rclcpp::Node("f7_sim", options) {
   RCLCPP_INFO(this->get_logger(), "f7_sim_node is activated");
 
+  declare_parameter("abs_coordinate", 1);
+  get_parameter("abs_coordinate", abs_coordinate);
+  // configure parameters
+  std::cout << "abs_coordinate: " << abs_coordinate << std::endl;
+
   auto timer_callback = [this]() -> void {
     mutex_.lock();
     // 絶対座標用
-    if (ABS_COORDINATE) {
+    if (abs_coordinate) {
       pos_error.x = pos_cmd_data.x - pos_data.x;
       pos_error.y = pos_cmd_data.y - pos_data.y;
       pos_error.z = pos_cmd_data.z - pos_data.z;
@@ -111,7 +116,7 @@ F7Sim::F7Sim(const rclcpp::NodeOptions &options)
 
   auto cmd_pos_callback = [this](const Point &msg) -> void {
     mutex_.lock();
-    if (ABS_COORDINATE) {
+    if (abs_coordinate) {
       // 位置指令を取得
       pos_cmd_data.x = msg.x;
       pos_cmd_data.y = msg.y;
