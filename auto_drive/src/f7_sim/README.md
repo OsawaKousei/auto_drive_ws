@@ -20,7 +20,7 @@ auto_drive_ws/auto_drive/src/f7_sim/include/f7_sim_node.hpp
 - (※)auto_drive_ws/auto_drive/src/f7_sim/include/f7_sim_node.hpp
 の「#define ABS_COORDINATE 1」を0にするとcmd_posが相対座標指定になる
 （「馬の前にニンジンをぶら下げる状態」になる（？））
-↑
+←
 f7_sim外で追従させたいときに使用する
 
 - auto_drive_ws/auto_drive/src/f7_sim/include/noisy_odom_node.hpp
