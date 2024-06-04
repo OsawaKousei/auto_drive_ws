@@ -1,4 +1,6 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <!-- basic material macro-->
+    <!-- some macro has arg params to control inertial value independent from mass-->
     <xacro:macro name="sphere_macro" params="suffix parent mass arg radius x y z">
         <xacro:property name="inertia" value="${2/5*arg*radius*radius}"/>
         <link name="${suffix}_link">
@@ -93,7 +95,8 @@
         </link>
     </xacro:macro>
 
-    <xacro:macro name="lidar_macro" params="suffix parent x y z rate max_range samples angle">
+    <!-- lidar macro with lidar plugin for ign gz-->
+    <xacro:macro name="lidar_macro" params="suffix parent x y z rate max_range samples angle noise">
         <xacro:cylinder_link_macro suffix="${suffix}_lidar" mass="0.0001" arg="0.0001" radius="0.05" length="0.05" if_collision="false"  if_visual="true"/>
         <joint name="${suffix}_lidar_joint" type="fixed">
             <parent link="${parent}"/>
@@ -121,7 +124,7 @@
                   <noise>
                     <type>gaussian</type>
                     <mean>0.0</mean>
-                    <stddev>0.005</stddev>
+                    <stddev>${noise}</stddev>
                   </noise>
                 </ray>
                 <always_on>true</always_on>
@@ -130,6 +133,7 @@
         </gazebo>
       </xacro:macro> 
 
+    <!-- four wheel caster macro -->
     <xacro:macro name="four_wheel_caster_macro" params="parent base_radius caster_radius z_offset">
         <xacro:property name="x" value="${base_radius*cos(pi/4)}" />
         <xacro:sphere_macro suffix="caster1" parent="${parent}" mass="0.3" arg="0.3" radius="${caster_radius}" x="${x}" y="${x}" z="${z_offset}"/>

@@ -8,7 +8,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>model://field/meshes/HaruRobo2024field.stl</uri>
+            <uri>model://field/meshes/field.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -24,7 +24,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>model://field/meshes/HaruRobo2024field.dae</uri>
+            <uri>model://field/meshes/field.dae</uri>
           </mesh>
         </geometry>
       </visual>

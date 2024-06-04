@@ -9,7 +9,7 @@
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
-- ros_topic_name: "/odom/tf"
+- ros_topic_name: "/tf"
   gz_topic_name: "odom/tf"
   ros_type_name: "tf2_msgs/msg/TFMessage"
   gz_type_name: "ignition.msgs.Pose_V"
