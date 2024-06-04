@@ -10,8 +10,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <tf2/utils.h> //getEulerYPR
 
-#define DISABLE_NOISE 1
-
 namespace f7_sim {
 
 class NoisyOdom : public rclcpp::Node {
@@ -24,6 +22,7 @@ private:
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr real_odom_sub;
   rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr noisy_odom_pub;
 
+  int enable_noise;
   //! mean of the Gaussian distribution for x and y
   double xy_mean;
   //! standard deviation of the Gaussian distribution for x and y

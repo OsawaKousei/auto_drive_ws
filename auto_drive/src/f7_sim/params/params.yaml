@@ -4,7 +4,9 @@ f7_sim:
 
 noisy_odom:
   ros__parameters:
+    enable_noise: 1
     xy_mean: 0.0
     xy_stddev: 0.01
     th_mean: 0.0
     th_stddev: 0.01
+

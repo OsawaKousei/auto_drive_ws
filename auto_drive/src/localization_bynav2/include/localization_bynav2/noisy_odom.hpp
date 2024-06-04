@@ -34,11 +34,11 @@ private:
   //! mean of the Gaussian distribution for x and y
   const double xy_mean = 0.0;
   //! standard deviation of the Gaussian distribution for x and y
-  const double xy_stddev = 0.001;
+  const double xy_stddev = 0.0;
   //! mean of the Gaussian distribution for theta
   const double th_mean = 0.0;
   //! standard deviation of the Gaussian distribution for theta
-  const double th_stddev = 0.1;
+  const double th_stddev = 0.0;
 
   //! random number generator
   std::default_random_engine generator;

@@ -14,11 +14,13 @@ namespace f7_sim {
 
 NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
     : rclcpp::Node("noisy_odom", options) {
-
+    
+  declare_parameter("enable_noise", 1);
   declare_parameter("xy_mean", 1.0);
   declare_parameter("xy_stddev", 1.0);
   declare_parameter("th_mean", 1.0);
   declare_parameter("th_stddev", 1.0);
+  get_parameter("enable_noise", enable_noise);
   get_parameter("xy_mean", xy_mean);
   get_parameter("xy_stddev", xy_stddev);
   get_parameter("th_mean", xy_mean);
@@ -43,7 +45,7 @@ NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
     noisy_odom.y = msg.pose.pose.position.y;
     noisy_odom.z = yaw;
 
-    if (!DISABLE_NOISE) { // hppでdefineされている
+    if (enable_noise) {
       noise_x += this->xy_dist(this->generator);
       noise_y += this->xy_dist(this->generator);
       noise_z += this->th_dist(this->generator);
