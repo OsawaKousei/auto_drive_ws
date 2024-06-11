@@ -18,6 +18,27 @@ include_directories(SYSTEM
   ${IGNITION-GUI_INCLUDE_DIRS}
 )
 
+# gui plugin
+qt5_add_resources(resources_rcc src/localization_switch/LocalizationSwitch.qrc)
+add_library(LocalizationSwitch SHARED
+  src/localization_switch/LocalizationSwitch.cpp
+  ${resources_rcc}
+)
+target_link_libraries(LocalizationSwitch
+  ${IGNITION-COMMON_LIBRARY_DIRS}
+  ${IGNITION-GUI_LIBRARIES}
+)
+
+qt5_add_resources(resources_rcc src/pc_mapping_switch/PcMappingSwitch.qrc)
+add_library(PcMappingSwitch SHARED
+  src/pc_mapping_switch/PcMappingSwitch.cpp
+  ${resources_rcc}
+)
+target_link_libraries(PcMappingSwitch
+  ${IGNITION-COMMON_LIBRARY_DIRS}
+  ${IGNITION-GUI_LIBRARIES}
+)
+
 # system plugin
 add_library(HolonomicPlugin SHARED
   src/holonomic_plugin/holonomic_plugin.cpp
@@ -28,7 +49,7 @@ target_link_libraries(HolonomicPlugin
 )
 
 install(
-  TARGETS HolonomicPlugin
+  TARGETS HolonomicPlugin LocalizationSwitch PcMappingSwitch
   LIBRARY DESTINATION lib
 )
 
@@ -41,6 +62,13 @@ install(
 )
 
 ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/hooks/${PROJECT_NAME}.dsv.in")
+
+ament_auto_add_library(robot_vel src/robot_vel.cpp)
+rclcpp_components_register_nodes(robot_vel "holonomic_sim::robotVel")
+ament_auto_add_executable(
+ign_ros_node src/ign_ros_node.cpp
+  src/robot_vel.cpp
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
