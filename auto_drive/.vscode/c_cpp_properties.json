@@ -9,7 +9,8 @@
                 "/opt/ros/humble/include/**",
                 "/usr/include/pcl-1.12",
                 "/usr/include/eigen3",
-                "${workspaceFolder}/src/localization_bynav2/include"
+                "${workspaceFolder}/src/localization_bynav2/include",
+                "/usr/include/python3.10"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
