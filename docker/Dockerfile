@@ -1,4 +1,4 @@
-FROM n622jwith/ros2_gui_base:latest
+FROM n622jwith/ros2_auto_drive_base:latest
 
 # Add user and group, then allow sudo
 ARG UID

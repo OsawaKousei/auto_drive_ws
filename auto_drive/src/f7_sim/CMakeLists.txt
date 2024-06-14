@@ -20,9 +20,9 @@ f7_sim_node src/f7_sim_node.cpp
 
 install(
   DIRECTORY
-    launch
-    config
-    params
+    # launch
+    # config
+    # params
   DESTINATION share/${PROJECT_NAME}
 )
 

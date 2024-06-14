@@ -14,7 +14,7 @@ services:
         - GIT_USER_NAME=${GIT_USER_NAME}
         - GIT_USER_EMAIL=${GIT_USER_EMAIL}
       dockerfile: Dockerfile
-    image: n622jwith/ros2_gui:latest
+    image: n622jwith/auto_drive:latest
     environment:
       - DISPLAY=${DISPLAY}
       - "QT_X11_NO_MITSHM=1"
