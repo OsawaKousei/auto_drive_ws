@@ -63,7 +63,7 @@ class OMPL_PlannerClass{
 private:
     std::shared_ptr<ompl::base::SpaceInformation> _space_info_base_area;  // ベースのフィールド
 public:
-    OMPL_PlannerClass(const nav_msgs::msg::OccupancyGrid &map);
+    OMPL_PlannerClass(const nav_msgs::msg::OccupancyGrid &map, double robot_size);
     nav_msgs::msg::Path plan(const geometry_msgs::msg::Pose &start_state, const geometry_msgs::msg::Pose &goal_state);
 };
 

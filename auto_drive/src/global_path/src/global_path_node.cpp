@@ -53,7 +53,7 @@ public:
         goal.orientation.z = 0.0;
         goal.orientation.w = 1.0;
 
-        global_path::OMPL_PlannerClass planner(map);
+        global_path::OMPL_PlannerClass planner(map, robot_size);
 
         start_time = std::chrono::system_clock::now();
         nav_msgs::msg::Path global_path = planner.plan(start, goal);

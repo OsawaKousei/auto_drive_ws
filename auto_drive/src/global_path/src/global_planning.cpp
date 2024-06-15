@@ -156,7 +156,7 @@ namespace global_path{
     return opt;
   }
 
-  OMPL_PlannerClass::OMPL_PlannerClass(const nav_msgs::msg::OccupancyGrid &map){
+  OMPL_PlannerClass::OMPL_PlannerClass(const nav_msgs::msg::OccupancyGrid &map, double robot_size){
     auto state_space_base_area = std::make_shared<ob::RealVectorStateSpace>(2);
     matrix<double> bounds_pre_base_area{  // 元のstateの範囲
             {0, double(map.info.width)},
