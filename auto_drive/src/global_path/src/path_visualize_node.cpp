@@ -37,7 +37,7 @@ public:
 
         auto goal = geometry_msgs::msg::Pose();
         goal.position.x = 3.0;
-        goal.position.y = 1.0;
+        goal.position.y = 4.0;
         goal.orientation.z = 0.0;
         goal.orientation.w = 1.0;
 

@@ -55,6 +55,26 @@ namespace global_path{
     return std::make_tuple(a, b);
   }
 
+  std::tuple<int, int> getRidingGrid(const double x, const double y, const double resolution){
+    return std::make_tuple(std::ceil(x/resolution), std::ceil(y/resolution));
+  }
+
+  std::vector<std::tuple<int, int>> getCoverGrids(const double x, const double y, const double resolution , const double map_width, const double robot_size){
+    // x, y: robotの位置, resolution: mapの解像度, map_width: mapの幅, robot_size: robotを正方形としたときの一辺の長さ
+    std::vector<std::tuple<int, int>> grids;
+    auto [x_idx, y_idx] = getRidingGrid(x, y, resolution);
+    // robotのサイズに合わせてmaskを設定
+    int mask = std::ceil(robot_size/resolution);
+    for(int i=-mask; i<=mask; i++){
+      for(int j=-mask; j<=mask; j++){
+        if(x_idx+i >= 0 && x_idx+i < map_width && y_idx+j >= 0 && y_idx+j < map_width){
+          grids.push_back(std::make_tuple(x_idx+i, y_idx+j));
+        }
+      }
+    }
+    return grids;
+  }
+
   BaseArea::BaseArea(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_): ob::StateValidityChecker(space_info_){
     space_info = space_info_;
     space_shapes = space_shapes_;
@@ -69,11 +89,14 @@ namespace global_path{
       return false;
     }
     // stateが重なるgridを取得
-    int x_idx = int(x/map_resolution);
-    int y_idx = int(y/map_resolution);
-    // gridが障害物の場合はfalseを返す
-    if(space_shapes.data[y_idx*space_shapes.info.width + x_idx] > 0){
-      return false;
+    auto idx = getCoverGrids(x, y, map_resolution, space_shapes.info.width, 0.1);
+    for (auto& tmp: idx){
+      int x_idx = get<0>(tmp);
+      int y_idx = get<1>(tmp);
+      // gridが障害物の場合はfalseを返す
+      if(space_shapes.data[y_idx*space_shapes.info.width + x_idx] > 0){
+        return false;
+      }
     }
     return true;
   }
@@ -100,10 +123,13 @@ namespace global_path{
       double x = x1 + i*cos(theta);
       double y = y1 + i*sin(theta);
       // gridが障害物の場合はfalseを返す
-      int x_idx = int(x/map_resolution);
-      int y_idx = int(y/map_resolution);
-      if(space_shapes.data[y_idx*space_shapes.info.width + x_idx] > 0){
-        return false;
+      auto idx = getCoverGrids(x, y, map_resolution, space_shapes.info.width, 0.1);
+      for (auto& tmp: idx){
+        int x_idx = get<0>(tmp);
+        int y_idx = get<1>(tmp);
+        if(space_shapes.data[y_idx*space_shapes.info.width + x_idx] > 0){
+          return false;
+        }
       }
     }
     return true;
@@ -189,7 +215,7 @@ namespace global_path{
     planner->setup();  // plannerのsetup
     planner->checkValidity();
 
-    ob::PlannerStatus solved = planner->ob::Planner::solve(0.002);
+    ob::PlannerStatus solved = planner->ob::Planner::solve(100);
     if (!solved) {
         std::cout << "No solution found" << std::endl;
         auto null_path = nav_msgs::msg::Path();
@@ -210,6 +236,10 @@ namespace global_path{
         pose_stamped.pose.position.y = y;
         traj.poses.push_back(pose_stamped);
     }
+    // trajの最初の点と最後の点を表示
+    std::cout << "start: x,y -> " << traj.poses.front().pose.position.x << ", " << traj.poses.front().pose.position.y << std::endl;
+    std::cout << "goal: x,y -> " << traj.poses.back().pose.position.x << ", " << traj.poses.back().pose.position.y << std::endl;
+
     return traj;
   }
 } // namespace global_path
