@@ -28,7 +28,7 @@ ament_auto_add_library(global_planning src/global_planning.cpp)
 #         src/global_planning.cpp
 # )
 
-ament_auto_add_executable(path_visualize_node src/path_visualize_node.cpp
+ament_auto_add_executable(global_path_node src/global_path_node.cpp
         src/global_planning.cpp
 )
 
@@ -37,7 +37,7 @@ target_include_directories(global_planning PUBLIC
         include
 )
 
-target_link_libraries(path_visualize_node matplotlibcpp17::matplotlibcpp17
+target_link_libraries(global_path_node matplotlibcpp17::matplotlibcpp17
         ${Python3_LIBRARIES} pybind11::embed ${OMPL_LIBRARIES} ${Boost_LIBRARIES} global_planning
 )
 

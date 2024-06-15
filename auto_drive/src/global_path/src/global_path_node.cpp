@@ -11,14 +11,26 @@
 
 using namespace std::chrono_literals;
 
-class PathVisualizeNode : public rclcpp::Node {
+class LocalPathNode : public rclcpp::Node {
 public:
-  PathVisualizeNode() : Node("path_visualize_node") {
+  LocalPathNode() : Node("local_path_node") {
 
     publisher_ = this->create_publisher<nav_msgs::msg::Path>("path", 1);
 
-    // pathを保存するディレクトリを指定
-    path = "./src/global_path/path/global_path.csv";
+    declare_parameter("path_dir", "./global_path.csv");
+    declare_parameter("start_x", 0.0);
+    declare_parameter("start_y", 0.0);
+    declare_parameter("goal_x", 0.0);
+    declare_parameter("goal_y", 0.0);
+    declare_parameter("robot_size", 0.0);
+    get_parameter("path_dir", path_dir);
+    get_parameter("start_x", start_x);
+    get_parameter("start_y", start_y);
+    get_parameter("goal_x", goal_x);
+    get_parameter("goal_y", goal_y);
+    get_parameter("robot_size", robot_size);
+    // configure parameters
+    std::cout << "path_dir: " << path_dir << std::endl;
 
     subscription_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(
       "map", 1, [this](const nav_msgs::msg::OccupancyGrid::SharedPtr msg) {
@@ -30,14 +42,14 @@ public:
         std::cout << "map origin: " << map.info.origin.position.x << ", " << map.info.origin.position.y << std::endl;
 
         auto start = geometry_msgs::msg::Pose();
-        start.position.x = 0.5;
-        start.position.y = 0.5;
+        start.position.x = start_x;
+        start.position.y = start_y;
         start.orientation.z = 0.0;
         start.orientation.w = 1.0;
 
         auto goal = geometry_msgs::msg::Pose();
-        goal.position.x = 3.0;
-        goal.position.y = 4.0;
+        goal.position.x = goal_x;
+        goal.position.y = goal_y;
         goal.orientation.z = 0.0;
         goal.orientation.w = 1.0;
 
@@ -54,18 +66,11 @@ public:
         std::cout << "planning time: " << elapsed << " ms" << std::endl;
 
         // pathを保存
-        std::ofstream ofs(path);
+        std::ofstream ofs(path_dir);
         for(auto& pose: global_path.poses){
             ofs << pose.pose.position.x << "," << pose.pose.position.y << std::endl;
         }
-
-
-        // pathを表示
-        // std::cout << "path size: " << global_path.poses.size() << std::endl;
-        // std::cout << "path: " << std::endl;
-        // for(auto& pose: global_path.poses){
-        //     std::cout << "x: " << pose.pose.position.x << ", y: " << pose.pose.position.y << std::endl;
-        // }
+        ofs.close();
 
         this->publisher_->publish(global_path);
       });
@@ -78,12 +83,13 @@ private:
 
     std::chrono::system_clock::time_point start_time, end_time;
     nav_msgs::msg::OccupancyGrid map;
-    std::string path;
+    std::string path_dir;
+    double start_x, start_y, goal_x, goal_y, robot_size;
 };
 
 int main(int argc, char *argv[]) {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<PathVisualizeNode>());
+    rclcpp::spin(std::make_shared<LocalPathNode>());
     rclcpp::shutdown();
     return 0;
 }

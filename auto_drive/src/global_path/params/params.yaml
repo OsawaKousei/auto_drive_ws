@@ -1,0 +1,8 @@
+global_path_node:
+  ros__parameters:
+    path_dir: "/home/kousei/auto_drive_ws/auto_drive/src/global_path/path/global_path.csv"
+    start_x: 0.5
+    start_y: 0.5
+    goal_x: 3.0
+    goal_y: 4.0
+    robot_size: 0.1
