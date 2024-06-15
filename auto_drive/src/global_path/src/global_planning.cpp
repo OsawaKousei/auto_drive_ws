@@ -55,27 +55,66 @@ namespace global_path{
     return std::make_tuple(a, b);
   }
 
-  BaseArea::BaseArea(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_): ob::StateValidityChecker(space_info_), space_info(space_info_){
-    //TODO : robotの形状を追加する
+  BaseArea::BaseArea(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_): ob::StateValidityChecker(space_info_){
+    space_info = space_info_;
+    space_shapes = space_shapes_;
   }
 
   bool BaseArea::isValid(const ob::State* state) const{
     auto [x, y] = get2DPos(state);
-    //TODO : robotの形状を追加する
+    double map_resolution = space_shapes.info.resolution;
+
+    if(!space_info->satisfiesBounds(state)){
+      std::cout << "out of map" << std::endl;
+      return false;
+    }
+    // stateが重なるgridを取得
+    int x_idx = int(x/map_resolution);
+    int y_idx = int(y/map_resolution);
+    // gridが障害物の場合はfalseを返す
+    if(space_shapes.data[y_idx*space_shapes.info.width + x_idx] > 0){
+      return false;
+    }
     return true;
   }
 
-  BaseAreaMotionValidator::BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_): ob::MotionValidator(space_info_), space_info(space_info_){
-    //TODO : robotの形状を追加する
+  BaseAreaMotionValidator::BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_): ob::MotionValidator(space_info_){
+    space_info = space_info_;
+    space_shapes = space_shapes_;
   }
 
   bool BaseAreaMotionValidator::checkMotion(const ob::State* s1, const ob::State* s2) const{
+    auto [x1, y1] = get2DPos(s1);
+    auto [x2, y2] = get2DPos(s2);
+    double map_resolution = space_shapes.info.resolution;
+    if(!space_info->satisfiesBounds(s1) || !space_info->satisfiesBounds(s2)){
+      return false;
+    }
+    // 2点間の直線を求める
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    double dist = sqrt(pow(dx, 2.0) + pow(dy, 2.0));
+    double theta = atan2(dy, dx);
+    // 2点間の直線上の点を取得
+    for(double i=0; i<dist; i+=map_resolution){
+      double x = x1 + i*cos(theta);
+      double y = y1 + i*sin(theta);
+      // gridが障害物の場合はfalseを返す
+      int x_idx = int(x/map_resolution);
+      int y_idx = int(y/map_resolution);
+      if(space_shapes.data[y_idx*space_shapes.info.width + x_idx] > 0){
+        return false;
+      }
+    }
     return true;
   }
 
   bool BaseAreaMotionValidator::checkMotion(const ob::State* s1, const ob::State* s2, std::pair<ob::State*, double>& lastValid) const{
-    //TODO : robotの形状を追加する
-    return true;
+    if(this->checkMotion(s1, s2))return true;  // trueを返す場合はlastValidは変更しない
+
+    lastValid.second = 0.0;
+    // TODO: 実装 (lastValidを更新する. secondは0~1の値で, 0の場合はs1, 1の場合はs2)
+    return false;
   }
 
   ob::OptimizationObjectivePtr getPathLengthObjective(const ob::SpaceInformationPtr& si){
@@ -94,8 +133,8 @@ namespace global_path{
   OMPL_PlannerClass::OMPL_PlannerClass(const nav_msgs::msg::OccupancyGrid &map){
     auto state_space_base_area = std::make_shared<ob::RealVectorStateSpace>(2);
     matrix<double> bounds_pre_base_area{  // 元のstateの範囲
-            {-100, 100},
-            {-30, 30}
+            {0, double(map.info.width)},
+            {0, double(map.info.height)}
     };
     ob::RealVectorBounds bounds_base_area(2);
     for(int i=0; i<bounds_pre_base_area.size(); i++){
@@ -104,7 +143,7 @@ namespace global_path{
     }
     state_space_base_area->setBounds(bounds_base_area);  // bounds for param
 
-    nav_msgs::msg::OccupancyGrid space_shapes; // fieldの形状
+    nav_msgs::msg::OccupancyGrid space_shapes = map;
     //TODO : robotの形状を追加する
 
     _space_info_base_area = std::make_shared<ob::SpaceInformation>(state_space_base_area);

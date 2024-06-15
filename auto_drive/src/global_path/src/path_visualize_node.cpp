@@ -24,9 +24,14 @@ public:
       "map", 1, [this](const nav_msgs::msg::OccupancyGrid::SharedPtr msg) {
         map = *msg;
 
+        // print map
+        std::cout << "map size: " << map.info.width << " x " << map.info.height << std::endl;
+        std::cout << "map resolution: " << map.info.resolution << std::endl;
+        std::cout << "map origin: " << map.info.origin.position.x << ", " << map.info.origin.position.y << std::endl;
+
         auto start = geometry_msgs::msg::Pose();
-        start.position.x = 0.0;
-        start.position.y = 0.0;
+        start.position.x = 0.5;
+        start.position.y = 0.5;
         start.orientation.z = 0.0;
         start.orientation.w = 1.0;
 
