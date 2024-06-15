@@ -43,7 +43,8 @@ target_link_libraries(global_path_node matplotlibcpp17::matplotlibcpp17
 
 install(
   DIRECTORY
-  config
+    config
+    params
     launch
     maps
   DESTINATION share/${PROJECT_NAME}

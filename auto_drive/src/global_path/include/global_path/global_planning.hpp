@@ -42,19 +42,19 @@ enum PlannerType{  // Ubuntu22.04ならもっと多くの種類が使えるは�
 class BaseArea : public ob::StateValidityChecker{  // state spaceのvalidity checker
     ob::SpaceInformationPtr space_info;
     nav_msgs::msg::OccupancyGrid space_shapes;
-    double _robot_r = 10.0;
+    double _robot_size = 0.0;
 
 public:
-    explicit BaseArea(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_);
+    explicit BaseArea(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_, double robot_size);
     bool isValid(const ob::State* state) const override;
 };
 
 class BaseAreaMotionValidator : public ob::MotionValidator{ // motion validator
     ob::SpaceInformationPtr space_info;
     nav_msgs::msg::OccupancyGrid space_shapes;
-    double _robot_r = 10.0;
+    double _robot_size = 0.0;
 public:
-    explicit BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_);
+    explicit BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_, double robot_size);
     bool checkMotion(const ob::State* s1, const ob::State* s2) const override;
     bool checkMotion(const ob::State* s1, const ob::State* s2, std::pair<ob::State*, double>& lastValid) const override;
 };

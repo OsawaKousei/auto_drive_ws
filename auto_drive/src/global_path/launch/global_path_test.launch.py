@@ -66,9 +66,11 @@ def generate_launch_description():
     # launch path_visualize_node
     path_visualize_node = Node(
         package='global_path',
-        executable='path_visualize_node',
+        executable='global_path_node',
         output='screen',
         # prefix to open a new terminal
+        # specify the ros2 parameters file
+        parameters=[os.path.join(pkg_share_dir,'params','params.yaml')],
         prefix="xterm -e"
     )
     

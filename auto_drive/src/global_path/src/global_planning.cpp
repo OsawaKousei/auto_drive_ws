@@ -75,9 +75,10 @@ namespace global_path{
     return grids;
   }
 
-  BaseArea::BaseArea(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_): ob::StateValidityChecker(space_info_){
+  BaseArea::BaseArea(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_, double robot_size): ob::StateValidityChecker(space_info_){
     space_info = space_info_;
     space_shapes = space_shapes_;
+    _robot_size = robot_size;
   }
 
   bool BaseArea::isValid(const ob::State* state) const{
@@ -89,7 +90,7 @@ namespace global_path{
       return false;
     }
     // stateが重なるgridを取得
-    auto idx = getCoverGrids(x, y, map_resolution, space_shapes.info.width, 0.1);
+    auto idx = getCoverGrids(x, y, map_resolution, space_shapes.info.width, _robot_size);
     for (auto& tmp: idx){
       int x_idx = get<0>(tmp);
       int y_idx = get<1>(tmp);
@@ -101,9 +102,10 @@ namespace global_path{
     return true;
   }
 
-  BaseAreaMotionValidator::BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_): ob::MotionValidator(space_info_){
+  BaseAreaMotionValidator::BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_, double robot_size): ob::MotionValidator(space_info_){
     space_info = space_info_;
     space_shapes = space_shapes_;
+    _robot_size = robot_size;
   }
 
   bool BaseAreaMotionValidator::checkMotion(const ob::State* s1, const ob::State* s2) const{
@@ -123,7 +125,7 @@ namespace global_path{
       double x = x1 + i*cos(theta);
       double y = y1 + i*sin(theta);
       // gridが障害物の場合はfalseを返す
-      auto idx = getCoverGrids(x, y, map_resolution, space_shapes.info.width, 0.1);
+      auto idx = getCoverGrids(x, y, map_resolution, space_shapes.info.width, _robot_size);
       for (auto& tmp: idx){
         int x_idx = get<0>(tmp);
         int y_idx = get<1>(tmp);
@@ -173,8 +175,8 @@ namespace global_path{
     //TODO : robotの形状を追加する
 
     _space_info_base_area = std::make_shared<ob::SpaceInformation>(state_space_base_area);
-    _space_info_base_area->setStateValidityChecker(std::make_shared<BaseArea>(_space_info_base_area, space_shapes));  // checker
-    _space_info_base_area->setMotionValidator(std::make_shared<BaseAreaMotionValidator>(_space_info_base_area, space_shapes));  // motion validator
+    _space_info_base_area->setStateValidityChecker(std::make_shared<BaseArea>(_space_info_base_area, space_shapes, robot_size));  // checker
+    _space_info_base_area->setMotionValidator(std::make_shared<BaseAreaMotionValidator>(_space_info_base_area, space_shapes, robot_size));  // motion validator
     _space_info_base_area->setup();
   }
 

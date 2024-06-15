@@ -11,9 +11,9 @@
 
 using namespace std::chrono_literals;
 
-class LocalPathNode : public rclcpp::Node {
+class GlobalPathNode : public rclcpp::Node {
 public:
-  LocalPathNode() : Node("local_path_node") {
+  GlobalPathNode() : Node("global_path_node") {
 
     publisher_ = this->create_publisher<nav_msgs::msg::Path>("path", 1);
 
@@ -31,15 +31,15 @@ public:
     get_parameter("robot_size", robot_size);
     // configure parameters
     std::cout << "path_dir: " << path_dir << std::endl;
+    std::cout << "start_x: " << start_x << std::endl;
+    std::cout << "start_y: " << start_y << std::endl;
+    std::cout << "goal_x: " << goal_x << std::endl;
+    std::cout << "goal_y: " << goal_y << std::endl;
+    std::cout << "robot_size: " << robot_size << std::endl;
 
     subscription_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(
       "map", 1, [this](const nav_msgs::msg::OccupancyGrid::SharedPtr msg) {
         map = *msg;
-
-        // print map
-        std::cout << "map size: " << map.info.width << " x " << map.info.height << std::endl;
-        std::cout << "map resolution: " << map.info.resolution << std::endl;
-        std::cout << "map origin: " << map.info.origin.position.x << ", " << map.info.origin.position.y << std::endl;
 
         auto start = geometry_msgs::msg::Pose();
         start.position.x = start_x;
@@ -89,7 +89,7 @@ private:
 
 int main(int argc, char *argv[]) {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<LocalPathNode>());
+    rclcpp::spin(std::make_shared<GlobalPathNode>());
     rclcpp::shutdown();
     return 0;
 }
