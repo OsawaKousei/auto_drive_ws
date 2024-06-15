@@ -1,7 +1,11 @@
 # requrement
 - build map geberator
 
-`cd PATH_TO_map_generation/build`
+`cd PATH_TO_map_generation`
+
+`mkdir build`
+
+`cd build`
 
 `cmake ..`
 

@@ -1,16 +1,19 @@
 { 
     "editor.tabSize": 2, 
-    "files.associations": { 
-        "*.rviz": "yaml", 
-        "*.sdf": "xml", 
-        "*.urdf": "xml", 
-        "*.dae": "xml", 
-        "*.repos": "yaml", 
-        "*.world": "xml", 
-        "*.xacro": "xml", 
-        "ranges": "cpp", 
-        "chrono": "cpp", 
-        "cmath": "cpp" 
+    "files.associations": {
+        "\"*.sdf\"": "\"xml\"",
+        "\"*.urdf\"": "\"xml\"",
+        "*.rviz": "yaml",
+        "*.sdf": "xml",
+        "*.urdf": "xml",
+        "*.dae": "xml",
+        "*.repos": "yaml",
+        "*.world": "xml",
+        "*.xacro": "xml",
+        "ranges": "cpp",
+        "chrono": "cpp",
+        "cmath": "cpp",
+        "ostream": "cpp"
     }, 
     "C_Cpp.default.intelliSenseMode": "linux-gcc-x86", 
     "C_Cpp.formatting": "clangFormat", 
