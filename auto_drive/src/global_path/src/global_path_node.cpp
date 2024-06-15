@@ -15,8 +15,7 @@ class GlobalPathNode : public rclcpp::Node {
 public:
   GlobalPathNode() : Node("global_path_node") {
 
-    publisher_ = this->create_publisher<nav_msgs::msg::Path>("path", 1);
-
+    // configure parameters
     declare_parameter("path_dir", "./global_path.csv");
     declare_parameter("start_x", 0.0);
     declare_parameter("start_y", 0.0);
@@ -29,7 +28,6 @@ public:
     get_parameter("goal_x", goal_x);
     get_parameter("goal_y", goal_y);
     get_parameter("robot_size", robot_size);
-    // configure parameters
     std::cout << "path_dir: " << path_dir << std::endl;
     std::cout << "start_x: " << start_x << std::endl;
     std::cout << "start_y: " << start_y << std::endl;
@@ -37,10 +35,13 @@ public:
     std::cout << "goal_y: " << goal_y << std::endl;
     std::cout << "robot_size: " << robot_size << std::endl;
 
+    publisher_ = this->create_publisher<nav_msgs::msg::Path>("path", 1);
+
     subscription_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(
       "map", 1, [this](const nav_msgs::msg::OccupancyGrid::SharedPtr msg) {
         map = *msg;
 
+        // path planning
         auto start = geometry_msgs::msg::Pose();
         start.position.x = start_x;
         start.position.y = start_y;
@@ -65,7 +66,7 @@ public:
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
         std::cout << "planning time: " << elapsed << " ms" << std::endl;
 
-        // pathを保存
+        // save path
         std::ofstream ofs(path_dir);
         for(auto& pose: global_path.poses){
             ofs << pose.pose.position.x << "," << pose.pose.position.y << std::endl;

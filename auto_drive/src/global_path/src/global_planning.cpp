@@ -172,7 +172,6 @@ namespace global_path{
     state_space_base_area->setBounds(bounds_base_area);  // bounds for param
 
     nav_msgs::msg::OccupancyGrid space_shapes = map;
-    //TODO : robotの形状を追加する
 
     _space_info_base_area = std::make_shared<ob::SpaceInformation>(state_space_base_area);
     _space_info_base_area->setStateValidityChecker(std::make_shared<BaseArea>(_space_info_base_area, space_shapes, robot_size));  // checker
@@ -238,10 +237,7 @@ namespace global_path{
         pose_stamped.pose.position.y = y;
         traj.poses.push_back(pose_stamped);
     }
-    // trajの最初の点と最後の点を表示
-    std::cout << "start: x,y -> " << traj.poses.front().pose.position.x << ", " << traj.poses.front().pose.position.y << std::endl;
-    std::cout << "goal: x,y -> " << traj.poses.back().pose.position.x << ", " << traj.poses.back().pose.position.y << std::endl;
-
+    
     return traj;
   }
 } // namespace global_path
