@@ -19,8 +19,17 @@ int main() {
     std::vector<double> ys = {1, -4, 9, -16};
 
     auto start = geometry_msgs::msg::Pose();
+    start.position.x = 0.0;
+    start.position.y = 0.0;
+    start.orientation.z = 0.0;
+    start.orientation.w = 1.0;
+
     auto goal = geometry_msgs::msg::Pose();
-  
+    goal.position.x = 10.0;
+    goal.position.y = 10.0;
+    goal.orientation.z = 0.0;
+    goal.orientation.w = 1.0;
+
     global_path::OMPL_PlannerClass planner;
 
     start_time = std::chrono::system_clock::now();
