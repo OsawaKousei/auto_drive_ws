@@ -17,6 +17,9 @@ public:
 
     publisher_ = this->create_publisher<nav_msgs::msg::Path>("path", 1);
 
+    // pathを保存するディレクトリを指定
+    path = "./src/global_path/path/global_path.csv";
+
     subscription_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(
       "map", 1, [this](const nav_msgs::msg::OccupancyGrid::SharedPtr msg) {
         map = *msg;
@@ -28,8 +31,8 @@ public:
         start.orientation.w = 1.0;
 
         auto goal = geometry_msgs::msg::Pose();
-        goal.position.x = 10.0;
-        goal.position.y = 10.0;
+        goal.position.x = 3.0;
+        goal.position.y = 1.0;
         goal.orientation.z = 0.0;
         goal.orientation.w = 1.0;
 
@@ -40,17 +43,24 @@ public:
 
         global_path.header.frame_id = "map";
         global_path.header.stamp = this->now();
-        
+
         end_time = std::chrono::system_clock::now();
         double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
         std::cout << "planning time: " << elapsed << " ms" << std::endl;
 
-        // pathを表示
-        std::cout << "path size: " << global_path.poses.size() << std::endl;
-        std::cout << "path: " << std::endl;
+        // pathを保存
+        std::ofstream ofs(path);
         for(auto& pose: global_path.poses){
-            std::cout << "x: " << pose.pose.position.x << ", y: " << pose.pose.position.y << std::endl;
+            ofs << pose.pose.position.x << "," << pose.pose.position.y << std::endl;
         }
+
+
+        // pathを表示
+        // std::cout << "path size: " << global_path.poses.size() << std::endl;
+        // std::cout << "path: " << std::endl;
+        // for(auto& pose: global_path.poses){
+        //     std::cout << "x: " << pose.pose.position.x << ", y: " << pose.pose.position.y << std::endl;
+        // }
 
         this->publisher_->publish(global_path);
       });
@@ -63,6 +73,7 @@ private:
 
     std::chrono::system_clock::time_point start_time, end_time;
     nav_msgs::msg::OccupancyGrid map;
+    std::string path;
 };
 
 int main(int argc, char *argv[]) {

@@ -60,10 +60,10 @@ def generate_launch_description():
         emulate_tty=True,  # https://github.com/ros2/launch/issues/188
         parameters=[{'autostart': autostart},
                     {'node_names': ['map_server']}],
-        prefix="bash -c 'sleep 5; $0 $@' " # wait for amcl to start
+        prefix="bash -c 'sleep 1; $0 $@' " # wait for amcl to start
     )
     
-    # launch nav2_amcl_node
+    # launch path_visualize_node
     path_visualize_node = Node(
         package='global_path',
         executable='path_visualize_node',
