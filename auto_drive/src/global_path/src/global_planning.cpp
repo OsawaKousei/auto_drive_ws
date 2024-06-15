@@ -54,6 +54,29 @@ namespace global_path{
     return std::make_tuple(a, b);
   }
 
+  BaseArea::BaseArea(const ob::SpaceInformationPtr& space_info_, const std::vector<std::shared_ptr<nav_msgs::msg::OccupancyGrid>>& space_shapes_): ob::StateValidityChecker(space_info_), space_info(space_info_){
+    //TODO : robotの形状を追加する
+  }
+
+  bool BaseArea::isValid(const ob::State* state) const{
+    auto [x, y] = get2DPos(state);
+    //TODO : robotの形状を追加する
+    return true;
+  }
+
+  BaseAreaMotionValidator::BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const std::vector<std::shared_ptr<nav_msgs::msg::OccupancyGrid>>& space_shapes_): ob::MotionValidator(space_info_), space_info(space_info_){
+    //TODO : robotの形状を追加する
+  }
+
+  bool BaseAreaMotionValidator::checkMotion(const ob::State* s1, const ob::State* s2) const{
+    return true;
+  }
+
+  bool BaseAreaMotionValidator::checkMotion(const ob::State* s1, const ob::State* s2, std::pair<ob::State*, double>& lastValid) const{
+    //TODO : robotの形状を追加する
+    return true;
+  }
+
   ob::OptimizationObjectivePtr getPathLengthObjective(const ob::SpaceInformationPtr& si){
     auto opt = std::make_shared<ob::PathLengthOptimizationObjective>(si);
     std::function<ob::Cost(const ob::State*, const ob::Goal*)> h_func = [](const ob::State *s, const ob::Goal *g){
@@ -89,7 +112,7 @@ namespace global_path{
     _space_info_base_area->setup();
   }
 
-  std::vector<geometry_msgs::msg::Pose> OMPL_PlannerClass::plan(const geometry_msgs::msg::Pose& start_state, const geometry_msgs::msg::Pose& goal_state){
+  nav_msgs::msg::Path OMPL_PlannerClass::plan(const geometry_msgs::msg::Pose &start_state,const geometry_msgs::msg::Pose &goal_state){
     auto state_space(std::make_shared<ob::RealVectorStateSpace>(2));
     auto space_info = _space_info_base_area;
 
@@ -129,7 +152,8 @@ namespace global_path{
     ob::PlannerStatus solved = planner->ob::Planner::solve(0.002);
     if (!solved) {
         std::cout << "No solution found" << std::endl;
-        return std::vector<geometry_msgs::msg::Pose>{};
+        auto null_path = nav_msgs::msg::Path();
+        return null_path;
     }
 
     auto path = std::static_pointer_cast<og::PathGeometric>(prob_def->getSolutionPath());
@@ -138,10 +162,13 @@ namespace global_path{
     }
     path->checkAndRepair(5);
 
-    std::vector<geometry_msgs::msg::Pose> traj;
+    auto traj = nav_msgs::msg::Path();
     for(auto& tmp: path->getStates()){
         auto [x, y] = get2DPos(tmp);
-        traj.emplace_back(x, y, 0.0);
+        auto pose_stamped = geometry_msgs::msg::PoseStamped();
+        pose_stamped.pose.position.x = x;
+        pose_stamped.pose.position.y = y;
+        traj.poses.push_back(pose_stamped);
     }
     return traj;
   }

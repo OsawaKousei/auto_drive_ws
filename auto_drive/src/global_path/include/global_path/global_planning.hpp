@@ -22,6 +22,7 @@
 // #include <global_path/planner_defines.hpp>
 #include <geometry_msgs/msg/pose.hpp>
 #include <nav_msgs/msg/occupancy_grid.hpp>
+#include <nav_msgs/msg/path.hpp>
 
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
@@ -56,19 +57,12 @@ public:
     bool checkMotion(const ob::State* s1, const ob::State* s2, std::pair<ob::State*, double>& lastValid) const override;
 };
 
-// class PathLengthObjective : public ob::StateCostIntegralObjective{
-// public:
-//     PathLengthObjective(const ob::SpaceInformationPtr& space_info);
-
-//     ob::Cost motionCost(const ob::State* s1, const ob::State* s2) const override;
-// };
-
 class OMPL_PlannerClass{
 private:
     std::shared_ptr<ompl::base::SpaceInformation> _space_info_base_area;  // ベースのフィールド
 public:
     OMPL_PlannerClass();
-    std::vector<geometry_msgs::msg::Pose> plan(const geometry_msgs::msg::Pose& start_state, const geometry_msgs::msg::Pose& goal_state);
+    nav_msgs::msg::Path plan(const geometry_msgs::msg::Pose &start_state,const geometry_msgs::msg::Pose &goal_state);
 };
 
 } // namespace global_path
