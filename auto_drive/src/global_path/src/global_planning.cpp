@@ -55,7 +55,7 @@ namespace global_path{
     return std::make_tuple(a, b);
   }
 
-  BaseArea::BaseArea(const ob::SpaceInformationPtr& space_info_, const std::vector<std::shared_ptr<nav_msgs::msg::OccupancyGrid>>& space_shapes_): ob::StateValidityChecker(space_info_), space_info(space_info_){
+  BaseArea::BaseArea(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_): ob::StateValidityChecker(space_info_), space_info(space_info_){
     //TODO : robotの形状を追加する
   }
 
@@ -65,7 +65,7 @@ namespace global_path{
     return true;
   }
 
-  BaseAreaMotionValidator::BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const std::vector<std::shared_ptr<nav_msgs::msg::OccupancyGrid>>& space_shapes_): ob::MotionValidator(space_info_), space_info(space_info_){
+  BaseAreaMotionValidator::BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_): ob::MotionValidator(space_info_), space_info(space_info_){
     //TODO : robotの形状を追加する
   }
 
@@ -91,7 +91,7 @@ namespace global_path{
     return opt;
   }
 
-  OMPL_PlannerClass::OMPL_PlannerClass(){
+  OMPL_PlannerClass::OMPL_PlannerClass(const nav_msgs::msg::OccupancyGrid &map){
     auto state_space_base_area = std::make_shared<ob::RealVectorStateSpace>(2);
     matrix<double> bounds_pre_base_area{  // 元のstateの範囲
             {-100, 100},
@@ -104,7 +104,7 @@ namespace global_path{
     }
     state_space_base_area->setBounds(bounds_base_area);  // bounds for param
 
-    std::vector<std::shared_ptr<nav_msgs::msg::OccupancyGrid>> space_shapes; // fieldの形状
+    nav_msgs::msg::OccupancyGrid space_shapes; // fieldの形状
     //TODO : robotの形状を追加する
 
     _space_info_base_area = std::make_shared<ob::SpaceInformation>(state_space_base_area);

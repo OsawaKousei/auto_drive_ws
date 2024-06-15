@@ -24,7 +24,11 @@ ament_auto_find_build_dependencies()
 ament_auto_add_library(global_planning src/global_planning.cpp)
 
 
-ament_auto_add_executable(global_path src/main.cpp
+# ament_auto_add_executable(global_path src/main.cpp
+#         src/global_planning.cpp
+# )
+
+ament_auto_add_executable(path_visualize_node src/path_visualize_node.cpp
         src/global_planning.cpp
 )
 
@@ -33,6 +37,24 @@ target_include_directories(global_planning PUBLIC
         include
 )
 
-target_link_libraries(global_path matplotlibcpp17::matplotlibcpp17
+target_link_libraries(path_visualize_node matplotlibcpp17::matplotlibcpp17
         ${Python3_LIBRARIES} pybind11::embed ${OMPL_LIBRARIES} ${Boost_LIBRARIES} global_planning
 )
+
+install(
+  DIRECTORY
+  config
+    launch
+    maps
+  DESTINATION share/${PROJECT_NAME}
+)
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  set(ament_cmake_copyright_FOUND TRUE)
+  set(ament_cmake_cpplint_FOUND TRUE)
+
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+ament_auto_package()

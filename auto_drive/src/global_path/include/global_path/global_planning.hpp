@@ -44,7 +44,7 @@ class BaseArea : public ob::StateValidityChecker{  // state spaceのvalidity che
     double _robot_r = 10.0;
 
 public:
-    explicit BaseArea(const ob::SpaceInformationPtr& space_info_, const std::vector<std::shared_ptr<nav_msgs::msg::OccupancyGrid>>& space_shapes_);
+    explicit BaseArea(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_);
     bool isValid(const ob::State* state) const override;
 };
 
@@ -52,7 +52,7 @@ class BaseAreaMotionValidator : public ob::MotionValidator{ // motion validator
     ob::SpaceInformationPtr space_info;
     double _robot_r = 10.0;
 public:
-    explicit BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const std::vector<std::shared_ptr<nav_msgs::msg::OccupancyGrid>>& space_shapes_);
+    explicit BaseAreaMotionValidator(const ob::SpaceInformationPtr& space_info_, const nav_msgs::msg::OccupancyGrid &space_shapes_);
     bool checkMotion(const ob::State* s1, const ob::State* s2) const override;
     bool checkMotion(const ob::State* s1, const ob::State* s2, std::pair<ob::State*, double>& lastValid) const override;
 };
@@ -61,8 +61,8 @@ class OMPL_PlannerClass{
 private:
     std::shared_ptr<ompl::base::SpaceInformation> _space_info_base_area;  // ベースのフィールド
 public:
-    OMPL_PlannerClass();
-    nav_msgs::msg::Path plan(const geometry_msgs::msg::Pose &start_state,const geometry_msgs::msg::Pose &goal_state);
+    OMPL_PlannerClass(const nav_msgs::msg::OccupancyGrid &map);
+    nav_msgs::msg::Path plan(const geometry_msgs::msg::Pose &start_state, const geometry_msgs::msg::Pose &goal_state);
 };
 
 } // namespace global_path
