@@ -1,4 +1,4 @@
-# localization development environment package
+# global path planniing package
 
 # requrement
 - do `colcon build` and `source ./install/setup.bash`
@@ -14,4 +14,4 @@
 
 - the global path will be automatically planned and saved
 
-- the map used to local path planning is loaded from /map directry in this pkg
+- the map used to global path planning is loaded from /map directry in this pkg
