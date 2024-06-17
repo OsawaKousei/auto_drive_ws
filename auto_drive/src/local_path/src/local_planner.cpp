@@ -10,7 +10,12 @@ using namespace std::chrono_literals;
 
 namespace local_path {
 LocalPlanner::LocalPlanner(const rclcpp::NodeOptions &options)
-    : rclcpp::Node("path_publisher", options) {
+    : rclcpp::Node("local_planner", options) {
+  
+  // configure parameters
+  declare_parameter("path_points", 20);
+  get_parameter("path_points", path_points_);
+  std::cout << "path_points: " << path_points_ << std::endl;
 
   path_sub_ = create_subscription<nav_msgs::msg::Path>("global_path", 1, [this](const nav_msgs::msg::Path::SharedPtr msg) { path_callback(msg); });
   odom_sub_ = create_subscription<nav_msgs::msg::Odometry>("odom", 1, [this](const nav_msgs::msg::Odometry::SharedPtr msg) { this->odom_ = *msg; });

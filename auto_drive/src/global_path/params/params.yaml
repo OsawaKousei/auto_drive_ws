@@ -6,3 +6,4 @@ global_path_node:
     goal_x: 3.0
     goal_y: 4.0
     robot_size: 0.4
+

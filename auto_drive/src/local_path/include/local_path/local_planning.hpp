@@ -2,8 +2,8 @@
 // Created by emile on 24/05/06.
 //
 
-#ifndef PLANNER_CPP_SPLINE_UTILS_HPP
-#define PLANNER_CPP_SPLINE_UTILS_HPP
+#ifndef LOCAL_PATH_LOCAL_PLANNING_HPP
+#define LOCAL_PATH_LOCAL_PLANNING_HPP
 
 #include <vector>
 // #include <planner_defines.hpp>
@@ -16,4 +16,4 @@ std::pair<std::vector<double>, std::vector<double>> spline_by_min_max(std::vecto
 
 
 
-#endif //CPPCODES_SPLINE_UTILS_HPP
+#endif //LOCAL_PATH_LOCAL_PLANNING_HPP
