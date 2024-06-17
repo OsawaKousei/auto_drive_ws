@@ -7,6 +7,8 @@
 #include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
+#include "pid.hpp"
+
 namespace path_pursuit {
 
 class PathPursuit : public rclcpp::Node {
@@ -17,9 +19,14 @@ public:
 
 private:
   rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr path_sub_;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
 
-  void path_callback(const nav_msgs::msg::Path::SharedPtr msg);
+  nav_msgs::msg::Path path_;
+  PID pid_x;
+  PID pid_y;
+
+  void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
 
   std::mutex mutex_;
 };
