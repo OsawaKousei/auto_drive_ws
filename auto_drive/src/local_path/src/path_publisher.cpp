@@ -45,7 +45,7 @@ PathPublisher::PathPublisher(const rclcpp::NodeOptions &options)
 
   // コールバックの呼び出しはこういう書き方もできるらしい
   odom_sub_ = create_subscription<nav_msgs::msg::Odometry>("odom", 10, std::bind(&PathPublisher::odom_callback, this, std::placeholders::_1));
-  path_pub_ = create_publisher<nav_msgs::msg::Path>("path", 10);
+  path_pub_ = create_publisher<nav_msgs::msg::Path>("global_path", 10);
 }
 
 PathPublisher::~PathPublisher() {}
@@ -60,15 +60,13 @@ void PathPublisher::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) 
   // std::cout << "distance: " << distance << std::endl;
 
   if (distance < distance_threshold_){
-    std::cout << "passed point: " << path_.poses[0].pose.position.x << ", " << path_.poses[0].pose.position.y << std::endl;
-    std::cout << "current position: " << msg->pose.pose.position.x << ", " << msg->pose.pose.position.y << std::endl;
+    // std::cout << "passed point: " << path_.poses[0].pose.position.x << ", " << path_.poses[0].pose.position.y << std::endl;
+    // std::cout << "current position: " << msg->pose.pose.position.x << ", " << msg->pose.pose.position.y << std::endl;
     
     // update path
     path_.poses.erase(path_.poses.begin());
 
-    std::cout << "next point: " << path_.poses[0].pose.position.x << ", " << path_.poses[0].pose.position.y << std::endl;
-    // std::cout << "next point: " << next_point_num_ << std::endl;
-
+    //std::cout << "next point: " << path_.poses[0].pose.position.x << ", " << path_.poses[0].pose.position.y << std::endl;
 
     // TODO : ゴールに到達した際の適切な処理を追加
   }
