@@ -1,0 +1,9 @@
+path_publisher:
+  ros__parameters:
+    path_dir: "/home/kousei/auto_drive_ws/auto_drive/src/local_path/path/global_path.csv"
+    distance_threshold: 0.5
+
+local_planner:
+  ros__parameters:
+    path_points: 15
+    consider_points: 10
