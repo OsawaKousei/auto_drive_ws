@@ -48,14 +48,14 @@ void LocalPlanner::path_callback(const nav_msgs::msg::Path::SharedPtr msg){
       ys.push_back(state.pose.position.y);
   }
 
-  auto start_time = std::chrono::system_clock::now();
+  // auto start_time = std::chrono::system_clock::now();
   auto [xs_new, ys_new] = spline_by_num(xs, ys, 20);  // スプライン補間
-  auto end_time = std::chrono::system_clock::now();
-  double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
+  // auto end_time = std::chrono::system_clock::now();
+  // double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
 
   auto local_path = nav_msgs::msg::Path();
   local_path.header = path_.header;
-  for (int i = 0; i < xs_new.size(); i++){
+  for (int i = 0; i < int(xs_new.size()); i++){
     geometry_msgs::msg::PoseStamped pose;
     pose.pose.position.x = xs_new[i];
     pose.pose.position.y = ys_new[i];
