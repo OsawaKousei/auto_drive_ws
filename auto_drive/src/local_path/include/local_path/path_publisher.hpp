@@ -22,6 +22,9 @@ private:
 
   nav_msgs::msg::Path path_;
 
+  int passed_points_num_;
+  std::string path_dir_;
+
   std::mutex mutex_;
 };
 

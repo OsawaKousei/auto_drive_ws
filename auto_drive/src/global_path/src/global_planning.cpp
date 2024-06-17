@@ -64,7 +64,7 @@ namespace global_path{
     std::vector<std::tuple<int, int>> grids;
     auto [x_idx, y_idx] = getRidingGrid(x, y, resolution);
     // robotのサイズに合わせてmaskを設定
-    int mask = std::ceil(robot_size/resolution);
+    int mask = std::ceil(robot_size/2/resolution);
     for(int i=-mask; i<=mask; i++){
       for(int j=-mask; j<=mask; j++){
         if(x_idx+i >= 0 && x_idx+i < map_width && y_idx+j >= 0 && y_idx+j < map_width){
@@ -216,7 +216,8 @@ namespace global_path{
     planner->setup();  // plannerのsetup
     planner->checkValidity();
 
-    ob::PlannerStatus solved = planner->ob::Planner::solve(100);
+    // set time to solve
+    ob::PlannerStatus solved = planner->ob::Planner::solve(300);
     if (!solved) {
         std::cout << "No solution found" << std::endl;
         auto null_path = nav_msgs::msg::Path();

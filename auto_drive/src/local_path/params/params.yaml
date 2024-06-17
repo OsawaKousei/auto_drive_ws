@@ -1,0 +1,3 @@
+path_publisher:
+  ros__parameters:
+    path_dir: "/home/kousei/auto_drive_ws/auto_drive/src/local_path/path/global_path.csv"

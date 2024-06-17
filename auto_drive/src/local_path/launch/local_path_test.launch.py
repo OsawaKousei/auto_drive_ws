@@ -2,6 +2,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+import launch_ros
 from launch_ros.actions import Node
 from launch.actions import IncludeLaunchDescription, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -12,6 +13,7 @@ def generate_launch_description():
 
     # launch configuration variables
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    autostart = LaunchConfiguration('autostart', default='true') # setteing for lifecycle_manager
     autostart = LaunchConfiguration('autostart', default='true') # setteing for lifecycle_manager
     world_name = LaunchConfiguration('world_name', default='test_world')
 
@@ -85,9 +87,9 @@ def generate_launch_description():
             'qos_overrides./odom.publisher.durability': 'transient_local',
         }],
         # remap the topics
-       remappings=[
-            ("/odom", "/raw_odom"),
-        ],
+        # remappings=[
+        #     ("/odom", "/raw_odom"),
+        # ],
         output='screen'
     )
     
@@ -120,7 +122,7 @@ def generate_launch_description():
     rviz_config_dir = os.path.join(
         pkg_share_dir,
         'config',
-        'localization_test.rviz'
+        'local_path_test.rviz'
     )
     
     # launch rviz2
@@ -140,6 +142,34 @@ def generate_launch_description():
             name='rqt_publisher',
             output='screen')
     
+    # get map file path
+    map_file_path = os.path.join(
+        pkg_share_dir,
+        'maps',
+        'map.yaml'
+    )
+
+    # launch map_server
+    map_server = Node(
+        package='nav2_map_server',
+        executable='map_server',
+        output='screen',
+        # specify the map file
+        parameters=[{'yaml_filename': map_file_path}]
+    )
+
+    # launch lifecycle_manager for map_server
+    map_lifecycle_manager = launch_ros.actions.Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager_map',
+        output='screen',
+        emulate_tty=True,  # https://github.com/ros2/launch/issues/188
+        parameters=[{'autostart': autostart},
+                    {'node_names': ['map_server']}],
+        prefix="bash -c 'sleep 1; $0 $@' " # wait for amcl to start
+    )
+    
     # launch ignition debug node
     ign_debug = Node(
         package='holonomic_sim',
@@ -150,9 +180,9 @@ def generate_launch_description():
     )
 
     # launch localization test node
-    localization_test = Node(
-        package='localization_dev',
-        executable='localization_test_node',
+    local_path_node = Node(
+        package='local_path',
+        executable='local_path_node',
         output='screen',
         # specify the ros2 parameters file
         parameters=[os.path.join(pkg_share_dir,'params','params.yaml')],
@@ -183,6 +213,10 @@ def generate_launch_description():
         rviz2,
 
         rqt,
+
+        map_server,
+        map_lifecycle_manager,
+
         # ign_debug,
-        localization_test
+        local_path_node
     ])
