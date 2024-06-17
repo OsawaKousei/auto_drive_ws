@@ -43,8 +43,6 @@ PathPublisher::PathPublisher(const rclcpp::NodeOptions &options)
   std::cout << "read path from csv file: " << path_dir_ << std::endl;
   std::cout << "path size: " << path_.poses.size() << std::endl;
 
-  next_point_num_ = 0;
-
   // コールバックの呼び出しはこういう書き方もできるらしい
   odom_sub_ = create_subscription<nav_msgs::msg::Odometry>("odom", 10, std::bind(&PathPublisher::odom_callback, this, std::placeholders::_1));
   path_pub_ = create_publisher<nav_msgs::msg::Path>("path", 10);
@@ -56,23 +54,26 @@ void PathPublisher::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) 
   mutex_.lock();
 
   // check if the robot passed the next point
-  double dx = path_.poses[next_point_num_].pose.position.x - msg->pose.pose.position.x;
-  double dy = path_.poses[next_point_num_].pose.position.y - msg->pose.pose.position.y;
+  double dx = path_.poses[0].pose.position.x - msg->pose.pose.position.x;
+  double dy = path_.poses[0].pose.position.y - msg->pose.pose.position.y;
   double distance = std::sqrt(dx * dx + dy * dy);
-  std::cout << "distance: " << distance << std::endl;
+  // std::cout << "distance: " << distance << std::endl;
 
   if (distance < distance_threshold_){
-    // std::cout << "passed point: " << next_point_num_ << std::endl;
-    next_point_num_++;
+    std::cout << "passed point: " << path_.poses[0].pose.position.x << ", " << path_.poses[0].pose.position.y << std::endl;
+    std::cout << "current position: " << msg->pose.pose.position.x << ", " << msg->pose.pose.position.y << std::endl;
+    
+    // update path
+    path_.poses.erase(path_.poses.begin());
 
+    std::cout << "next point: " << path_.poses[0].pose.position.x << ", " << path_.poses[0].pose.position.y << std::endl;
     // std::cout << "next point: " << next_point_num_ << std::endl;
 
-    // update path
-    path_.header.stamp = now();
-    path_.poses.erase(path_.poses.begin());
+
     // TODO : ゴールに到達した際の適切な処理を追加
   }
 
+  path_.header.stamp = now();
   path_pub_->publish(path_);
 
   mutex_.unlock();

@@ -22,7 +22,6 @@ private:
 
   nav_msgs::msg::Path path_;
 
-  int next_point_num_;
   double distance_threshold_;
   std::string path_dir_;
 
