@@ -14,8 +14,11 @@ LocalPlanner::LocalPlanner(const rclcpp::NodeOptions &options)
   
   // configure parameters
   declare_parameter("path_points", 20);
+  declare_parameter("consider_points", 10);
   get_parameter("path_points", path_points_);
+  get_parameter("consider_points", consider_points_);
   std::cout << "path_points: " << path_points_ << std::endl;
+  std::cout << "consider_points: " << consider_points_ << std::endl;
 
   path_sub_ = create_subscription<nav_msgs::msg::Path>("global_path", 1, [this](const nav_msgs::msg::Path::SharedPtr msg) { path_callback(msg); });
   odom_sub_ = create_subscription<nav_msgs::msg::Odometry>("odom", 1, [this](const nav_msgs::msg::Odometry::SharedPtr msg) { this->odom_ = *msg; });
@@ -30,7 +33,7 @@ void LocalPlanner::path_callback(const nav_msgs::msg::Path::SharedPtr msg){
   // pick the first 10 points
   path_.header = msg->header;
   path_.poses.clear();
-  for (int i = 0; i < 10; i++){
+  for (int i = 0; i < consider_points_; i++){
     path_.poses.push_back(msg->poses[i]);
   }
 

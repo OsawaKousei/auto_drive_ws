@@ -6,3 +6,4 @@ path_publisher:
 local_planner:
   ros__parameters:
     path_points: 15
+    consider_points: 10

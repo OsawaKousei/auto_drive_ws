@@ -28,6 +28,7 @@ private:
   std::vector<double> ys = {1, -4, 9, -16};
 
   int path_points_;
+  int consider_points_;
 
   std::mutex mutex_;
 };
