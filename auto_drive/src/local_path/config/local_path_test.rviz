@@ -156,7 +156,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /raw_odom
+        Value: odom
       Value: true
     - Class: rviz_default_plugins/TF
       Enabled: true
@@ -376,7 +376,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 20.945743560791016
+      Distance: 15.48769474029541
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -412,5 +412,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 375
-  Y: -28
+  X: 365
+  Y: 37

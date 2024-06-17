@@ -11,8 +11,11 @@ PathPublisher::PathPublisher(const rclcpp::NodeOptions &options)
 
   // configure parameters
   declare_parameter("path_dir", "./global_path.csv");
+  declare_parameter("distance_threshold", 0.01);
   get_parameter("path_dir", path_dir_);
+  get_parameter("distance_threshold", distance_threshold_);
   std::cout << "path_dir: " << path_dir_ << std::endl;
+  std::cout << "distance_threshold: " << distance_threshold_ << std::endl;
 
   // read path from csv file
   std::ifstream ifs(path_dir_);
@@ -40,21 +43,40 @@ PathPublisher::PathPublisher(const rclcpp::NodeOptions &options)
   std::cout << "read path from csv file: " << path_dir_ << std::endl;
   std::cout << "path size: " << path_.poses.size() << std::endl;
 
-  auto odom_callback = [this](const nav_msgs::msg::Odometry::SharedPtr msg) -> void {
-    mutex_.lock();
-    
-    // publish path
-    path_.header.stamp = now();
-    path_pub_->publish(path_);
+  next_point_num_ = 0;
 
-    mutex_.unlock();
-  };
-
-  odom_sub_ = create_subscription<nav_msgs::msg::Odometry>("odom", 10, odom_callback);
+  // コールバックの呼び出しはこういう書き方もできるらしい
+  odom_sub_ = create_subscription<nav_msgs::msg::Odometry>("odom", 10, std::bind(&PathPublisher::odom_callback, this, std::placeholders::_1));
   path_pub_ = create_publisher<nav_msgs::msg::Path>("path", 10);
 }
 
 PathPublisher::~PathPublisher() {}
+
+void PathPublisher::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
+  mutex_.lock();
+
+  // check if the robot passed the next point
+  double dx = path_.poses[next_point_num_].pose.position.x - msg->pose.pose.position.x;
+  double dy = path_.poses[next_point_num_].pose.position.y - msg->pose.pose.position.y;
+  double distance = std::sqrt(dx * dx + dy * dy);
+  std::cout << "distance: " << distance << std::endl;
+
+  if (distance < distance_threshold_){
+    // std::cout << "passed point: " << next_point_num_ << std::endl;
+    next_point_num_++;
+
+    // std::cout << "next point: " << next_point_num_ << std::endl;
+
+    // update path
+    path_.header.stamp = now();
+    path_.poses.erase(path_.poses.begin());
+    // TODO : ゴールに到達した際の適切な処理を追加
+  }
+
+  path_pub_->publish(path_);
+
+  mutex_.unlock();
+}
 
 } // namespace local_path
 
