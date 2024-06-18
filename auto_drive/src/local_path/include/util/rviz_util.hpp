@@ -38,7 +38,7 @@ static visualization_msgs::msg::Marker::SharedPtr std_cube_setter(std::tuple<dou
   return std::make_shared<visualization_msgs::msg::Marker>(message);
 }
 
-static visualization_msgs::msg::Marker::SharedPtr std_cube_setter(std::tuple<double, double> start_pos, std::tuple<double, double> end_pos){
+static visualization_msgs::msg::Marker::SharedPtr std_line_setter(std::tuple<double, double> start_pos, std::tuple<double, double> end_pos){
   auto message = visualization_msgs::msg::Marker();
 
   message.type = visualization_msgs::msg::Marker::LINE_STRIP;

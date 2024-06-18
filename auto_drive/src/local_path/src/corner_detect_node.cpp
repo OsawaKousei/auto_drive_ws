@@ -9,9 +9,11 @@
 #include <nav_msgs/msg/path.hpp>
 #include <nav_msgs/msg/occupancy_grid.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
+#include "visualization_msgs/msg/marker.hpp"
 
 #include "local_path/path_publisher.hpp"
 #include "util/pcp.hpp"
+#include "util/rviz_util.hpp"
 
 using namespace std::chrono_literals;
 namespace local_path {
@@ -31,6 +33,7 @@ public:
 private:
   rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr path_sub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr corner_publisher_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr marker_publisher_;
 
   std::mutex mutex_;
 
@@ -41,6 +44,16 @@ private:
     corner_pc2->header.frame_id = "map";
     corner_pc2->header.stamp = this->now();
     corner_publisher_->publish(*corner_pc2);
+
+    pcp::PCFeatureDetection pc(corner_pc2);
+    auto [x, y, pv] = pc.PCA();
+
+    std::cout << "x: " << x << ", y: " << y << ", pv: " << pv << std::endl;
+
+    // auto viz_marker = viz_marker::std_line_setter(std::make_tuple(0.0, 0.0), std::make_tuple(x, y));
+    // viz_marker->header.frame_id = "map";
+    // viz_marker->header.stamp = this->now();
+    // marker_publisher_->publish(*viz_marker);
 
     mutex_.unlock();
   }

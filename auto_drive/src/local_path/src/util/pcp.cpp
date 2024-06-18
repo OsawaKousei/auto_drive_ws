@@ -1,9 +1,38 @@
 #include "util/pcp.hpp"
+#include <Eigen/Dense>
 
 namespace pcp {
   PCFeatureDetection::PCFeatureDetection(sensor_msgs::msg::PointCloud2::SharedPtr cloud)
-    : cloud_(cloud) {}
+    : cloud_(cloud) {
+      this->cloud_ = cloud;
+    }
   PCFeatureDetection::~PCFeatureDetection() {}
+
+  std::tuple<double,double,double> PCFeatureDetection::PCA(){
+    // PCA
+    Eigen::MatrixXd data(cloud_->width, 3);
+    float *data_ptr = reinterpret_cast<float *>(cloud_->data.data());
+    for (int i = 0; i < cloud_->width; i++) {
+      data(i, 0) = data_ptr[i * 3];
+      data(i, 1) = data_ptr[i * 3 + 1];
+      data(i, 2) = data_ptr[i * 3 + 2];
+    }
+    Eigen::MatrixXd centered = data.rowwise() - data.colwise().mean();
+    Eigen::MatrixXd cov = centered.adjoint() * centered;
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(cov);
+    Eigen::Vector3d eigenvalues = eig.eigenvalues();
+    Eigen::Matrix3d eigenvectors = eig.eigenvectors();
+
+    double x = eigenvectors(0, 0);
+    double y = eigenvectors(1, 0);
+
+    //calculate the Proportion of Variance
+    double sum = eigenvalues.sum();
+    double pv = eigenvalues(0) / sum;
+
+    // return x: eigenvector x, y: eigenvector y, pv: Proportion of Variance
+    return std::make_tuple(x, y, pv);
+  }
 
   sensor_msgs::msg::PointCloud2::SharedPtr PCConvert::path2pc2(nav_msgs::msg::Path path){
     sensor_msgs::msg::PointCloud2 pc2;

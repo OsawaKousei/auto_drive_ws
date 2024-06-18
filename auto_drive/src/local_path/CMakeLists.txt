@@ -43,6 +43,8 @@ static_local_planner_node src/static_local_planner_node.cpp
   src/util_functions.cpp
 )
 
+# ament_auto_add_library(pcp src/util/pcp.cpp)
+
 ament_auto_add_executable(
 corner_detect_node src/corner_detect_node.cpp
   src/path_publisher.cpp
@@ -50,9 +52,14 @@ corner_detect_node src/corner_detect_node.cpp
 )
 
 target_include_directories(static_local_planner_node PUBLIC
-        ${OMPL_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/include/local_path
-        include
+)
+
+target_include_directories(corner_detect_node PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/local_path
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/util
+        # include
+        # Eigen3::Eigen
 )
 
 install(
