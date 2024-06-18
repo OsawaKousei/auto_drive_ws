@@ -10,4 +10,4 @@ pure_pursuit:
     ki: 0.75
     kd: 0.0
     target_dist: 0.15
-    ctrl_period: 0.02
+    ctrl_period: 0.005
