@@ -5,7 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Odometry1/Topic1
-        - /Path1
       Splitter Ratio: 0.5029411911964417
     Tree Height: 549
   - Class: rviz_common/Selection
@@ -306,7 +305,35 @@ Visualization Manager:
     - Alpha: 1
       Buffer Length: 1
       Class: rviz_default_plugins/Path
-      Color: 25; 255; 0
+      Color: 0; 255; 0
+      Enabled: true
+      Head Diameter: 0.029999999329447746
+      Head Length: 0.10000000149011612
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.009999999776482582
+      Shaft Length: 0.05000000074505806
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_path
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 255; 0; 0
       Enabled: true
       Head Diameter: 0.029999999329447746
       Head Length: 0.10000000149011612
@@ -329,7 +356,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /path
+        Value: /local_path
       Value: true
   Enabled: true
   Global Options:
@@ -413,5 +440,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 237
-  Y: 11
+  X: 205
+  Y: -21

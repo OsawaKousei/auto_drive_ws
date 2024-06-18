@@ -50,8 +50,10 @@ public:
       global_path_.poses.push_back(pose);
     }
     global_path_.header.frame_id = "map";
+    local_path_.header.frame_id = "map";
 
-    publisher_ = this->create_publisher<nav_msgs::msg::Path>("path", 1);
+    local_publisher_ = this->create_publisher<nav_msgs::msg::Path>("local_path", 1);
+    global_publisher_ = this->create_publisher<nav_msgs::msg::Path>("global_path", 1);
 
     // timer
     timer = this->create_wall_timer(1000ms, std::bind(&StaticLocalPlannerNode::timer_callback, this));
@@ -61,14 +63,20 @@ public:
 
   // timer
   void timer_callback() {
-    this->publisher_->publish(local_path_);
+    mutex_.lock();
+    global_path_.header.stamp = this->now();
+    local_path_.header.stamp = this->now();
+    this->local_publisher_->publish(local_path_);
+    this->global_publisher_->publish(global_path_);
+    mutex_.unlock();
   }
 
   
 
 private:
     rclcpp::TimerBase::SharedPtr timer_;
-    rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr publisher_;
+    rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr local_publisher_;
+    rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr global_publisher_;
 
     std::chrono::system_clock::time_point start_time, end_time;
     std::string global_path_dir_;
@@ -82,7 +90,10 @@ private:
     std::vector<double> xs;
     std::vector<double> ys;
 
+    std::mutex mutex_;
+
     void generate_local_path() {
+      mutex_.lock();
       // generate local path
       xs.clear();
       ys.clear();
@@ -93,12 +104,12 @@ private:
       }
 
       start_time = std::chrono::system_clock::now();
-      auto [xs_new, ys_new] = spline_by_num(xs, ys, 20);  // スプライン補間
+      auto [xs_new, ys_new] = spline_by_num(xs, ys, 300);  // スプライン補間
       end_time = std::chrono::system_clock::now();
       double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
 
       start_time = std::chrono::system_clock::now();
-      auto [xs_local, ys_local] = spline_by_min_max(xs_new, ys_new, 0.1, 1.5, 0.15);  // 台形加減速
+      auto [xs_local, ys_local] = spline_by_min_max(xs_new, ys_new, 0.01, 0.15, 0.015);  // 台形加減速
       end_time = std::chrono::system_clock::now();
       double elapsed_second = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count();
 
@@ -109,8 +120,8 @@ private:
       local_path_.header = global_path_.header;
       for (int i = 0; i < int(xs_local.size()); i++){
         geometry_msgs::msg::PoseStamped pose;
-        pose.pose.position.x = xs_new[i];
-        pose.pose.position.y = ys_new[i];
+        pose.pose.position.x = xs_local[i];
+        pose.pose.position.y = ys_local[i];
         pose.pose.position.z = 0.0;
         local_path_.poses.push_back(pose);
       }
@@ -121,6 +132,10 @@ private:
           ofs << pose.pose.position.x << "," << pose.pose.position.y << std::endl;
       }
       ofs.close();
+
+      std::cout << "local path is saved to " << local_path_dir_ << std::endl;
+
+      mutex_.unlock();
     }
 };
 
