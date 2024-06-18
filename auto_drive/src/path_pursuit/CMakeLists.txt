@@ -21,6 +21,10 @@ ament_auto_find_build_dependencies()
 #   src/local_planner.cpp
 # )
 
+ament_auto_add_executable(
+  pid_test_node src/pid_test_node.cpp
+)
+
 install(
   DIRECTORY
     config
