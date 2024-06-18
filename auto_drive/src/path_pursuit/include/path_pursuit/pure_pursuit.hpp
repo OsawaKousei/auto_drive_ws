@@ -11,11 +11,11 @@
 
 namespace path_pursuit {
 
-class PathPursuit : public rclcpp::Node {
+class PurePursuit : public rclcpp::Node {
 public:
   TUTORIAL_PUBLIC
-  explicit PathPursuit(const rclcpp::NodeOptions &options);
-  virtual ~PathPursuit();
+  explicit PurePursuit(const rclcpp::NodeOptions &options);
+  virtual ~PurePursuit();
 
 private:
   rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr path_sub_;
@@ -23,8 +23,10 @@ private:
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
 
   nav_msgs::msg::Path path_;
-  PID pid_x;
-  PID pid_y;
+  PID pid_x = PID(0.0, 0.0, 0.0);
+  PID pid_y = PID(0.0, 0.0, 0.0);
+
+  double kp, ki, kd;
 
   void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
 

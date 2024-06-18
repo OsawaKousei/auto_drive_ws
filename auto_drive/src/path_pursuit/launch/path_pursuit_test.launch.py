@@ -191,6 +191,16 @@ def generate_launch_description():
         prefix="xterm -e"
     )
 
+    path_pursuit_node = Node(
+        package='path_pursuit',
+        executable='path_pursuit_node',
+        output='screen',
+        # specify the ros2 parameters file
+        parameters=[os.path.join(pkg_share_dir,'params','params.yaml')],
+        # prefix to launch in a new terminal
+        prefix="xterm -e"
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_sim_time',
@@ -219,5 +229,6 @@ def generate_launch_description():
         map_lifecycle_manager,
 
         # ign_debug,
-        local_path_node
+        local_path_node,
+        path_pursuit_node
     ])

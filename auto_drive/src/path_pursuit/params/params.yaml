@@ -4,3 +4,10 @@ pid_test_node:
     ki: 0.0
     kd: 0.0
 
+pure_pursuit:
+  ros__parameters:
+    kp: 1.0
+    ki: 0.0
+    kd: 0.0
+
+

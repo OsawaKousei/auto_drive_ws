@@ -11,18 +11,19 @@ find_package(ament_cmake_auto REQUIRED)
 
 ament_auto_find_build_dependencies()
 
-# ament_auto_add_library(path_publisher src/path_publisher.cpp)
-# ament_auto_add_library(local_planner src/local_planner.cpp)
-# rclcpp_components_register_nodes(path_publisher "local_path::PathPublisher")
-# rclcpp_components_register_nodes(local_planner "local_path::LocalPlanner")
-# ament_auto_add_executable(
-# local_path_node src/local_path_node.cpp
-#   src/path_publisher.cpp
-#   src/local_planner.cpp
-# )
+ament_auto_add_library(pure_pursuit src/pure_pursuit.cpp)
+rclcpp_components_register_nodes(pure_pursuit "path_pursuit::PurePursuit")
+ament_auto_add_executable(
+path_pursuit_node src/path_pursuit_node.cpp
+  src/pure_pursuit.cpp
+)
 
 ament_auto_add_executable(
   pid_test_node src/pid_test_node.cpp
+)
+
+target_include_directories(pure_pursuit PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/path_pursuit
 )
 
 install(
