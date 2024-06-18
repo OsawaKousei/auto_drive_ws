@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 3.22)
 project(local_path)
 set(CMAKE_CXX_STANDARD 17)
 
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -11,6 +21,10 @@ find_package(Boost REQUIRED)
 find_package(Boost COMPONENTS program_options REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(ompl REQUIRED)
+
+find_package(pcl_conversions REQUIRED)
+find_package(PCL REQUIRED COMPONENTS common io)
+find_package(PCL 1.1 REQUIRED)
 
 find_package(ament_cmake_auto REQUIRED)
 
@@ -43,7 +57,21 @@ static_local_planner_node src/static_local_planner_node.cpp
   src/util_functions.cpp
 )
 
-# ament_auto_add_library(pcp src/util/pcp.cpp)
+ament_auto_add_library(pcp src/util/pcp.cpp)
+
+target_include_directories(pcp PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/local_path
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/util
+        # include
+        # Eigen3::Eigen
+        ${PCL_INCLUDE_DIRS}
+)
+
+ament_target_dependencies(pcp
+ pcl_conversions
+)
+
+target_link_libraries(pcp ${PCL_LIBRARIES})
 
 ament_auto_add_executable(
 corner_detect_node src/corner_detect_node.cpp
@@ -60,6 +88,13 @@ target_include_directories(corner_detect_node PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include/util
         # include
         # Eigen3::Eigen
+        ${PCL_INCLUDE_DIRS}
+)
+
+target_link_libraries(corner_detect_node ${PCL_LIBRARIES})
+
+ament_target_dependencies(corner_detect_node
+ pcl_conversions
 )
 
 install(

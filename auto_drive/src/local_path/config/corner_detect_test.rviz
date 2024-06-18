@@ -24,7 +24,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: PointCloud2
 Visualization Manager:
   Class: ""
   Displays:
@@ -358,6 +358,19 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /local_path
       Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Marker
+      Namespaces:
+        {}
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /corner_marker
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -404,7 +417,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 4.478589057922363
+      Distance: 2.79764986038208
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -422,7 +435,7 @@ Visualization Manager:
       Pitch: 0.7953986525535583
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.600399017333984
+      Yaw: 4.595398902893066
     Saved: ~
 Window Geometry:
   Displays:
@@ -440,5 +453,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 199
-  Y: -6
+  X: 572
+  Y: -27

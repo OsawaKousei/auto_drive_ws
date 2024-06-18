@@ -17,8 +17,8 @@ static visualization_msgs::msg::Marker::SharedPtr std_cube_setter(std::tuple<dou
   message.action = visualization_msgs::msg::Marker::ADD;
   message.lifetime = rclcpp::Duration(0,0);
 
-  message.scale.x = 0.02;
-  message.scale.y = 0.02;
+  message.scale.x = 0.1;
+  message.scale.y = 0.1;
   message.scale.z = 0.01;
 
   message.pose.position.x = std::get<0>(position);
@@ -39,7 +39,7 @@ static visualization_msgs::msg::Marker::SharedPtr std_cube_setter(std::tuple<dou
 }
 
 static visualization_msgs::msg::Marker::SharedPtr std_line_setter(std::tuple<double, double> start_pos, std::tuple<double, double> end_pos){
-  auto message = visualization_msgs::msg::Marker();
+  visualization_msgs::msg::Marker message;
 
   message.type = visualization_msgs::msg::Marker::LINE_STRIP;
   message.action = visualization_msgs::msg::Marker::ADD;
@@ -63,6 +63,8 @@ static visualization_msgs::msg::Marker::SharedPtr std_line_setter(std::tuple<dou
 
   message.points.push_back(start_point);
   message.points.push_back(end_point);
+
+  std::cout << "create line from (" << start_point.x << ", " << start_point.y << ") to (" << end_point.x << ", " << end_point.y << ")" << std::endl;
 
   return std::make_shared<visualization_msgs::msg::Marker>(message);
 }
