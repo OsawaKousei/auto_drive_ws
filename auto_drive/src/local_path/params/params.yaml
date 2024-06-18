@@ -7,3 +7,8 @@ local_planner:
   ros__parameters:
     path_points: 20
     consider_points: 10
+
+static_local_planner_node:
+  ros__parameters:
+    global_path_dir: "/home/kousei/auto_drive_ws/auto_drive/src/local_path/path/global_path.csv"
+    local_path_dir: "/home/kousei/auto_drive_ws/auto_drive/src/local_path/path/local_path.csv"

@@ -17,7 +17,10 @@ find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
 # localization_test
-ament_auto_add_library(local_planning src/local_planning.cpp)
+ament_auto_add_library(local_planning 
+  src/local_planning.cpp
+  src/util_functions.cpp
+)
 
 target_include_directories(local_planning PUBLIC
         ${OMPL_INCLUDE_DIRS}
@@ -33,6 +36,17 @@ ament_auto_add_executable(
 local_path_node src/local_path_node.cpp
   src/path_publisher.cpp
   src/local_planner.cpp
+)
+
+ament_auto_add_executable(
+static_local_planner_node src/static_local_planner_node.cpp
+  src/util_functions.cpp
+)
+
+target_include_directories(static_local_planner_node PUBLIC
+        ${OMPL_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/local_path
+        include
 )
 
 install(
