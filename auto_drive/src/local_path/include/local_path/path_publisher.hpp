@@ -23,6 +23,7 @@ private:
   nav_msgs::msg::Path path_;
 
   double distance_threshold_;
+  int next_idx_;
   std::string path_dir_;
 
   std::mutex mutex_;

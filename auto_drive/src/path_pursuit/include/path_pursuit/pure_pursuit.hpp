@@ -27,6 +27,11 @@ private:
   PID pid_y = PID(0.0, 0.0, 0.0);
 
   double kp, ki, kd;
+  int target_idx_;
+  double target_dist_;
+  nav_msgs::msg::Odometry prev_odom_;
+  double vel_;
+  double ctrl_priod_;
 
   void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
 
