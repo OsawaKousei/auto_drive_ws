@@ -103,17 +103,17 @@ private:
         ys.push_back(state.pose.position.y);
       }
 
-      start_time = std::chrono::system_clock::now();
-      auto [xs_new, ys_new] = spline_by_num(xs, ys, 300);  // スプライン補間
-      end_time = std::chrono::system_clock::now();
-      double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
+      // start_time = std::chrono::system_clock::now();
+      // auto [xs_new, ys_new] = spline_by_num(xs, ys, 300);  // スプライン補間
+      // end_time = std::chrono::system_clock::now();
+      // double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
 
       start_time = std::chrono::system_clock::now();
-      auto [xs_local, ys_local] = spline_by_min_max(xs_new, ys_new, 0.01, 0.15, 0.015);  // 台形加減速
+      auto [xs_local, ys_local] = spline_by_min_max(xs, ys, 0.01, 0.15, 0.015);  // 台形加減速
       end_time = std::chrono::system_clock::now();
       double elapsed_second = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count();
 
-      std::cout << "elapsed time for spline_by_num: " << elapsed_first << " ms" << std::endl;
+      // std::cout << "elapsed time for spline_by_num: " << elapsed_first << " ms" << std::endl;
       std::cout << "elapsed time for spline_by_min_max: " << elapsed_second << " ms" << std::endl;
 
       local_path_.poses.clear();
