@@ -103,10 +103,10 @@ private:
         ys.push_back(state.pose.position.y);
       }
 
-      // start_time = std::chrono::system_clock::now();
-      // auto [xs_new, ys_new] = spline_by_num(xs, ys, 300);  // スプライン補間
-      // end_time = std::chrono::system_clock::now();
-      // double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
+      start_time = std::chrono::system_clock::now();
+      auto [xs_new, ys_new] = spline_by_num(xs, ys, 300);  // スプライン補間
+      end_time = std::chrono::system_clock::now();
+      double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
 
       start_time = std::chrono::system_clock::now();
       auto [xs_local, ys_local] = spline_by_min_max(xs, ys, 0.01, 0.15, 0.015);  // 台形加減速
@@ -118,10 +118,10 @@ private:
 
       local_path_.poses.clear();
       local_path_.header = global_path_.header;
-      for (int i = 0; i < int(xs_local.size()); i++){
+      for (int i = 0; i < int(xs_new.size()); i++){
         geometry_msgs::msg::PoseStamped pose;
-        pose.pose.position.x = xs_local[i];
-        pose.pose.position.y = ys_local[i];
+        pose.pose.position.x = xs_new[i];
+        pose.pose.position.y = ys_new[i];
         pose.pose.position.z = 0.0;
         local_path_.poses.push_back(pose);
       }
