@@ -73,8 +73,8 @@ void PurePursuit::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
     std::cout << "dist: " << dist << std::endl;
     if (dist > target_dist_) {
       if(!i == target_idx_){
-        pid_x.reset_integral();
-        pid_y.reset_integral();
+        // pid_x.reset_integral();
+        // pid_y.reset_integral();
       }
       target_idx_ = i;
       break;
