@@ -40,7 +40,13 @@ private:
   void path_callback(const nav_msgs::msg::Path::SharedPtr path) {
     mutex_.lock();
 
-    auto corner_pc2 = pcp::PCConvert::path2pc2(*path);
+    // pick up the first 10 points
+    nav_msgs::msg::Path path_10;
+    for (int i = 0; i < 10; i++) {
+      path_10.poses.push_back(path->poses[i]);
+    }
+
+    auto corner_pc2 = pcp::PCConvert::path2pc2(path_10);
     corner_pc2->header.frame_id = "map";
     corner_pc2->header.stamp = this->now();
     corner_publisher_->publish(*corner_pc2);

@@ -1,5 +1,7 @@
 #include "util/pcp.hpp"
+#include <Eigen/Core> // Include the necessary header file
 #include <Eigen/Dense>
+#include <Eigen/Eigenvalues>
 
 namespace pcp {
   PCFeatureDetection::PCFeatureDetection(sensor_msgs::msg::PointCloud2::SharedPtr cloud)
@@ -12,13 +14,17 @@ namespace pcp {
     // PCA
     Eigen::MatrixXd data(cloud_->width, 3);
     float *data_ptr = reinterpret_cast<float *>(cloud_->data.data());
-    for (int i = 0; i < cloud_->width; i++) {
+    for (int i = 0; i < int(cloud_->width); i++) {
       data(i, 0) = data_ptr[i * 3];
       data(i, 1) = data_ptr[i * 3 + 1];
       data(i, 2) = data_ptr[i * 3 + 2];
     }
-    Eigen::MatrixXd centered = data.rowwise() - data.colwise().mean();
-    Eigen::MatrixXd cov = centered.adjoint() * centered;
+    // 平均を0にする
+    Eigen::MatrixXd centered = data.rowwise() - data.colwise().mean();  
+    // 標準偏差を1にする
+    centered.array().rowwise() /= data.colwise().norm().array();
+    // 共分散行列を求める
+    Eigen::MatrixXd cov = (centered.adjoint() * centered) / double(data.rows() - 1);
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(cov);
     Eigen::Vector3d eigenvalues = eig.eigenvalues();
     Eigen::Matrix3d eigenvectors = eig.eigenvectors();
@@ -59,7 +65,7 @@ namespace pcp {
     pc2.is_dense = true;
     pc2.data.resize(pc2.point_step * pc2.width);
     float *data = reinterpret_cast<float *>(pc2.data.data());
-    for (int i = 0; i < path.poses.size(); i++) {
+    for (int i = 0; i < int(path.poses.size()); i++) {
       data[i * 3] = path.poses[i].pose.position.x;
       data[i * 3 + 1] = path.poses[i].pose.position.y;
       data[i * 3 + 2] = 0.0;
