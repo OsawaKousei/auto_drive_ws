@@ -46,6 +46,7 @@ static_local_planner_node src/static_local_planner_node.cpp
 ament_auto_add_executable(
 corner_detect_node src/corner_detect_node.cpp
   src/path_publisher.cpp
+  src/util/pcp.cpp
 )
 
 target_include_directories(static_local_planner_node PUBLIC

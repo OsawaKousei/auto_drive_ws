@@ -37,7 +37,7 @@ private:
   void path_callback(const nav_msgs::msg::Path::SharedPtr path) {
     mutex_.lock();
 
-    auto corner_pc2 = pcp::path2pc2(*path);
+    auto corner_pc2 = pcp::PCConvert::path2pc2(*path);
     corner_pc2->header.frame_id = "map";
     corner_pc2->header.stamp = this->now();
     corner_publisher_->publish(*corner_pc2);
