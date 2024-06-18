@@ -217,7 +217,7 @@ namespace global_path{
     planner->checkValidity();
 
     // set time to solve
-    ob::PlannerStatus solved = planner->ob::Planner::solve(300);
+    ob::PlannerStatus solved = planner->ob::Planner::solve(600);
     if (!solved) {
         std::cout << "No solution found" << std::endl;
         auto null_path = nav_msgs::msg::Path();
