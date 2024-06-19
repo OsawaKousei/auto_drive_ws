@@ -41,38 +41,23 @@ private:
   void path_callback(const nav_msgs::msg::Path::SharedPtr path) {
     mutex_.lock();
 
-    // pick up the first 10 points
-    // nav_msgs::msg::Path path_10;
-    // for (int i = 0; i < 10; i++) {
-    //   path_10.poses.push_back(path->poses[i]);
+    // pca用のダミーデータを作成
+    // std::vector<std::vector<double>> dummy_data;
+    // for (int i = 0; i < 100; i++) {
+    //   std::vector<double> dummy;
+    //   for (int j = 0; j < 2; j++) {
+    //     dummy.push_back(i);
+    //   }
+    //   dummy_data.push_back(dummy);
     // }
 
-    //path_10のｙ座標を表示
-    // for (int i = 0; i < 10; i++) {
-    //   std::cout << "y: " << path_10.poses[i].pose.position.y << std::endl;
-    // }
+    // pcp::PCFeatureDetection::PCA(dummy_data);
+
 
     auto corner_pc2 = pcp::PCConvert::path2pc2(*path);
     corner_pc2->header.frame_id = "map";
     corner_pc2->header.stamp = this->now();
     corner_publisher_->publish(*corner_pc2);
-
-    // coner_pc2のｙ座標を表示
-    // float *data_ptr = reinterpret_cast<float *>(corner_pc2->data.data());
-    // for (int i = 0; i < int(corner_pc2->width); i++) {
-    //   std::cout << "y: " << data_ptr[i * 3 + 1] << std::endl;
-    // }
-
-    // pcp::PCFeatureDetection pc(corner_pc2);
-    // auto [x, y, pv] = pc.PCA();
-
-    // std::cout << "x: " << x << ", y: " << y << ", pv: " << pv << std::endl;
-
-    // auto viz_marker = viz_marker::std_line_setter(std::make_tuple(0.0, 0.0), std::make_tuple(x, y));
-    // viz_marker->header.frame_id = "map";
-    // viz_marker->header.stamp = this->now();
-    // std::cout << "publish line from (0, 0) to (" << x << ", " << y << ")" << std::endl;
-    // marker_publisher_->publish(*viz_marker);
 
     pcp::PCFeatureDetection pc(corner_pc2);
     auto corner_index = pc.corner_detection();
@@ -85,13 +70,18 @@ private:
     }
 
     // corner_pointsの座標を表示
-    for(int i = 0; i < int(corner_points.size()); i++){
+    for(int i = 0; i < corner_points.size(); i++){
       auto viz_marker = viz_marker::std_cube_setter(corner_points[i]);
       viz_marker->header.frame_id = "map";
       viz_marker->header.stamp = this->now();
       viz_marker->id = i;
 
       marker_publisher_->publish(*viz_marker);
+
+      std::cout << "i: " << i << ", x: " << std::get<0>(corner_points[i]) << ", y: " << std::get<1>(corner_points[i]) << std::endl;
+
+      // 10ms待機
+      std::this_thread::sleep_for(10ms);
     }
     
     mutex_.unlock();

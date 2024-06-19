@@ -29,52 +29,53 @@ namespace pcp {
   }
   PCFeatureDetection::~PCFeatureDetection() {}
 
-  std::tuple<double,double,double> PCFeatureDetection::PCA(){
+  std::tuple<double,double,double> PCFeatureDetection::PCA(std::vector<std::vector<double>> data){
     // PCA
-    // float *data_ptrs = reinterpret_cast<float *>(cloud_->data.data());
-    // for (int i = 0; i < int(cloud_->width); i++) {
-    //   std::cout << "y: " << data_ptrs[i * 3 + 1] << std::endl;
-    // }
-    Eigen::MatrixXd data(cloud_.size(), 2);
-    for (int i = 0; i < int(cloud_.size()); i++) {
-      data(i, 0) = cloud_[i].x;
-      data(i, 1) = cloud_[i].y;
+    Eigen::MatrixXd data_matrix(data.size(), data[0].size());
+    for (int i = 0; i < int(data.size()); i++) {
+      for (int j = 0; j < int(data[0].size()); j++) {
+        data_matrix(i, j) = data[i][j];
+      }
     }
-    //平均を表示
-    // std::cout << "mean: " << data.colwise().mean() << std::endl;
-    // 平均を0にする
-    Eigen::MatrixXd centered = data.rowwise() - data.colwise().mean();
-    // std::cout << "centered: " << centered << std::endl;
-    // 標準偏差を表示
-    // std::cout << "std: " << data.colwise().norm().array() << std::endl;
-    // 標準偏差を1にする
-    centered.array().rowwise() /= data.colwise().norm().array();
-    // std::cout << "centered: " << centered << std::endl;
-    // 共分散行列を求める
-    Eigen::MatrixXd cov = (centered.adjoint() * centered) / double(data.rows() - 1);
-    // std::cout << "cov: " << cov << std::endl;
+
+    // std::cout << "data_matrix: " << std::endl << data_matrix << std::endl;
+    Eigen::MatrixXd centered = data_matrix.rowwise() - data_matrix.colwise().mean();
+    centered.array().rowwise() /= data_matrix.colwise().norm().array();
+    Eigen::MatrixXd cov = (data_matrix.adjoint() * data_matrix) / double(data_matrix.rows());
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(cov);
     Eigen::Vector2d eigenvalues = eig.eigenvalues();
     Eigen::Matrix2d eigenvectors = eig.eigenvectors();
 
-    // std::cout << "eigenvalues: " << eigenvalues << std::endl;
-    // std::cout << "eigenvectors: " << eigenvectors << std::endl;
+    // std::cout << "eigenvalues: " << std::endl << eigenvalues << std::endl;
+    // std::cout << "eigenvectors: " << std::endl << eigenvectors << std::endl;
 
-    double x = eigenvectors(0, 0);
-    double y = eigenvectors(1, 0);
+    double x = eigenvectors(0, 1);
+    double y = eigenvectors(1, 1);
 
-    //calculate the Proportion of Variance
     double sum = eigenvalues.sum();
-    double pv = eigenvalues(0) / sum;
+    double pv = eigenvalues(1) / sum;
 
-    // return x: eigenvector x, y: eigenvector y, pv: Proportion of Variance
     return std::make_tuple(x, y, pv);
+  };
+
+  std::tuple<double,double,double> PCFeatureDetection::PCA(){
+    // convert pcl::PointCloud<pcl::PointXY> to std::vector<std::vector<double>>
+    std::vector<std::vector<double>> data;
+    for (int i = 0; i < int(cloud_.size()); i++) {
+      std::vector<double> point;
+      point.push_back(cloud_[i].x);
+      point.push_back(cloud_[i].y);
+      data.push_back(point);
+    }
+
+    return PCA(data);
   }
 
   std::vector<int> PCFeatureDetection::corner_detection(){
-    const int window_size = 5; //奇数である必要あり
-    std::vector<int> pv_index;
-    double pv_threshold = 100;
+    const int window_size = 5;
+    std::vector<double> pv_index;
+    double pv_threshold = 0.999995;
+    int near_threshold = 17;
     std::vector<int> corner_index;
     // corner detection
 
@@ -103,31 +104,81 @@ namespace pcp {
       PCFeatureDetection pc(*window_pc2);
       auto [x, y, pv] = pc.PCA();
       // std::cout << "x: " << x << ", y: " << y << ", pv: " << pv << std::endl;
-      pv = pv * 1e+8;
       pv_index.push_back(pv);
     }
 
     // pv_indexを表示
     for(int i = 0; i < int(pv_index.size()); i++){
-      std::cout << "pv_index[" << i << "]: " << pv_index[i] << std::endl;
+      // std::cout << "pv_index[" << i << "]: " << pv_index[i] << std::endl;
     }
 
-    // pv_indexの中でProportion of Varianceがpv_threshold以下のindexをcorner_indexに追加
-    // ただし、前後のindexのpvが自身のpvより小さい場合は追加しない
-    for(int i = 0; i < int(pv_index.size()); i++){
-      if(pv_index[i] < pv_threshold){
-        if(pv_index[i] < pv_index[i - 1] && pv_index[i] < pv_index[i + 1]){
-          corner_index.push_back(i);
-        }
+    // pv_indexの中で極小値かつ閾値以下の点をcorner_indexに追加
+    for(int i = 0; i < pv_index.size() - 1; i++){
+      if(pv_index[i] < pv_index[i+1] && pv_index[i] < pv_index[i-1] && pv_index[i] < pv_threshold){
+        corner_index.push_back(i);
       }
     }
 
     // corner_indexを表示
     for(int i = 0; i < int(corner_index.size()); i++){
-      // std::cout << "corner_index[" << i << "]: " << corner_index[i] << std::endl;
+      std::cout << "corner_index[" << i << "]: " << corner_index[i]  << "  :  " << "pv_index[" << corner_index[i] << "]: " << pv_index[corner_index[i]] << std::endl;
     }
 
-    return corner_index;
+    // corner_indexをクラスタリング
+    std::vector<std::vector<int>> group_corner_index;
+    
+    for(int i = 0; i < int(corner_index.size()) -1; i++){
+      //自身が含まれるgropがあるかどうか
+      bool is_grouped = false;
+      int group_index = 0;
+      for(int j = 0; j < int(group_corner_index.size()); j++){
+        for(int k = 0; k < int(group_corner_index[j].size()); k++){
+          if(corner_index[i] == group_corner_index[j][k]){
+            is_grouped = true;
+            group_index = j;
+            break;
+          }
+        }
+      }
+
+      //自身が含まれるgroupがない場合、新しいgroupを作成
+      if(!is_grouped){
+        std::vector<int> new_group;
+        new_group.push_back(corner_index[i]);
+        group_corner_index.push_back(new_group);
+        group_index = group_corner_index.size() - 1;
+      }
+
+
+      //corner_index[i]の次のcorner_indexとの距離がnear_threshold以下の場合、同じgroupに追加
+      if(corner_index[i+1] - corner_index[i] < near_threshold){
+        group_corner_index[group_index].push_back(corner_index[i+1]);
+      }
+    }
+
+    // group_corner_indexを表示
+    for(int i = 0; i < int(group_corner_index.size()); i++){
+      for(int j = 0; j < int(group_corner_index[i].size()); j++){
+        std::cout << "group_corner_index[" << i << "][" << j << "]: " << group_corner_index[i][j] << std::endl;
+      }
+    }
+
+    std::vector<int> classified_corner_index;
+    // group_corner_indexの各groupの中心をclassified_corner_indexに追加
+    for(int i = 0; i < group_corner_index.size(); i++){
+      int sum = 0;
+      for(int j = 0; j < group_corner_index[i].size(); j++){
+        sum += group_corner_index[i][j];
+      }
+      classified_corner_index.push_back(sum / group_corner_index[i].size());
+    }
+
+    // corner_indexを表示
+    for(int i = 0; i < int(classified_corner_index.size()); i++){
+      std::cout << "classified_corner_index[" << i << "]: " << classified_corner_index[i]  << "  :  " << "pv_index[" << classified_corner_index[i] << "]: " << pv_index[classified_corner_index[i]] << std::endl;
+    }
+
+    return classified_corner_index;
   }
 
   sensor_msgs::msg::PointCloud2::SharedPtr PCConvert::path2pc2(nav_msgs::msg::Path path){

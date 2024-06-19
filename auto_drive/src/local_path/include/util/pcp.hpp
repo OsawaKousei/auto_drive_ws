@@ -18,6 +18,7 @@ public:
     ~PCFeatureDetection();
 
     std::tuple<double,double,double> PCA();
+    static std::tuple<double, double, double> PCA(std::vector<std::vector<double>> data);
     std::vector<int> corner_detection();
 private:
     pcl::PointCloud<pcl::PointXY> cloud_;
