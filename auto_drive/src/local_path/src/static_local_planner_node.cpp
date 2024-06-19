@@ -144,6 +144,19 @@ private:
 
       auto corner_index = pcp::PCFeatureDetection::corner_detection(path);
 
+      //手動でcorner_indexを修正
+      // corner_indexの最初と２番目を削除
+      corner_index.erase(corner_index.begin());
+      corner_index.erase(corner_index.begin());
+
+      // corner_indexの値を変更
+      corner_index[0] = corner_index[0] - 10;
+      corner_index[1] = corner_index[1] + 5;
+      corner_index[2] = corner_index[2] + 10;
+      corner_index[3] = corner_index[3];
+      corner_index[4] = corner_index[4] - 5;
+      corner_index[5] = corner_index[5] + 5;
+
       // corner_idex番目の点の座標を取得
       for (int i = 0; i < int(corner_index.size()); i++) {
         corner_points.push_back(std::make_tuple(xs_new[corner_index[i]], ys_new[corner_index[i]]));
@@ -157,6 +170,86 @@ private:
         pose.pose.position.y = ys_new[i];
         pose.pose.position.z = 0.0;
         local_path_.poses.push_back(pose);
+      }
+
+      // corner_indexを表示でpathを分割
+      std::vector<nav_msgs::msg::Path> local_paths;
+      nav_msgs::msg::Path local_path;
+      local_path.header = global_path_.header;
+
+      // 最初のpathを追加
+      for (int i = 0; i < corner_index[0]; i++) {
+        geometry_msgs::msg::PoseStamped pose;
+        pose.pose.position.x = xs_new[i];
+        pose.pose.position.y = ys_new[i];
+        pose.pose.position.z = 0.0;
+        local_path.poses.push_back(pose);
+      }
+      local_paths.push_back(local_path);
+      std::cout << "add first path" << std::endl;
+
+      // cornerからcornerまでのpathを追加
+      for (int i = 0; i < int(corner_index.size()); i++) {
+        local_path.poses.clear();
+        for (int j = corner_index[i]; j < corner_index[i + 1]; j++) {
+          geometry_msgs::msg::PoseStamped pose;
+          pose.pose.position.x = xs_new[j];
+          pose.pose.position.y = ys_new[j];
+          pose.pose.position.z = 0.0;
+          local_path.poses.push_back(pose);
+        }
+        local_paths.push_back(local_path);
+
+        std::cout << "add path from corner to corner : " << i << std::endl;
+      }
+
+      // local_pathsの最後のpathを削除
+      local_paths.pop_back();
+
+      // 最後のcornerから最後までのpathを追加
+      local_path.poses.clear();
+      for (int i = corner_index.back(); i < int(xs_new.size()); i++) {
+        geometry_msgs::msg::PoseStamped pose;
+        pose.pose.position.x = xs_new[i];
+        pose.pose.position.y = ys_new[i];
+        pose.pose.position.z = 0.0;
+        local_path.poses.push_back(pose);
+      }
+      local_paths.push_back(local_path);
+      std::cout << "add last path" << std::endl;
+
+      // 分割されたpathを表示
+      for (int i = 0; i < int(local_paths.size()); i++) {
+        std::cout << "local_paths[" << i << "]: " << local_paths[i].poses.size() << std::endl;
+      }
+
+      // 分割したpathに対して台形加減速を適用
+      for (int i = 0; i < int(local_paths.size()); i++) {
+        xs.clear();
+        ys.clear();
+
+        for (auto& state : local_paths[i].poses) {
+          xs.push_back(state.pose.position.x);
+          ys.push_back(state.pose.position.y);
+        }
+
+        auto [xs_local, ys_local] = spline_by_min_max(xs, ys, 0.01, 0.15, 0.015);
+        local_paths[i].poses.clear();
+        for (int j = 0; j < int(xs_local.size()); j++) {
+          geometry_msgs::msg::PoseStamped pose;
+          pose.pose.position.x = xs_local[j];
+          pose.pose.position.y = ys_local[j];
+          pose.pose.position.z = 0.0;
+          local_paths[i].poses.push_back(pose);
+        }
+      }
+
+      // 分割したpathをlocal_pathに追加
+      local_path_.poses.clear();
+      for (int i = 0; i < int(local_paths.size()); i++) {
+        for (int j = 0; j < int(local_paths[i].poses.size()); j++) {
+          local_path_.poses.push_back(local_paths[i].poses[j]);
+        }
       }
 
       // save path
