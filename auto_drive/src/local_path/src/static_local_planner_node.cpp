@@ -12,6 +12,8 @@
 
 #include "local_path/local_planning.hpp"
 #include "local_path/util_functions.hpp"
+#include "util/pcp.hpp"
+#include "util/rviz_util.hpp"
 
 
 using namespace std::chrono_literals;
@@ -54,6 +56,7 @@ public:
 
     local_publisher_ = this->create_publisher<nav_msgs::msg::Path>("local_path", 1);
     global_publisher_ = this->create_publisher<nav_msgs::msg::Path>("global_path", 1);
+    marker_publisher_ = this->create_publisher<visualization_msgs::msg::Marker>("corner_marker", 1);
 
     // timer
     timer = this->create_wall_timer(1000ms, std::bind(&StaticLocalPlannerNode::timer_callback, this));
@@ -68,6 +71,21 @@ public:
     local_path_.header.stamp = this->now();
     this->local_publisher_->publish(local_path_);
     this->global_publisher_->publish(global_path_);
+
+    // corner_pointsの座標を表示
+    for(int i = 0; i < corner_points.size(); i++){
+      auto viz_marker = viz_marker::std_cube_setter(corner_points[i]);
+      viz_marker->header.frame_id = "map";
+      viz_marker->header.stamp = this->now();
+      viz_marker->id = i;
+
+      marker_publisher_->publish(*viz_marker);
+
+      std::cout << "i: " << i << ", x: " << std::get<0>(corner_points[i]) << ", y: " << std::get<1>(corner_points[i]) << std::endl;
+
+      // 10ms待機
+      std::this_thread::sleep_for(10ms);
+    }
     mutex_.unlock();
   }
 
@@ -77,6 +95,7 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr local_publisher_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr global_publisher_;
+    rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr marker_publisher_;
 
     std::chrono::system_clock::time_point start_time, end_time;
     std::string global_path_dir_;
@@ -89,6 +108,8 @@ private:
 
     std::vector<double> xs;
     std::vector<double> ys;
+
+    std::vector<std::tuple<double, double>> corner_points;
 
     std::mutex mutex_;
 
@@ -115,6 +136,19 @@ private:
 
       // // std::cout << "elapsed time for spline_by_num: " << elapsed_first << " ms" << std::endl;
       // std::cout << "elapsed time for spline_by_min_max: " << elapsed_second << " ms" << std::endl;
+
+      std::vector<std::vector<double>> path;
+      for (int i = 0; i < int(xs_new.size()); i++) {
+        path.push_back({xs_new[i], ys_new[i]});
+      }
+
+      // auto corner_index = pcp::PCFeatureDetection::corner_detection(path);
+
+      // // corner_idex番目の点の座標を取得
+      // for (int i = 0; i < int(corner_index.size()); i++) {
+      //   corner_points.push_back(std::make_tuple(xs_new[corner_index[i]], ys_new[corner_index[i]]));
+      // }
+
 
       local_path_.poses.clear();
       local_path_.header = global_path_.header;

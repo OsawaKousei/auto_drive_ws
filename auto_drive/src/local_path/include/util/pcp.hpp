@@ -20,6 +20,7 @@ public:
     std::tuple<double,double,double> PCA();
     static std::tuple<double, double, double> PCA(std::vector<std::vector<double>> data);
     std::vector<int> corner_detection();
+    static std::vector<int> corner_detection(std::vector<std::vector<double>> path);
 private:
     pcl::PointCloud<pcl::PointXY> cloud_;
 };
@@ -30,6 +31,7 @@ public:
     ~PCConvert();
 
     static sensor_msgs::msg::PointCloud2::SharedPtr path2pc2(nav_msgs::msg::Path path);
+    static std::vector<std::vector<double>> pc2matrix(pcl::PointCloud<pcl::PointXY> cloud);
 };
 
 } // namespace pcp

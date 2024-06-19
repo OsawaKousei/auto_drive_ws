@@ -55,6 +55,7 @@ local_path_node src/local_path_node.cpp
 ament_auto_add_executable(
 static_local_planner_node src/static_local_planner_node.cpp
   src/util_functions.cpp
+  src/util/pcp.cpp
 )
 
 ament_auto_add_library(pcp src/util/pcp.cpp)
@@ -81,6 +82,11 @@ corner_detect_node src/corner_detect_node.cpp
 
 target_include_directories(static_local_planner_node PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include/local_path
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/util
+        # include
+        # Eigen3::Eigen
+        ${PCL_INCLUDE_DIRS}
+        pcp
 )
 
 target_include_directories(corner_detect_node PUBLIC
@@ -92,8 +98,16 @@ target_include_directories(corner_detect_node PUBLIC
 )
 
 target_link_libraries(corner_detect_node ${PCL_LIBRARIES})
+target_link_libraries(static_local_planner_node 
+  ${PCL_LIBRARIES}
+  pcp
+)
 
 ament_target_dependencies(corner_detect_node
+ pcl_conversions
+)
+
+ament_target_dependencies(static_local_planner_node
  pcl_conversions
 )
 

@@ -9,6 +9,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
+#include "util/pcp.hpp"
 #include "pcp.hpp"
 
 namespace pcp {
@@ -59,19 +60,16 @@ namespace pcp {
   };
 
   std::tuple<double,double,double> PCFeatureDetection::PCA(){
-    // convert pcl::PointCloud<pcl::PointXY> to std::vector<std::vector<double>>
-    std::vector<std::vector<double>> data;
-    for (int i = 0; i < int(cloud_.size()); i++) {
-      std::vector<double> point;
-      point.push_back(cloud_[i].x);
-      point.push_back(cloud_[i].y);
-      data.push_back(point);
-    }
-
+    std::vector<std::vector<double>> data = PCConvert::pc2matrix(cloud_);
     return PCA(data);
   }
 
   std::vector<int> PCFeatureDetection::corner_detection(){
+    std::vector<std::vector<double>> data = PCConvert::pc2matrix(cloud_);
+    return corner_detection(data);
+  }
+
+  std::vector<int> PCFeatureDetection::corner_detection(std::vector<std::vector<double>> data){
     const int window_size = 5;
     std::vector<double> pv_index;
     double pv_threshold = 0.999995;
@@ -90,19 +88,16 @@ namespace pcp {
     // }
 
     // window_sizeの範囲でPCAを行い、Proportion of Varianceをpv_indexに追加
-    for(int i = 0; i < cloud_.size() - window_size; i++){
-      pcl::PointCloud<pcl::PointXY>::Ptr window_pc2(new pcl::PointCloud<pcl::PointXY>);
-      window_pc2->resize(window_size);
+    for(int i = 0; i < int(data.size()) - window_size; i++){
+      std::vector<std::vector<double>> window_data;
       for (int j = 0; j < window_size; j++) {
-        window_pc2->points[j].x = cloud_[i + j].x;
-        window_pc2->points[j].y = cloud_[i + j].y;
+        window_data.push_back(data[i + j]);
         
         // std::cout << "window_pc2->points[" << j << "].x: " << window_pc2->points[j].x << std::endl;
         // std::cout << "window_pc2->points[" << j << "].y: " << window_pc2->points[j].y << std::endl;
       }
       // std::cout << "window_pc2->data.size(): " << window_pc2->data.size() << std::endl;
-      PCFeatureDetection pc(*window_pc2);
-      auto [x, y, pv] = pc.PCA();
+      auto [x, y, pv] = PCA(window_data);
       // std::cout << "x: " << x << ", y: " << y << ", pv: " << pv << std::endl;
       pv_index.push_back(pv);
     }
@@ -181,7 +176,8 @@ namespace pcp {
     return classified_corner_index;
   }
 
-  sensor_msgs::msg::PointCloud2::SharedPtr PCConvert::path2pc2(nav_msgs::msg::Path path){
+  sensor_msgs::msg::PointCloud2::SharedPtr PCConvert::path2pc2(nav_msgs::msg::Path path)
+  {
     sensor_msgs::msg::PointCloud2 pc2;
 
     pc2.header = path.header;
@@ -213,5 +209,18 @@ namespace pcp {
     }
 
     return std::make_shared<sensor_msgs::msg::PointCloud2>(pc2);
+  }
+
+  std::vector<std::vector<double>> PCConvert::pc2matrix(pcl::PointCloud<pcl::PointXY> cloud)
+  {
+    std::vector<std::vector<double>> data;
+    for (int i = 0; i < int(cloud.width); i++) {
+      std::vector<double> point;
+      point.push_back(cloud.points[i].x);
+      point.push_back(cloud.points[i].y);
+      data.push_back(point);
+    }
+
+    return data;
   }
 } // namespace pcp
