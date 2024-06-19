@@ -1,5 +1,5 @@
-#ifndef PATH_PURSUIT__PATH_PURSUIT_HPP_
-#define PATH_PURSUIT__PATH_PURSUIT_HPP_
+#ifndef PATH_PURSUIT__SIMPLE_PURSUIT_HPP_
+#define PATH_PURSUIT__SIMPLE_PURSUIT_HPP_
 
 #include "path_pursuit/visibility_control.h"
 #include "rclcpp/rclcpp.hpp"
@@ -11,11 +11,11 @@
 
 namespace path_pursuit {
 
-class PurePursuit : public rclcpp::Node {
+class SimplePursuit : public rclcpp::Node {
 public:
   TUTORIAL_PUBLIC
-  explicit PurePursuit(const rclcpp::NodeOptions &options);
-  virtual ~PurePursuit();
+  explicit SimplePursuit(const rclcpp::NodeOptions &options);
+  virtual ~SimplePursuit();
 
 private:
   rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr path_sub_;
@@ -27,6 +27,7 @@ private:
   PID pid_y = PID(0.0, 0.0, 0.0);
 
   double kp, ki, kd;
+  double ctrl_priod_;
 
   void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
 
@@ -35,4 +36,4 @@ private:
 
 } // namespace path_pursuit
 
-#endif // PATH_PURSUIT__PATH_PURSUIT_HPP_
+#endif // PATH_PURSUIT__SIMPLE_PURSUIT_HPP_

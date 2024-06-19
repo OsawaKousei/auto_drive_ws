@@ -25,10 +25,16 @@ public:
     // configure parameters
     declare_parameter("global_path_dir", "./global_path.csv");
     declare_parameter("local_path_dir", "./local_path.csv");
+    declare_parameter("low_scale", 0.05);
+    declare_parameter("high_scale", 0.45);
     get_parameter("global_path_dir", global_path_dir_);
     get_parameter("local_path_dir", local_path_dir_);
+    get_parameter("low_scale", low_scale_);
+    get_parameter("high_scale", high_scale_);
     std::cout << "path_dir: " << global_path_dir_ << std::endl;
     std::cout << "local_path_dir: " << local_path_dir_ << std::endl;
+    std::cout << "low_scale: " << low_scale_ << std::endl;
+    std::cout << "high_scale: " << high_scale_ << std::endl;
 
     // read path from csv file
     std::ifstream ifs(global_path_dir_);
@@ -102,6 +108,8 @@ private:
     std::string local_path_dir_;
     nav_msgs::msg::Path global_path_;
     nav_msgs::msg::Path local_path_;
+    double low_scale_;
+    double high_scale_;
 
     //timer
     rclcpp::TimerBase::SharedPtr timer;
@@ -124,18 +132,10 @@ private:
         ys.push_back(state.pose.position.y);
       }
 
-      start_time = std::chrono::system_clock::now();
+      // start_time = std::chrono::system_clock::now();
       auto [xs_new, ys_new] = spline_by_num(xs, ys, 1000);  // スプライン補間
       end_time = std::chrono::system_clock::now();
-      double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
-
-      // start_time = std::chrono::system_clock::now();
-      // auto [xs_local, ys_local] = spline_by_min_max(xs, ys, 0.01, 0.15, 0.015);  // 台形加減速
-      // end_time = std::chrono::system_clock::now();
-      // double elapsed_second = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count();
-
-      // // std::cout << "elapsed time for spline_by_num: " << elapsed_first << " ms" << std::endl;
-      // std::cout << "elapsed time for spline_by_min_max: " << elapsed_second << " ms" << std::endl;
+      // double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
 
       std::vector<std::vector<double>> path;
       for (int i = 0; i < int(xs_new.size()); i++) {
@@ -233,7 +233,7 @@ private:
           ys.push_back(state.pose.position.y);
         }
 
-        auto [xs_local, ys_local] = spline_by_min_max(xs, ys, 0.01, 0.15, 0.015);
+        auto [xs_local, ys_local] = spline_by_min_max(xs, ys, low_scale_, high_scale_, low_scale_);
         local_paths[i].poses.clear();
         for (int j = 0; j < int(xs_local.size()); j++) {
           geometry_msgs::msg::PoseStamped pose;

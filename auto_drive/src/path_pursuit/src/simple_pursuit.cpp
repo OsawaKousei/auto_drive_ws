@@ -8,24 +8,31 @@
 using namespace std::chrono_literals;
 
 namespace path_pursuit {
-PurePursuit::PurePursuit(const rclcpp::NodeOptions &options)
-    : rclcpp::Node("pure_pursuit", options) {
+SimplePursuit::SimplePursuit(const rclcpp::NodeOptions &options)
+    : rclcpp::Node("simple_pursuit", options) {
 
   // configure parameters
   declare_parameter("kp", 0.0);
   declare_parameter("ki", 0.0);
   declare_parameter("kd", 0.0);
+  declare_parameter("dt", 0.1);
   get_parameter("kp", kp);
   get_parameter("ki", ki);
   get_parameter("kd", kd);
+  get_parameter("dt", ctrl_priod_);
   std::cout << "kp: " << kp << " ki: " << ki << " kd: " << kd << std::endl;
+  std::cout << "dt: " << ctrl_priod_ << std::endl;
 
   pid_x = PID(kp, ki, kd);
+  pid_x.set_dt(ctrl_priod_);
   pid_y = PID(kp, ki, kd);
+  pid_y.set_dt(ctrl_priod_);
 
   path_sub_ = create_subscription<nav_msgs::msg::Path>(
       "local_path", 1, [this](const nav_msgs::msg::Path::SharedPtr msg) {
         path_ = *msg;
+        pid_x.reset_integral();
+        pid_y.reset_integral();
       });
 
   odom_sub_ = create_subscription<nav_msgs::msg::Odometry>(
@@ -36,11 +43,11 @@ PurePursuit::PurePursuit(const rclcpp::NodeOptions &options)
   cmd_vel_pub_ = create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 1);
 }
 
-PurePursuit::~PurePursuit() {}
+SimplePursuit::~SimplePursuit() {}
 
 // TODO : syncronize path and odom
 
-void PurePursuit::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
+void SimplePursuit::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
   // get current position
   double x = msg->pose.pose.position.x;
   double y = msg->pose.pose.position.y;
@@ -65,4 +72,4 @@ void PurePursuit::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
 
 } // namespace path_pursuit
 
-RCLCPP_COMPONENTS_REGISTER_NODE(path_pursuit::PurePursuit)
+RCLCPP_COMPONENTS_REGISTER_NODE(path_pursuit::SimplePursuit)

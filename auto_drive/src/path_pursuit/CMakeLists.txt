@@ -12,10 +12,13 @@ find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
 ament_auto_add_library(pure_pursuit src/pure_pursuit.cpp)
+ament_auto_add_library(simple_pursuit src/simple_pursuit.cpp)
 rclcpp_components_register_nodes(pure_pursuit "path_pursuit::PurePursuit")
+rclcpp_components_register_nodes(simple_pursuit "path_pursuit::SimplePursuit")
 ament_auto_add_executable(
 path_pursuit_node src/path_pursuit_node.cpp
   src/pure_pursuit.cpp
+  src/simple_pursuit.cpp
 )
 
 ament_auto_add_executable(
