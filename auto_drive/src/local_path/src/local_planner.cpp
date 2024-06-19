@@ -52,7 +52,7 @@ void LocalPlanner::path_callback(const nav_msgs::msg::Path::SharedPtr msg){
   }
 
   // auto start_time = std::chrono::system_clock::now();
-  auto [xs_new, ys_new] = spline_by_num(xs, ys, 20);  // スプライン補間
+  auto [xs_new, ys_new] = spline_by_num(xs, ys, path_points_);  // スプライン補間
   // auto end_time = std::chrono::system_clock::now();
   // double elapsed_first = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time).count(); //処理に要した時間をミリ秒に変換
 

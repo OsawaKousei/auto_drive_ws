@@ -24,8 +24,8 @@ private:
   nav_msgs::msg::Path path_;
   nav_msgs::msg::Odometry odom_;
 
-  std::vector<double> xs = {1, 2, 3, 4};
-  std::vector<double> ys = {1, -4, 9, -16};
+  std::vector<double> xs;
+  std::vector<double> ys;
 
   int path_points_;
   int consider_points_;

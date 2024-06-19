@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>local_path</name>
+  <name>path_pursuit</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
   <maintainer email="jwithelis@gmail.com">kousei</maintainer>
-  <license>GPL-3.0-only</license>
+  <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
 
@@ -17,7 +17,6 @@
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>sensor_msgs</depend>
-  <depend>visualization_msgs</depend>
 
   <depend>tf2</depend>
   <depend>tf2_ros</depend>
