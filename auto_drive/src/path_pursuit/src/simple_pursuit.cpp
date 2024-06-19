@@ -51,8 +51,8 @@ void PurePursuit::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
   }
 
   // pid control
-  double target_x = path_.poses[5].pose.position.x;
-  double target_y = path_.poses[5].pose.position.y;
+  double target_x = path_.poses[2].pose.position.x;
+  double target_y = path_.poses[2].pose.position.y;
   double cmd_x = pid_x.pid_ctrl(x, target_x);
   double cmd_y = pid_y.pid_ctrl(y, target_y);
 
