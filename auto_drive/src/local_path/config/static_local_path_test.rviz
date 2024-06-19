@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Odometry1/Topic1
+        - /Marker1
       Splitter Ratio: 0.5029411911964417
     Tree Height: 549
   - Class: rviz_common/Selection
@@ -358,6 +359,19 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /local_path
       Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Marker
+      Namespaces:
+        "": true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /corner_marker
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -404,7 +418,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 4.478589057922363
+      Distance: 3.6117470264434814
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -440,5 +454,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 205
-  Y: -21
+  X: 244
+  Y: -32

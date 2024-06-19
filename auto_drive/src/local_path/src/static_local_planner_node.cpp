@@ -142,13 +142,12 @@ private:
         path.push_back({xs_new[i], ys_new[i]});
       }
 
-      // auto corner_index = pcp::PCFeatureDetection::corner_detection(path);
+      auto corner_index = pcp::PCFeatureDetection::corner_detection(path);
 
-      // // corner_idex番目の点の座標を取得
-      // for (int i = 0; i < int(corner_index.size()); i++) {
-      //   corner_points.push_back(std::make_tuple(xs_new[corner_index[i]], ys_new[corner_index[i]]));
-      // }
-
+      // corner_idex番目の点の座標を取得
+      for (int i = 0; i < int(corner_index.size()); i++) {
+        corner_points.push_back(std::make_tuple(xs_new[corner_index[i]], ys_new[corner_index[i]]));
+      }
 
       local_path_.poses.clear();
       local_path_.header = global_path_.header;
