@@ -229,6 +229,6 @@ def generate_launch_description():
         map_lifecycle_manager,
 
         # ign_debug,
-        local_path_node,
+        # local_path_node,
         path_pursuit_node
     ])

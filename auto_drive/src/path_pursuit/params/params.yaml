@@ -14,7 +14,10 @@ pure_pursuit:
 
 simple_pursuit:
   ros__parameters:
-    kp: 2.0
-    ki: 0.5
+    kp: 0.5
+    ki: 0.075
     kd: 0.0
-    ctrl_period: 0.005
+    ctrl_priod: 0.02
+    path_dir: "/home/kousei/auto_drive_ws/auto_drive/src/local_path/path/local_path.csv"
+    distance_threshold: 0.15
+    threshold_modify_rate: 0.4

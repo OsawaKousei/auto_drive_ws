@@ -24,7 +24,7 @@ public:
     // std::cout << "error: " << error << std::endl;
     integral += error * dt;
     integral_limit();
-    std::cout << "integral: " << integral << std::endl;
+    // std::cout << "integral: " << integral << std::endl;
     double diff = (error - pre_error);
     double cmd_val = kp * error + ki * integral + kd * diff;
     if(abs(cmd_val) > max){
