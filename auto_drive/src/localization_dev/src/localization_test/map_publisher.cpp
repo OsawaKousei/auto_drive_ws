@@ -63,7 +63,7 @@ void MapPublisher::timer_callback() {
   }
 
   // corner_pointsの座標を表示
-  for(int i = 0; i < corner_points.size(); i++){
+  for(int i = 0; i < int(corner_points.size()); i++){
     auto viz_marker = viz_marker::std_cube_setter(corner_points[i]);
     viz_marker->header.frame_id = "map";
     viz_marker->header.stamp = this->now();

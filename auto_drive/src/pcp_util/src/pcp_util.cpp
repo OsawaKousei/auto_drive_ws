@@ -63,21 +63,94 @@ namespace pcp {
     return PCA(data);
   }
 
-  std::vector<int> PCFeatureDetection::corner_detection(){
-    std::vector<std::vector<double>> data = convert::pc2matrix(cloud_);
-    return corner_detection(data);
+  std::vector<std::vector<int>> PCFeatureDetection::near_threshold_clsutering(const std::vector<int> &index, const int near_threshold){
+    std::vector<std::vector<int>> group_index;
+    
+    // indexの最後を除く各要素に対して検証
+    for(int i = 0; i < int(index.size()) -1; i++){
+      //自身が含まれるgropがあるかどうか
+      bool is_grouped = false;
+      int idx = 0;
+      for(int j = 0; j < int(group_index.size()); j++){
+        for(int k = 0; k < int(group_index[j].size()); k++){
+          if(index[i] == group_index[j][k]){
+            is_grouped = true;
+            idx = j;
+            break;
+          }
+        }
+      }
+
+      //自身が含まれるgroupがない場合、新しいgroupを作成
+      if(!is_grouped){
+        std::vector<int> new_group;
+        new_group.push_back(index[i]);
+        group_index.push_back(new_group);
+        idx = group_index.size() - 1;
+      }
+
+
+      //index[i]の次のindexとの距離がnear_threshold以下の場合、同じgroupに追加
+      if(index[i+1] - index[i] < near_threshold){
+        group_index[idx].push_back(index[i+1]);
+      }
+    }
+
+    // group_indexを表示
+    // for(int i = 0; i < int(group_index.size()); i++){
+    //   for(int j = 0; j < int(group_index[i].size()); j++){
+    //     std::cout << "group_corner_index[" << i << "][" << j << "]: " << group_index[i][j] << std::endl;
+    //   }
+    // }
+
+    return group_index;
   }
 
-  std::vector<int> PCFeatureDetection::corner_detection(const std::vector<std::vector<double>> &data){
-    const int window_size = 5;
-    std::vector<double> pv_index;
-    double pv_threshold = 0.999995;
-    int near_threshold = 17;
-    std::vector<int> corner_index;
-    // corner detection
+  std::vector<int> PCFeatureDetection::min_threshold_filter(const std::vector<double> &index, const double threshold){
+    std::vector<int> filtered_index;
+    for(int i = 0; i < int(index.size() - 1); i++){
+      if(index[i] < index[i+1] && index[i] < index[i-1] && index[i] < threshold){
+        filtered_index.push_back(i);
+      }
+    }
+    return filtered_index;
+  }
 
-    // pv_index: Proportion of Varianceを格納するvector
-    // pv_indexのwindow_size番目までを1で初期化
+  void PCFeatureDetection::set_corner_params(int window_size, double pv_threshold, int near_threshold){
+    if(window_size < 1){
+      throw std::invalid_argument("window_size must be greater than 1");
+    }else if(window_size % 2 == 0){
+      throw std::invalid_argument("window_size must be odd number");
+    }else{
+      this->coner_window_size_ = window_size;
+    }
+    if(pv_threshold < 0 || pv_threshold > 1){
+      throw std::invalid_argument("pv_threshold must be between 0 and 1");
+    }else{
+      this->coner_pv_threshold_ = pv_threshold;
+    }
+    if(near_threshold < 1){
+      throw std::invalid_argument("near_threshold must be greater than 1");
+    }else{
+      this->corner_near_threshold_ = near_threshold;
+    }
+  }
+
+  std::vector<int> PCFeatureDetection::corner_detection(){
+    const int window_size = this->coner_window_size_;
+    const double pv_threshold = this->coner_pv_threshold_;
+    const int near_threshold = this->corner_near_threshold_;
+
+    std::vector<std::vector<double>> data = convert::pc2matrix(cloud_);
+    return corner_detection(data, window_size, pv_threshold, near_threshold);
+  }
+
+  std::vector<int> PCFeatureDetection::corner_detection(const std::vector<std::vector<double>> &data, 
+    const int window_size = 5, const double pv_threshold = 0.999995, const int near_threshold = 17
+  ){
+    std::vector<double> pv_index; // pv_index: Proportion of Varianceを格納するvector
+
+    // pv_indexの(window_size+1)/2番目までを1で初期化
     for(int i = 0; i < int((window_size+1)/2 -1); i++){
       pv_index.push_back(pv_threshold + 1);
     }
@@ -86,7 +159,7 @@ namespace pcp {
     //   std::cout << "pv_index[" << i << "]: " << pv_index[i] << std::endl;
     // }
 
-    // window_sizeの範囲でPCAを行い、Proportion of Varianceをpv_indexに追加
+    // data内の点をwindow_sizeの範囲でスライドさせながらPCAを行い、Proportion of Varianceをpv_indexに追加
     for(int i = 0; i < int(data.size()) - window_size; i++){
       std::vector<std::vector<double>> window_data;
       for (int j = 0; j < window_size; j++) {
@@ -102,63 +175,23 @@ namespace pcp {
     }
 
     // pv_indexを表示
-    for(int i = 0; i < int(pv_index.size()); i++){
-      // std::cout << "pv_index[" << i << "]: " << pv_index[i] << std::endl;
-    }
+    // for(int i = 0; i < int(pv_index.size()); i++){
+    //   std::cout << "pv_index[" << i << "]: " << pv_index[i] << std::endl;
+    // }
 
     // pv_indexの中で極小値かつ閾値以下の点をcorner_indexに追加
-    for(int i = 0; i < int(pv_index.size() - 1); i++){
-      if(pv_index[i] < pv_index[i+1] && pv_index[i] < pv_index[i-1] && pv_index[i] < pv_threshold){
-        corner_index.push_back(i);
-      }
-    }
+    auto corner_index = min_threshold_filter(pv_index, pv_threshold);
 
     // corner_indexを表示
-    for(int i = 0; i < int(corner_index.size()); i++){
-      std::cout << "corner_index[" << i << "]: " << corner_index[i]  << "  :  " << "pv_index[" << corner_index[i] << "]: " << pv_index[corner_index[i]] << std::endl;
-    }
+    // for(int i = 0; i < int(corner_index.size()); i++){
+    //   std::cout << "corner_index[" << i << "]: " << corner_index[i]  << "  :  " << "pv_index[" << corner_index[i] << "]: " << pv_index[corner_index[i]] << std::endl;
+    // }
 
-    // corner_indexをクラスタリング
-    std::vector<std::vector<int>> group_corner_index;
-    
-    for(int i = 0; i < int(corner_index.size()) -1; i++){
-      //自身が含まれるgropがあるかどうか
-      bool is_grouped = false;
-      int group_index = 0;
-      for(int j = 0; j < int(group_corner_index.size()); j++){
-        for(int k = 0; k < int(group_corner_index[j].size()); k++){
-          if(corner_index[i] == group_corner_index[j][k]){
-            is_grouped = true;
-            group_index = j;
-            break;
-          }
-        }
-      }
+    // corner_indexをnear_threshold_clsuteringにかけてgroup_corner_indexに分類
+    auto group_corner_index = PCFeatureDetection::near_threshold_clsutering(corner_index, near_threshold);
 
-      //自身が含まれるgroupがない場合、新しいgroupを作成
-      if(!is_grouped){
-        std::vector<int> new_group;
-        new_group.push_back(corner_index[i]);
-        group_corner_index.push_back(new_group);
-        group_index = group_corner_index.size() - 1;
-      }
-
-
-      //corner_index[i]の次のcorner_indexとの距離がnear_threshold以下の場合、同じgroupに追加
-      if(corner_index[i+1] - corner_index[i] < near_threshold){
-        group_corner_index[group_index].push_back(corner_index[i+1]);
-      }
-    }
-
-    // group_corner_indexを表示
-    for(int i = 0; i < int(group_corner_index.size()); i++){
-      for(int j = 0; j < int(group_corner_index[i].size()); j++){
-        std::cout << "group_corner_index[" << i << "][" << j << "]: " << group_corner_index[i][j] << std::endl;
-      }
-    }
-
-    std::vector<int> classified_corner_index;
     // group_corner_indexの各groupの中心をclassified_corner_indexに追加
+    std::vector<int> classified_corner_index;
     for(int i = 0; i < int(group_corner_index.size()); i++){
       int sum = 0;
       for(int j = 0; j < int(group_corner_index[i].size()); j++){
@@ -168,9 +201,9 @@ namespace pcp {
     }
 
     // corner_indexを表示
-    for(int i = 0; i < int(classified_corner_index.size()); i++){
-      std::cout << "classified_corner_index[" << i << "]: " << classified_corner_index[i]  << "  :  " << "pv_index[" << classified_corner_index[i] << "]: " << pv_index[classified_corner_index[i]] << std::endl;
-    }
+    // for(int i = 0; i < int(classified_corner_index.size()); i++){
+    //   std::cout << "classified_corner_index[" << i << "]: " << classified_corner_index[i]  << "  :  " << "pv_index[" << classified_corner_index[i] << "]: " << pv_index[classified_corner_index[i]] << std::endl;
+    // }
 
     return classified_corner_index;
   }
