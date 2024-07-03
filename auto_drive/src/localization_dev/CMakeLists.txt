@@ -20,6 +20,7 @@ find_package(pcl_conversions REQUIRED)
 find_package(PCL REQUIRED COMPONENTS common io)
 
 find_package(PCL 1.1 REQUIRED)
+
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
@@ -82,6 +83,10 @@ ament_target_dependencies(pc2_mapping
 )
 
 target_link_libraries(map_publisher ${PCL_LIBRARIES})
+
+target_include_directories(map_publisher
+  PUBLIC pcp_util/include
+)
 ament_target_dependencies(map_publisher
  pcl_conversions
 )

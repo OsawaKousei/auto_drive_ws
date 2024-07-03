@@ -28,7 +28,7 @@ public:
 
 private:
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr real_odom_sub;
-  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr noisy_odom_pub;
+  rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr noisy_odom_pub;
 
   //! mean of the Gaussian distribution for x and y
   const double xy_mean = 0.0;

@@ -24,14 +24,14 @@ NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
   auto real_odom_callback = [this](const nav_msgs::msg::Odometry &msg) -> void {
     mutex_.lock();
 
-    nav_msgs::msg::Odometry noisy_odom = msg;
-    noisy_odom.pose.pose.position.x += this->xy_dist(this->generator);
-    noisy_odom.pose.pose.position.y += this->xy_dist(this->generator);
-    noisy_odom.pose.pose.position.z += this->xy_dist(this->generator);
-    noisy_odom.pose.pose.orientation.x += this->th_dist(this->generator);
-    noisy_odom.pose.pose.orientation.y += this->th_dist(this->generator);
-    noisy_odom.pose.pose.orientation.z += this->th_dist(this->generator);
-    noisy_odom.pose.pose.orientation.w += this->th_dist(this->generator);
+    geometry_msgs::msg::Pose noisy_odom = msg.pose.pose;
+    noisy_odom.position.x += this->xy_dist(this->generator);
+    noisy_odom.position.y += this->xy_dist(this->generator);
+    noisy_odom.position.z += this->xy_dist(this->generator);
+    noisy_odom.orientation.x += this->th_dist(this->generator);
+    noisy_odom.orientation.y += this->th_dist(this->generator);
+    noisy_odom.orientation.z += this->th_dist(this->generator);
+    noisy_odom.orientation.w += this->th_dist(this->generator);
 
     this->noisy_odom_pub->publish(noisy_odom);
 
@@ -42,7 +42,7 @@ NoisyOdom::NoisyOdom(const rclcpp::NodeOptions &options)
       "odom", 10, real_odom_callback);
 
   this->noisy_odom_pub =
-      this->create_publisher<nav_msgs::msg::Odometry>("noisy_odom", 10);
+      this->create_publisher<geometry_msgs::msg::Pose>("noisy_odom", 10);
 }
 
 NoisyOdom::~NoisyOdom() {}

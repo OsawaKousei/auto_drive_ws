@@ -12,6 +12,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <std_msgs/msg/string.hpp>
+#include <visualization_msgs/msg/marker.hpp>
 
 namespace localization_dev {
 /// @brief A class to publish the map as a PointCloud2 message.
@@ -26,6 +27,8 @@ public:
 
 private:
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr map_pub;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr marker_pub_;
+
   rclcpp::TimerBase::SharedPtr timer_;
 
   std::string map_dir;

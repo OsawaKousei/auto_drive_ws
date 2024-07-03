@@ -1,4 +1,3 @@
-#include "util/pcp.hpp"
 #include <Eigen/Core> // Include the necessary header file
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
@@ -9,8 +8,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
-#include "util/pcp.hpp"
-#include "pcp.hpp"
+#include "pcp_util/pcp_util.hpp"
 
 namespace pcp {
   PCFeatureDetection::PCFeatureDetection(sensor_msgs::msg::PointCloud2::SharedPtr cloud)
@@ -24,14 +22,14 @@ namespace pcp {
     // }
     }
 
-  PCFeatureDetection::PCFeatureDetection(pcl::PointCloud<pcl::PointXY> cloud)
+  PCFeatureDetection::PCFeatureDetection(const pcl::PointCloud<pcl::PointXY> &cloud)
     : cloud_(cloud){
     this->cloud_ = cloud;
   }
 
   PCFeatureDetection::~PCFeatureDetection() {}
 
-  std::tuple<double,double,double> PCFeatureDetection::PCA(std::vector<std::vector<double>> data){
+  std::tuple<double,double,double> PCFeatureDetection::PCA(const std::vector<std::vector<double>> &data){
     // PCA
     Eigen::MatrixXd data_matrix(data.size(), data[0].size());
     for (int i = 0; i < int(data.size()); i++) {
@@ -61,16 +59,16 @@ namespace pcp {
   };
 
   std::tuple<double,double,double> PCFeatureDetection::PCA(){
-    std::vector<std::vector<double>> data = PCConvert::pc2matrix(cloud_);
+    std::vector<std::vector<double>> data = convert::pc2matrix(cloud_);
     return PCA(data);
   }
 
   std::vector<int> PCFeatureDetection::corner_detection(){
-    std::vector<std::vector<double>> data = PCConvert::pc2matrix(cloud_);
+    std::vector<std::vector<double>> data = convert::pc2matrix(cloud_);
     return corner_detection(data);
   }
 
-  std::vector<int> PCFeatureDetection::corner_detection(std::vector<std::vector<double>> data){
+  std::vector<int> PCFeatureDetection::corner_detection(const std::vector<std::vector<double>> &data){
     const int window_size = 5;
     std::vector<double> pv_index;
     double pv_threshold = 0.999995;
@@ -109,7 +107,7 @@ namespace pcp {
     }
 
     // pv_indexの中で極小値かつ閾値以下の点をcorner_indexに追加
-    for(int i = 0; i < pv_index.size() - 1; i++){
+    for(int i = 0; i < int(pv_index.size() - 1); i++){
       if(pv_index[i] < pv_index[i+1] && pv_index[i] < pv_index[i-1] && pv_index[i] < pv_threshold){
         corner_index.push_back(i);
       }
@@ -161,9 +159,9 @@ namespace pcp {
 
     std::vector<int> classified_corner_index;
     // group_corner_indexの各groupの中心をclassified_corner_indexに追加
-    for(int i = 0; i < group_corner_index.size(); i++){
+    for(int i = 0; i < int(group_corner_index.size()); i++){
       int sum = 0;
-      for(int j = 0; j < group_corner_index[i].size(); j++){
+      for(int j = 0; j < int(group_corner_index[i].size()); j++){
         sum += group_corner_index[i][j];
       }
       classified_corner_index.push_back(sum / group_corner_index[i].size());
@@ -177,13 +175,13 @@ namespace pcp {
     return classified_corner_index;
   }
 
-  sensor_msgs::msg::PointCloud2::SharedPtr PCConvert::path2pc2(nav_msgs::msg::Path path)
+  sensor_msgs::msg::PointCloud2 convert::path2pc2(const nav_msgs::msg::Path::SharedPtr path)
   {
     sensor_msgs::msg::PointCloud2 pc2;
 
-    pc2.header = path.header;
+    pc2.header = path->header;
     pc2.height = 1;
-    pc2.width = path.poses.size();
+    pc2.width = path->poses.size();
     pc2.fields.resize(3);
     pc2.fields[0].name = "x";
     pc2.fields[0].offset = 0;
@@ -199,20 +197,20 @@ namespace pcp {
     pc2.fields[2].count = 1;
     pc2.is_bigendian = false;
     pc2.point_step = 12;
-    pc2.row_step = 12 * path.poses.size();
+    pc2.row_step = 12 * path->poses.size();
     pc2.is_dense = true;
     pc2.data.resize(pc2.point_step * pc2.width);
     float *data = reinterpret_cast<float *>(pc2.data.data());
-    for (int i = 0; i < int(path.poses.size()); i++) {
-      data[i * 3] = path.poses[i].pose.position.x;
-      data[i * 3 + 1] = path.poses[i].pose.position.y;
+    for (int i = 0; i < int(path->poses.size()); i++) {
+      data[i * 3] = path->poses[i].pose.position.x;
+      data[i * 3 + 1] = path->poses[i].pose.position.y;
       data[i * 3 + 2] = 0.0;
     }
 
-    return std::make_shared<sensor_msgs::msg::PointCloud2>(pc2);
+    return pc2;
   }
 
-  std::vector<std::vector<double>> PCConvert::pc2matrix(pcl::PointCloud<pcl::PointXY> cloud)
+  std::vector<std::vector<double>> convert::pc2matrix(const pcl::PointCloud<pcl::PointXY> &cloud)
   {
     std::vector<std::vector<double>> data;
     for (int i = 0; i < int(cloud.width); i++) {
@@ -224,4 +222,21 @@ namespace pcp {
 
     return data;
   }
+
+  pcl::PointCloud<pcl::PointXY> convert::pcxyz2xy(const pcl::PointCloud<pcl::PointXYZ> &cloud)
+  {
+    pcl::PointCloud<pcl::PointXY> cloud_xy;
+    cloud_xy.width = cloud.width;
+    cloud_xy.height = 0;
+    cloud_xy.is_dense = cloud.is_dense;
+    cloud_xy.points.resize(cloud.points.size());
+    for (int i = 0; i < int(cloud.points.size()); i++) {
+      cloud_xy.points[i].x = cloud.points[i].x;
+      cloud_xy.points[i].y = cloud.points[i].y;
+    }
+
+    return cloud_xy;
+  }
+
+  
 } // namespace pcp

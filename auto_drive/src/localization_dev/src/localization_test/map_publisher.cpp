@@ -15,6 +15,9 @@
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
 
+#include "pcp_util/pcp_util.hpp"
+#include "pcp_util/rviz_util.hpp"
+
 using namespace std::chrono_literals;
 
 namespace localization_dev {
@@ -31,6 +34,7 @@ MapPublisher::MapPublisher(const rclcpp::NodeOptions &options)
 
   map_pub =
       this->create_publisher<sensor_msgs::msg::PointCloud2>("mapped_pc2", 10);
+  marker_pub_ = this->create_publisher<visualization_msgs::msg::Marker>("visualization_marker", 10);
   timer_ = this->create_wall_timer(
       2000ms, std::bind(&MapPublisher::timer_callback, this));
 }
@@ -44,8 +48,33 @@ void MapPublisher::timer_callback() {
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
   try {
     pcl::io::loadPCDFile<pcl::PointXYZ>(map_dir + "/" + map_name, *cloud);
-  } catch (std::runtime_error e) {
+  } catch (const std::runtime_error &e) {
     std::cerr << "Error in reading pcd file: " << e.what() << std::endl;
+  }
+
+  pcp::PCFeatureDetection pcd(pcp::convert::pcxyz2xy(*cloud));
+  auto corner_index = pcd.corner_detection();
+
+  // corner_idex番目の点の座標を取得
+  std::vector<std::tuple<double, double>> corner_points;
+  for (int i = 0; i < int(corner_index.size()); i++) {
+    corner_points.push_back(std::make_tuple(cloud->points[corner_index[i]].x,
+                                             cloud->points[corner_index[i]].y));
+  }
+
+  // corner_pointsの座標を表示
+  for(int i = 0; i < corner_points.size(); i++){
+    auto viz_marker = viz_marker::std_cube_setter(corner_points[i]);
+    viz_marker->header.frame_id = "map";
+    viz_marker->header.stamp = this->now();
+    viz_marker->id = i;
+
+    marker_pub_->publish(*viz_marker);
+
+    std::cout << "i: " << i << ", x: " << std::get<0>(corner_points[i]) << ", y: " << std::get<1>(corner_points[i]) << std::endl;
+
+    // 10ms待機
+    std::this_thread::sleep_for(10ms);
   }
 
   sensor_msgs::msg::PointCloud2 msg;

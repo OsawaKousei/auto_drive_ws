@@ -157,7 +157,7 @@ def generate_launch_description():
         # specify the ros2 parameters file
         parameters=[os.path.join(pkg_share_dir,'params','params.yaml')],
         # prefix to launch in a new terminal
-        prefix="xterm -e"
+        # prefix="xterm -e"
     )
 
     return LaunchDescription([
